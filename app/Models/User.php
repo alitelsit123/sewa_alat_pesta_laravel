@@ -17,10 +17,18 @@ class User extends Authenticatable
      *
      * @var string[]
      */
+
+    protected $primaryKey = 'id_user';
+
     protected $fillable = [
         'name',
         'email',
         'password',
+    ];
+
+    protected $attributes = [
+        'role' => '-1',
+        'online' => '0',
     ];
 
     /**
@@ -41,4 +49,13 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function profile() {
+        return $this->hasOne('App\Models\Profile', 'id_user');
+    }
+
+
+    public function roles() {
+        return $this->belongsToMany('App\Models\UserRole', 'user_roles_pivot', 'id_user', 'id_role');
+    }
 }

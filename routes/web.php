@@ -14,7 +14,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/products');
+});
+Route::get('/products', [App\Http\Controllers\Public\BaseViewController::class, 'showProductsPage']);
+
+Route::prefix('auth')->group(function() {
+    Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'index']);
+    Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
+    
+    Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'index']);
+    Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'register']);
 });
 
 Route::prefix('admin')->group(function() {
@@ -24,4 +33,6 @@ Route::prefix('admin')->group(function() {
     Route::get('/dashboard', function () {
         return view('admin-pages.dashboard');
     });
+
+    Route::resource('kategori', \App\Http\Controllers\Admin\KategoriController::class);
 });
