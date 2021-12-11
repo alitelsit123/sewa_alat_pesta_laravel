@@ -26,13 +26,16 @@ Route::prefix('auth')->group(function() {
     Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'register']);
 });
 
-Route::prefix('admin')->group(function() {
-    Route::get('/', function () {
-        return redirect('/admin/dashboard');
+Route::name('admin.')->group(function() {
+    Route::prefix('admin')->group(function() {
+        Route::get('/', function () {
+            return redirect('/admin/dashboard');
+        });
+        Route::get('/dashboard', function () {
+            return view('admin-pages.dashboard');
+        });
     });
-    Route::get('/dashboard', function () {
-        return view('admin-pages.dashboard');
-    });
-
-    Route::resource('kategori', \App\Http\Controllers\Admin\KategoriController::class);
+    Route::resource('admin/kategori', \App\Http\Controllers\Admin\KategoriController::class);
+    Route::resource('admin/produk', \App\Http\Controllers\Admin\ProdukController::class);
 });
+

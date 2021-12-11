@@ -56,7 +56,8 @@
                     <div class="form-group flex-grow-1">
                         <input type="text" class="form-control" placeholder="Cari Kategori">
                     </div>
-                    <a class="btn btn-primary" href="{{ route('admin.kategori.create') }}">Tambah Kategori</a>
+                    <!-- <a disabled class="btn btn-primary" href="{{ route('admin.kategori.create') }}">Tambah Kategori</a> -->
+                    <a class="btn btn-primary disabled">Tambah Kategori</a>
                 </form>    
               </div>
               <div class="card-body p-0">
@@ -69,17 +70,17 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @forelse($categories as $row)  
+                    @forelse([] as $row)  
                     <tr>
                       <td>{{ $row->nama_kategori }}</td>
                       <td class="text-center">
-                          <a href="{{ route('admin.kategori.edit', $row->id_kategori) }}" class="btn btn-sm btn-warning">Edit</a>
-                          <button class="btn btn-sm btn-danger" onclick="openModal({{ $row->id_kategori }})" >Hapus</button>
+                          <!-- <a href="{{ route('admin.kategori.edit', $row->id_kategori) }}" class="btn btn-sm btn-warning">Edit</a>
+                          <button class="btn btn-sm btn-danger" onclick="openModal({{ $row->id_kategori }})" >Hapus</button> -->
                       </td>
                     </tr>
                     @empty
                     <tr>
-                      <td colspan="2">Tidak Ada Kategori!!!</td>
+                      <td colspan="2">Tidak Ada produk!!!</td>
                     </tr>
                     @endforelse
                   </tbody>

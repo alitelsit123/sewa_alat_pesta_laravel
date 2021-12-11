@@ -25,6 +25,8 @@
   <link rel="stylesheet" href="{{ asset('/assets/plugins/daterangepicker/daterangepicker.css') }}">
   <!-- summernote -->
   <link rel="stylesheet" href="{{ asset('/assets/plugins/summernote/summernote-bs4.min.css') }}">
+
+  @yield('css_head')
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -51,7 +53,7 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">{{ Str::ucfirst(request()->segment(2)) }}</a></li>
+              <li class="breadcrumb-item"><a href="{{ route('admin.kategori.index') }}">Dashboard</a> / {{ Str::ucfirst(request()->segment(2)) }}</li>
               <!-- <li class="breadcrumb-item active">Dashboard v1</li> -->
             </ol>
           </div><!-- /.col -->
@@ -111,5 +113,7 @@
 <script src="{{ asset('/assets/dist/js/demo.js') }}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ asset('/assets/dist/js/pages/dashboard.js') }}"></script>
+@yield('script_body')
+
 </body>
 </html>
