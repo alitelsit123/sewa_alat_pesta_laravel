@@ -53,7 +53,7 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{{ route('admin.kategori.index') }}">Dashboard</a> / {{ Str::ucfirst(request()->segment(2)) }}</li>
+              <li class="breadcrumb-item"><a href="{{ route('admin.index') }}">Dashboard</a> / {{ Str::ucfirst(request()->segment(2)) }}</li>
               <!-- <li class="breadcrumb-item active">Dashboard v1</li> -->
             </ol>
           </div><!-- /.col -->

@@ -22,7 +22,7 @@
     var selected_data_id = -1;
     function hapusData() {
       $('#confirm-box').modal('hide');
-      $('#form-delete').attr('action', "{{ url('/admin/kategori') }}/"+selected_data_id);
+      $('#form-delete').attr('action', "{{ url('/admin/produk') }}/"+selected_data_id);
       $('#form-delete').submit();
       selected_data_id = -1;
     }
@@ -47,17 +47,17 @@
         <div class="col-md-12">
         <div class="card" style="min-height: 500px;">
               <div class="card-header">
-                    <h5>Kategori</h5>
+                    <h5>Produk</h5>
                     
               </div>
               <!-- /.card-header -->
               <div class="card-header">
                     <form action="" class="form-inline w-100">
                     <div class="form-group flex-grow-1">
-                        <input type="text" class="form-control" placeholder="Cari Kategori">
+                        <input type="text" class="form-control" placeholder="Cari Produk" disabled>
                     </div>
                     <!-- <a disabled class="btn btn-primary" href="{{ route('admin.kategori.create') }}">Tambah Kategori</a> -->
-                    <a class="btn btn-primary disabled">Tambah Kategori</a>
+                    <a class="btn btn-primary" href="{{ route('admin.produk.create') }}">Tambah Produk</a>
                 </form>    
               </div>
               <div class="card-body p-0">
@@ -65,17 +65,22 @@
                 <table class="table">
                   <thead>
                     <tr>
+                      <th style="width: 15%">Kode</th>
                       <th>Nama</th>
+                      <th style="width: 10%" class="text-center">Stok</th>
                       <th style="width: 20%" class="text-center">#</th>
                     </tr>
                   </thead>
                   <tbody>
-                    @forelse([] as $row)  
+                    @forelse($produk as $row)  
                     <tr>
-                      <td>{{ $row->nama_kategori }}</td>
+                      <td>{{ $row->kode_produk }}</td>
+                      <td>{{ $row->nama_produk }}</td>
+                      <td class="text-center">{{ $row->stok }}</td>
                       <td class="text-center">
-                          <!-- <a href="{{ route('admin.kategori.edit', $row->id_kategori) }}" class="btn btn-sm btn-warning">Edit</a>
-                          <button class="btn btn-sm btn-danger" onclick="openModal({{ $row->id_kategori }})" >Hapus</button> -->
+                          <a href="{{ route('admin.produk.edit', $row->id_produk) }}" class="btn btn-sm btn-warning">Edit</a>
+                          <button class="btn btn-sm btn-danger" onclick="openModal({{ $row->id_produk }})" >Hapus</button>
+                          <a href="{{ route('admin.produk.edit', $row->id_produk) }}" class="btn btn-sm btn-default disabled">Lihat</a>
                       </td>
                     </tr>
                     @empty

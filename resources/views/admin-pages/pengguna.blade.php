@@ -22,7 +22,7 @@
     var selected_data_id = -1;
     function hapusData() {
       $('#confirm-box').modal('hide');
-      $('#form-delete').attr('action', "{{ url('/admin/kategori') }}/"+selected_data_id);
+      $('#form-delete').attr('action', "{{ url('/admin/produk') }}/"+selected_data_id);
       $('#form-delete').submit();
       selected_data_id = -1;
     }
@@ -46,41 +46,47 @@
     <div class="row">
         <div class="col-md-12">
         <div class="card" style="min-height: 500px;">
-              <div class="card-header">
-                    <h5>Kategori</h5>
-                    
+        <div class="card-header">
+                <h3 class="card-title">Pengguna</h3>
+
+                <div class="card-tools">
+                  <div class="input-group input-group-sm" style="width: 150px;">
+                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                    <div class="input-group-append">
+                      <button type="submit" class="btn btn-default">
+                        <i class="fas fa-search"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
               <!-- /.card-header -->
-              <div class="card-header">
-                    <form action="" class="form-inline w-100">
-                    <div class="form-group flex-grow-1">
-                        <input type="text" class="form-control" placeholder="Cari Kategori" disabled>
-                    </div>
-                    <a class="btn btn-primary" href="{{ route('admin.kategori.create') }}">Tambah Kategori</a>
-                </form>    
-              </div>
-              <div class="card-body p-0">
-                
-                <table class="table">
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
                   <thead>
                     <tr>
-                      <th>Nama</th>
-                      <th style="width: 20%" class="text-center">#</th>
+                      <th>Email</th>
+                      <th>Status</th>
+                      <th>Online</th>
+                      <th style="width: 20%;">#</th>
                     </tr>
                   </thead>
                   <tbody>
-                    @forelse($categories as $row)  
+                    @forelse($users as $row)
                     <tr>
-                      <td>{{ $row->nama_kategori }}</td>
-                      <td class="text-center">
-                          <a href="{{ route('admin.kategori.edit', $row->id_kategori) }}" class="btn btn-sm btn-warning">Edit</a>
-                          <button class="btn btn-sm btn-danger" onclick="openModal({{ $row->id_kategori }})" >Hapus</button>
+                      <td>{{ $row->email }}</td>
+                      <td>{{ $row->email_verified_at ? 'Terverifikasi': 'Belum Diverifikasi' }}</td>
+                      <td>{{ $row->online ? 'Ya': 'Tidak' }}</td>
+                      <td>
+                          <!-- <a href="#" class="btn btn-sm btn-info">Pesan</a> -->
+                          <a href="{{ route('admin.user.show', $row->id_user) }}" class="btn btn-sm btn-default">Lihat</a>
                       </td>
                     </tr>
                     @empty
                     <tr>
-                      <td colspan="2">Tidak Ada Kategori!!!</td>
-                    </tr>
+                        <td colspan="3">Tidak Ada Data</td>
+                    </tr>                    
                     @endforelse
                   </tbody>
                 </table>

@@ -25,6 +25,7 @@
                         </div>
                         @enderror
                         <div class="text-right w-100">
+                            <a href="{{ route('admin.kategori.index') }}" class="btn">Batal</a>
                             <button class="btn btn-primary" type="submit">Simpan</button>
                         </div>
                     </form>

@@ -47,16 +47,15 @@
         <div class="col-md-12">
         <div class="card" style="min-height: 500px;">
               <div class="card-header">
-                    <h5>Kategori</h5>
+                    <h5>Transaksi</h5>
                     
               </div>
               <!-- /.card-header -->
               <div class="card-header">
                     <form action="" class="form-inline w-100">
                     <div class="form-group flex-grow-1">
-                        <input type="text" class="form-control" placeholder="Cari Kategori" disabled>
+                        <input type="text" class="form-control" placeholder="Cari Transaksi" disabled>
                     </div>
-                    <a class="btn btn-primary" href="{{ route('admin.kategori.create') }}">Tambah Kategori</a>
                 </form>    
               </div>
               <div class="card-body p-0">
@@ -69,7 +68,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @forelse($categories as $row)  
+                    @forelse([] as $row)  
                     <tr>
                       <td>{{ $row->nama_kategori }}</td>
                       <td class="text-center">
@@ -79,7 +78,7 @@
                     </tr>
                     @empty
                     <tr>
-                      <td colspan="2">Tidak Ada Kategori!!!</td>
+                      <td colspan="2">Tidak Ada Transaksi!!!</td>
                     </tr>
                     @endforelse
                   </tbody>
@@ -92,20 +91,14 @@
     </div>
 </div><!-- /.container-fluid -->
 
-<form action="" method="post" id="form-delete" class="d-none">
+<!-- <form action="" method="post" id="form-delete" class="d-none">
   @csrf
   <input type="hidden" name="_method" value="DELETE" />
-</form>
+</form> -->
 
-<div class="modal fade" id="confirm-box">
+<!-- <div class="modal fade" id="confirm-box">
   <div class="modal-dialog">
     <div class="modal-content">
-      <!-- <div class="modal-header">
-        <h4 class="modal-title">Default Modal</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div> -->
       <div class="modal-body">
         <p>Yakin ingin menghapus ?</p>
       </div>
@@ -114,9 +107,6 @@
         <button type="button" class="btn btn-danger" onclick="hapusData()">Hapus</button>
       </div>
     </div>
-    <!-- /.modal-content -->
   </div>
-  <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
+</div> -->
 @endsection
