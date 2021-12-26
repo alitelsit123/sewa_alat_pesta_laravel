@@ -13,10 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return redirect('/products');
-});
+Route::get('/', [App\Http\Controllers\Public\BaseViewController::class, 'showHomePage']);
 Route::get('/products', [App\Http\Controllers\Public\BaseViewController::class, 'showProductsPage']);
+Route::get('/about', [App\Http\Controllers\Public\BaseViewController::class, 'showAboutPage']);
 
 Route::prefix('auth')->group(function() {
     Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'index']);

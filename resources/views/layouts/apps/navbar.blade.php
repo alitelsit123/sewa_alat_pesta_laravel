@@ -12,22 +12,22 @@
       </div><!-- az-header-menu-header -->
       <ul class="nav">
         <li class="nav-item">
-          <a href="#" class="nav-link"><i class="typcn typcn-home-outline"></i> Home</a>
+          <a href="{{ url('/') }}" class="nav-link"><i class="typcn typcn-home-outline"></i> Home</a>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link"><i class="typcn typcn-th-list-outline"></i> Produk</a>
+          <a href="{{ url('/products') }}" class="nav-link"><i class="typcn typcn-th-list-outline"></i> Produk</a>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link"><i class="typcn typcn-news"></i> Tentang</a>
+          <a href="{{ url('/about') }}" class="nav-link"><i class="typcn typcn-news"></i> Tentang</a>
         </li>
         
       </ul>
     </div><!-- az-header-menu -->
     <div class="az-header-right">
       <a href="#" class="az-header-search-link"><i class="fas fa-search"></i></a>
-      <div class="az-header-message">
+      <!-- <div class="az-header-message">
         <a href="app-chat.html"><i class="typcn typcn-messages"></i></a>
-      </div><!-- az-header-message -->
+      </div> -->
       <div class="dropdown az-header-notification">
         <a href="#" class="new"><i class="typcn typcn-bell"></i></a>
         <div class="dropdown-menu">
@@ -70,14 +70,18 @@
         </div><!-- dropdown-menu -->
       </div><!-- az-header-notification -->
       <div class="dropdown az-profile-menu">
-        <a href="#" class="az-img-user"><img src="../img/faces/face1.jpg" alt=""></a>
+        <a href="#" class="az-img-user">
+          <!-- <i class="typcn typcn-user"></i> -->
+          <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" alt="">
+        </a>
         <div class="dropdown-menu">
           <div class="az-dropdown-header d-sm-none">
             <a href="#" class="az-header-arrow"><i class="icon ion-md-arrow-back"></i></a>
           </div>
           <div class="az-header-profile">
             <div class="az-img-user">
-              <img src="../img/faces/face1.jpg" alt="">
+              <!-- <img src="../img/faces/face1.jpg" alt=""> -->
+              <i class="typcn typcn-user"></i>
             </div><!-- az-img-user -->
             <h6>Aziana Pechon</h6>
             <span>Premium Member</span>

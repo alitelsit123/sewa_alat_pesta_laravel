@@ -20,9 +20,44 @@
 @endsection
 
 @section('content-body')
-<div class="mx-auto px-4">
-	<div class="row">
-		<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+<div class="az-content pd-y-20 pd-lg-y-30 pd-xl-y-40">
+  <div class="container">
+    <div class="az-content-left az-content-left-components">
+      <div class="component-item mg-b-10"> 
+        <span class="tx-20 tx-medium">Filter</span>
+      </div><!-- component-item -->
+      <div class="component-item mg-b-10"> 
+        <label>Waktu</label>
+        <div class="pd-r-5">
+          <input type="date" name="" id="" class="form-control rounded-10" value="12/17/2022">
+        </div>
+      </div><!-- component-item -->
+      <div class="component-item"> 
+        <label>Kategori</label>
+        <nav class="nav flex-column">
+          <a href="util-background.html" class="nav-link">Background</a>
+          <a href="util-border.html" class="nav-link">Border</a>
+          <a href="util-display.html" class="nav-link active">Display</a>
+          <a href="util-flex.html" class="nav-link">Flex</a>
+          <a href="util-height.html" class="nav-link">Height</a>
+          <a href="util-margin.html" class="nav-link">Margin</a>
+          <a href="util-padding.html" class="nav-link">Padding</a>
+          <a href="util-position.html" class="nav-link">Position</a>
+          <a href="util-typography.html" class="nav-link">Typography</a>
+          <a href="util-width.html" class="nav-link">Width</a>
+          <a href="util-extras.html" class="nav-link">Extras</a>
+        </nav>
+      </div><!-- component-item -->
+
+    </div><!-- az-content-left -->
+    <div class="az-content-body pd-lg-l-40 d-flex flex-column">
+      <!-- <div class="az-content-breadcrumb">
+        <span>Utilities</span>
+        <span>Display</span>
+      </div> -->
+      <div class="row">
+        @for($i = 0; $i < 10 ;$i++)
+        <div class="col-lg-4 col-md-6 col-sm-6 col-12 product-item mb-2 ">
           <div class="card">
             <div class="card-body">
               <div class="action-holder">
@@ -43,6 +78,9 @@
             </div>
           </div>
         </div>
-	</div>
-</div>
+        @endfor
+      </div>
+    </div><!-- az-content-body -->
+  </div><!-- container -->
+</div><!-- az-content -->
 @endsection
