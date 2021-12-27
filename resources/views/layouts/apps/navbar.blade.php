@@ -25,9 +25,10 @@
     </div><!-- az-header-menu -->
     <div class="az-header-right">
       <a href="#" class="az-header-search-link"><i class="fas fa-search"></i></a>
-      <!-- <div class="az-header-message">
-        <a href="app-chat.html"><i class="typcn typcn-messages"></i></a>
-      </div> -->
+      
+      <div class="az-header-message">
+        <a href="{{ url('/cart') }}" class="new"><i class="typcn typcn-shopping-cart"></i></a>
+      </div>
       <div class="dropdown az-header-notification">
         <a href="#" class="new"><i class="typcn typcn-bell"></i></a>
         <div class="dropdown-menu">
@@ -69,6 +70,7 @@
           <div class="dropdown-footer"><a href="#">View All Notifications</a></div>
         </div><!-- dropdown-menu -->
       </div><!-- az-header-notification -->
+
       <div class="dropdown az-profile-menu">
         <a href="#" class="az-img-user">
           <!-- <i class="typcn typcn-user"></i> -->

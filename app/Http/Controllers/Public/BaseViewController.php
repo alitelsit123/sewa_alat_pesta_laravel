@@ -13,6 +13,9 @@ class BaseViewController extends Controller
     public function showProductsPage() {
         return view('public-pages.products');
     }
+    public function showCartPage() {
+        return view('public-pages.keranjang');
+    }
     public function showAboutPage() {
         return view('public-pages.tentang');
     }

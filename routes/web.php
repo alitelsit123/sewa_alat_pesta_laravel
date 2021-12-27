@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [App\Http\Controllers\Public\BaseViewController::class, 'showHomePage']);
 Route::get('/products', [App\Http\Controllers\Public\BaseViewController::class, 'showProductsPage']);
 Route::get('/about', [App\Http\Controllers\Public\BaseViewController::class, 'showAboutPage']);
+Route::get('/cart', [App\Http\Controllers\Public\BaseViewController::class, 'showCartPage']);
 
 Route::prefix('auth')->group(function() {
     Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'index']);
