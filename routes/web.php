@@ -14,19 +14,31 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [App\Http\Controllers\Public\BaseViewController::class, 'showHomePage']);
-Route::get('/products', [App\Http\Controllers\Public\BaseViewController::class, 'showProductsPage']);
+
+Route::get('/products', [App\Http\Controllers\Public\ProductController::class, 'showProductsPage']);
+Route::get('/products/{kategori}/{slug}/{id}', [App\Http\Controllers\Public\ProductController::class, 'showProductsItemPage'])->name('product-view');
+
 Route::get('/about', [App\Http\Controllers\Public\BaseViewController::class, 'showAboutPage']);
-Route::get('/cart', [App\Http\Controllers\Public\BaseViewController::class, 'showCartPage']);
+
+Route::get('/cart', [App\Http\Controllers\Public\KeranjangController::class, 'showCartPage']);
+Route::post('/cart/add', [App\Http\Controllers\Public\KeranjangController::class, 'addToCart'])->name('add-to-cart');
+Route::delete('/cart/delete/{id}', [App\Http\Controllers\Public\KeranjangController::class, 'deleteCart'])->name('delete-singleton-cart');
+
+Route::get('/profile/{slug}', [App\Http\Controllers\Public\ProfileController::class, 'showProfilePage'])->name('profile.show');
 
 Route::prefix('auth')->group(function() {
-    Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'index']);
-    Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
-    
-    Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'index']);
-    Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'register']);
+    Route::middleware(['guest'])->group(function() {
+        Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'index'])->name('login-form');
+        Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
+        
+        Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'index']);
+        Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'register']);
 
-    Route::get('/admin/login', [App\Http\Controllers\Auth\LoginAdminController::class, 'index'])->name('admin.login-form');
-    Route::post('/admin/login', [App\Http\Controllers\Auth\LoginAdminController::class, 'login'])->name('admin.login');
+        Route::get('/admin/login', [App\Http\Controllers\Auth\LoginAdminController::class, 'index'])->name('admin.login-form');
+        Route::post('/admin/login', [App\Http\Controllers\Auth\LoginAdminController::class, 'login'])->name('admin.login');
+
+    });
+    Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('user.logout');
     Route::post('/admin/logout', [App\Http\Controllers\Auth\LoginAdminController::class, 'logout'])->name('admin.logout');
 });
 

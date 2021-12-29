@@ -1,13 +1,13 @@
 <div class="az-header">
   <div class="container">
     <div class="az-header-left">
-      <a href="index.html" class="az-logo"><span></span> azia</a>
+      <a href="{{ url('/') }}" class="az-logo" style="text-decoration: none;text-transform: capitalize!important;"><span></span> Mita</a>
       <a href="#" id="azMenuShow" class="az-header-menu-icon d-lg-none"><span></span></a>
     </div><!-- az-header-left -->
 
     <div class="az-header-menu flex-grow-1 px-5">
       <div class="az-header-menu-header">
-        <a href="index.html" class="az-logo"><span></span> azia</a>
+        <a href="{{ url('/') }}" class="az-logo" style="text-decoration: none;text-transform: capitalize!important;"><span></span> Mita</a>
         <a href="#" class="close">&times;</a>
       </div><!-- az-header-menu-header -->
       <ul class="nav">
@@ -23,12 +23,15 @@
         
       </ul>
     </div><!-- az-header-menu -->
-    <div class="az-header-right">
-      <a href="#" class="az-header-search-link"><i class="fas fa-search"></i></a>
+    <div class="az-header-right justify-content-end">
+      <form class="az-header-search-link">
+        <input type="text" class="form-control rounded-pill bd-indigo px-4" placeholder="Cari produk..."  disabled/>
+      </form>
       
       <div class="az-header-message">
         <a href="{{ url('/cart') }}" class="new"><i class="typcn typcn-shopping-cart"></i></a>
       </div>
+      @auth
       <div class="dropdown az-header-notification">
         <a href="#" class="new"><i class="typcn typcn-bell"></i></a>
         <div class="dropdown-menu">
@@ -70,9 +73,17 @@
           <div class="dropdown-footer"><a href="#">View All Notifications</a></div>
         </div><!-- dropdown-menu -->
       </div><!-- az-header-notification -->
-
+      @endauth
+      <!-- <a href="#" class="az-header-search-link"><i class="fas fa-search"></i></a> -->
+      @guest
+      <a href="{{ url('/auth/login') }}" class="nav-link tx-indigo bd-l bd-2 bd-indigo py-1 pd-r-0 mg-l-20 mg-r-0">
+        <!-- <i class="typcn typcn-user"></i> -->
+        Masuk
+      </a>
+      @endguest
+      @auth
       <div class="dropdown az-profile-menu">
-        <a href="#" class="az-img-user">
+        <a href="#" class="az-img-user rounded-circle bd bd-2 bd-indigo">
           <!-- <i class="typcn typcn-user"></i> -->
           <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" alt="">
         </a>
@@ -85,17 +96,19 @@
               <!-- <img src="../img/faces/face1.jpg" alt=""> -->
               <i class="typcn typcn-user"></i>
             </div><!-- az-img-user -->
-            <h6>Aziana Pechon</h6>
-            <span>Premium Member</span>
+            <h6>{{ auth()->user()->profile ? auth()->user()->profile->nama: '[Belum di Setel]' }}</h6>
+            <span>{{ auth()->user()->email }}</span>
           </div><!-- az-header-profile -->
 
-          <a href="#" class="dropdown-item"><i class="typcn typcn-user-outline"></i> My Profile</a>
-          <a href="#" class="dropdown-item"><i class="typcn typcn-edit"></i> Edit Profile</a>
-          <a href="#" class="dropdown-item"><i class="typcn typcn-time"></i> Activity Logs</a>
-          <a href="#" class="dropdown-item"><i class="typcn typcn-cog-outline"></i> Account Settings</a>
-          <a href="page-signin.html" class="dropdown-item"><i class="typcn typcn-power-outline"></i> Sign Out</a>
+          <a href="{{ route('profile.show', auth()->user()->email) }}" class="dropdown-item"><i class="typcn typcn-user-outline"></i> Profilku</a>
+          <a href="{{ route('profile.show', auth()->user()->email) }}" class="dropdown-item"><i class="typcn typcn-edit"></i> Edit Profile</a>
+          <form action="{{ route('user.logout') }}" method="post" id="logout" class="w-100 d-flex justify-content-center my-2">
+            @csrf
+            <button type="submit" class="btn btn-danger rounded-pill flex-grow-1">Keluar</button>
+          </form>
         </div><!-- dropdown-menu -->
       </div>
+      @endauth
     </div><!-- az-header-right -->
   </div><!-- container -->
 </div><!-- az-header -->

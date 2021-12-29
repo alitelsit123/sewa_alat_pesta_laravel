@@ -20,32 +20,34 @@
 @endsection
 
 @section('content-body')
+@if(session()->has('msg_success'))
+<div class="alert alert-success" role="alert">
+    <div class="container">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>Berhasil!</strong> {{ session('msg_success') }}
+    </div>
+</div><!-- alert -->
+@endif
 <div class="az-content pd-y-20 pd-lg-y-30 pd-xl-y-40">
   <div class="container">
     <div class="az-content-left az-content-left-components">
       <div class="component-item mg-b-10"> 
         <span class="tx-20 tx-medium">Filter</span>
       </div><!-- component-item -->
-      <div class="component-item mg-b-10"> 
-        <label>Waktu</label>
+      <div class="component-item py-2"> 
+        <label class="pd-b-10">Waktu</label>
         <div class="pd-r-5">
           <input type="date" name="" id="" class="form-control rounded-10" value="12/17/2022">
         </div>
       </div><!-- component-item -->
-      <div class="component-item"> 
-        <label>Kategori</label>
+      <div class="component-item py-2"> 
+        <label class="pd-b-10">Kategori</label>
         <nav class="nav flex-column">
-          <a href="util-background.html" class="nav-link">Background</a>
-          <a href="util-border.html" class="nav-link">Border</a>
-          <a href="util-display.html" class="nav-link active">Display</a>
-          <a href="util-flex.html" class="nav-link">Flex</a>
-          <a href="util-height.html" class="nav-link">Height</a>
-          <a href="util-margin.html" class="nav-link">Margin</a>
-          <a href="util-padding.html" class="nav-link">Padding</a>
-          <a href="util-position.html" class="nav-link">Position</a>
-          <a href="util-typography.html" class="nav-link">Typography</a>
-          <a href="util-width.html" class="nav-link">Width</a>
-          <a href="util-extras.html" class="nav-link">Extras</a>
+          @foreach($kategoris as $row)
+          <a href="{{ '?k='.$row->id_kategori }}" class="nav-link text-capitalize @if(request()->query('k') == $row->id_kategori) active @endif">{{ strtolower($row->nama_kategori) }}</a>
+          @endforeach
         </nav>
       </div><!-- component-item -->
 
@@ -55,30 +57,46 @@
         <span>Utilities</span>
         <span>Display</span>
       </div> -->
-      <div class="row">
-        @for($i = 0; $i < 10 ;$i++)
+      <div class="row mg-b-20">
+        <div class="col-md-12 d-flex align-items-center mg-b-20">
+          <div class="tx-13 tx-medium tx-gray-500">({{ $produk_new->total() }}) Produk Ditemukan</div>
+        </div>
+        @foreach($produk_new as $row)
         <div class="col-lg-4 col-md-6 col-sm-6 col-12 product-item mb-2 ">
           <div class="card">
             <div class="card-body">
-              <div class="action-holder">
-                <div class="sale-badge bg-success">New</div>
-                <span class="favorite-button"><i class="typcn icon typcn-heart-outline"></i></span>
-              </div>
               <div class="product-img-outer">
-                <img class="product_image" src="../img/product_images_2/thumb_image2.jpg" alt="prduct image">
+                <img class="product_image" src="{{ asset('/uploads/produk/'.$row->gambar) }}" alt="prduct image">
               </div>
-              <p class="product-title">Headphones JBL</p>
-              <p class="product-price">$199.00</p>
-              <p class="product-actual-price">$99.00</p>
-              <ul class="product-variation">
+              <a href="{{ route('product-view', ['kategori' => $row->kategori->nama_kategori,'slug' => $row->nama_produk, 'id' => $row->id_produk]) }}" class="btn pd-0"><p class="product-title tx-18">{{ $row->nama_produk }}</p></a>
+              <p class="product-price tx-bold">Rp. {{ number_format($row->harga) }}</p>
+              <!-- <p class="product-actual-price">$99.00</p> -->
+              <!-- <ul class="product-variation">
                 <li><a href="#">S</a></li>
                 <li><a href="#">M</a></li>
-              </ul>
-              <p class="product-description">Power Capability: 150mW Cable Length: 1.5 meter</p>
+              </ul> -->
+              <p class="product-description">{{ $row->keterangan }}</p>
+              
+            </div>
+            <div class="card-footer">
+              <form action="{{ route('add-to-cart') }}" method="post">
+                @csrf
+                <div class="d-flex justify-content-end">
+                  <input type="hidden" name="produk_id" value="{{ $row->id_produk }}" />
+                  <input type="hidden" name="kuantitas" class="form-control rounded-pill text-center wd-100" value="1" />
+                  <button class="btn btn-icon tx-medium disabled"><i class="typcn icon typcn-heart-outline"></i></button>
+                  <button class="btn btn-icon tx-medium btn-rounded">
+                    <i class="typcn typcn-shopping-cart"></i>
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
-        @endfor
+        @endforeach
+      </div>
+      <div class="d-flex justify-content-end">
+        {{ $produk_new->appends($query_new)->links('vendor.pagination.default') }}
       </div>
     </div><!-- az-content-body -->
   </div><!-- container -->

@@ -23,6 +23,29 @@ class LoginController extends Controller
             return back()->withErrors($validator)->withInput();
         endif;
 
-        return 'loged in';
+        $credentials = $validator->validated();
+
+        if (auth()->attempt($credentials)) {
+            $request->session()->regenerate();
+
+            $user = auth()->user();
+            $user->online = 1;
+            $user->save();
+
+            return redirect()->intended('/');
+        }
+
+        return back()->withErrors([
+            'email' => 'Email / Password Salah!!!',
+        ]);
+    }
+    public function logout() {
+        $user = auth()->user();
+        if($user) {
+            $user->online = 0;
+            $user->save();
+            auth()->logout();
+        }
+        return redirect('/');
     }
 }

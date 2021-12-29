@@ -59,6 +59,10 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Models\UserRole', 'user_roles_pivot', 'id_user', 'id_role')->withTimestamps();
     }
 
+    public function carts() {
+        return $this->belongsToMany('App\Models\Produk', 'keranjang', 'id_user', 'id_produk')->withPivot('kuantitas')->withTimestamps();
+    }
+
     public function isAdmin() {
         $role_validator = $this->roles()->whereTipe(2)->first();
         if($role_validator) {

@@ -16,7 +16,16 @@
 <script src="{{ asset('/assets/plugins/ionicons/ionicons.js') }}"></script>
 <script src="{{ asset('/assets/plugins/chart.js/Chart.bundle.min.js') }}"></script>
 
-<!-- <script src="{{ asset('/assets/dist-base/js/azia.js') }}"></script> -->
+<script src="{{ asset('/assets/dist-base/js/azia.js') }}"></script>
+<script>
+    $(document).ready(function() {
+        var images = document.querySelectorAll('.img-fluid');
+        images.forEach(function(item) {
+            item.style.height = item.offsetWidth+"px";
+            console.log(item.offsetWidth)
+        });
+    })
+</script>
 @endsection
 
 @section('content-body')
@@ -28,19 +37,19 @@
         <hr class="my-4">
         <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
         <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a> -->
-        <div class="d-flex justify-content-center bg-white rounded-md px-4 py-3 rounded-5">
+        <div class="d-flex justify-content-center bg-white rounded-md px-4 py-3 rounded-5 bd bd-2 bd-indigo">
             <div class="row row-xs">
                 <div class="col-md-12 mb-2">
                     <div class="tx-16 tx-medium">Quick Find</div>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" class="form-control" placeholder="" value="">
+                    <input type="date" class="form-control" placeholder="" value="" disabled>
                 </div><!-- col -->
                 <div class="col-md-4">
-                    <input type="text" class="form-control" placeholder="" value="">
+                    <input type="date" class="form-control" placeholder="" value="" disabled>
                 </div><!-- col -->
                 <div class="col-md-4">
-                    <button class="btn btn-primary w-100">Find</button>
+                    <button class="btn btn-indigo w-100"  disabled>Find</button>
                 </div><!-- col -->
             </div><!-- row -->
         </div>
@@ -49,16 +58,18 @@
     <div class="w-100">
         <div class="az-content-body">
             <!-- Kategori -->
-            <div class="mb-4 w-100">
-                <div class="d-flex justify-content-center w-100">
-                    @for($i = 0; $i < 6 ; $i++)
-                    <button class="btn btn-with-icon btn-block @if($i === 0) pl-0 @endif">
-                        <span class="tx-medium">Folder</span>
-                    </button>
-                    @endfor
-                </div><!-- row -->
+            <div class="container">
+                <div class="pd-b-20 bd-b bd-2 bd-gray-200">
+                    <div class="d-flex justify-content-center w-100">
+                        @foreach($kategoris as $row)
+                        <a href="{{ url('/products?k='.$row->id_kategori) }}" class="btn btn-with-icon btn-block">
+                            <span class="tx-medium">{{ $row->nama_kategori }}</span>
+                        </a>
+                        @endforeach
+                    </div><!-- row -->
+                </div>
+                <!-- End Kategori -->
             </div>
-            <!-- End Kategori -->
 
             <!-- Item -->
             <div class="py-5 bg-white">
@@ -66,7 +77,7 @@
                 <div class="container">
                     <div class="mb-4 d-flex justify-content-between align-items-center">
                         <div class="az-content-label tx-22">Sering Diorder</div>
-                        <div>Tampilkan Lebih Banyak</div>
+                        <a href="{{ url('/products') }}" class="btn tx-gray-600 tx-medium tx-15 pd0">Tampilkan Lebih Banyak</a>
                     </div>
                     <div class="row mb-2">
                         @for($i = 0; $i < 4 ; $i++)
@@ -92,20 +103,20 @@
                 <div class="container">
                     <div class="mb-4 d-flex justify-content-between align-items-center">
                         <div class="az-content-label tx-22">Produk</div>
-                        <div>Tampilkan Lebih Banyak</div>
+                        <a href="{{ url('/products') }}" class="btn tx-gray-600 tx-medium tx-15 pd-0">Tampilkan Lebih Banyak</a>
                     </div>
                     <div class="row mb-2">
-                        @for($i = 0; $i < 6 ; $i++)
+                        @foreach($produk_new as $produk)
                         <div class="col-md-3 mb-3">
                             <div class="card bd-0">
-                                <img class="img-fluid" src="data:image/png;base64,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" alt="Image">
+                                <img class="img-fluid" src="{{ asset('/uploads/produk/'.$produk->gambar) }}" alt="Produk Images">
                                 <div class="card-img-overlay bg-black-4 d-flex flex-column justify-content-end">
-                                <p class="tx-white tx-semibold tx-18 mg-b-15">The Cat Prisoner</p>
+                                <a class="btn pd-0 tx-white tx-semibold tx-18 mg-b-15" href="{{ route('product-view', ['kategori' => $produk->kategori->nama_kategori,'slug' => $produk->nama_produk, 'id' => $produk->id_produk]) }}">{{ $produk->nama_produk }}</a>
                                 
                                 </div><!-- card-img-overlay -->
                             </div><!-- card -->
                         </div><!-- col -->
-                        @endfor
+                        @endforeach
                         
                     </div><!-- row -->
                 </div>

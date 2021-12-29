@@ -23,7 +23,7 @@
 
     <style>
       body{
-        background-color:#f7f7f7;
+        /* background-color:#f7f7f7; */
         max-width: 100vw!important;
         overflow-x: hidden;
       }

@@ -16,7 +16,7 @@
 <script src="{{ asset('/assets/plugins/ionicons/ionicons.js') }}"></script>
 <script src="{{ asset('/assets/plugins/chart.js/Chart.bundle.min.js') }}"></script>
 
-<!-- <script src="{{ asset('/assets/dist-base/js/azia.js') }}"></script> -->
+<script src="{{ asset('/assets/dist-base/js/azia.js') }}"></script>
 @endsection
 
 @section('content-body')

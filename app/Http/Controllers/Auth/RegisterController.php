@@ -35,6 +35,8 @@ class RegisterController extends Controller
 
         $user->roles()->syncWithoutDetaching([UserRole::getBasicRole()]);
 
+        $user->profile()->create([]);
+
         return redirect('/auth/login');
     }
 }
