@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   
-<!-- Mirrored from www.bootstrapdash.com/demo/azia/v1.0.0/template/dashboard-one.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 27 Nov 2021 17:05:49 GMT -->
 <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-90680653-2"></script>
     <script>
       window.dataLayer = window.dataLayer || [];

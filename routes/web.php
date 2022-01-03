@@ -22,9 +22,19 @@ Route::get('/about', [App\Http\Controllers\Public\BaseViewController::class, 'sh
 
 Route::get('/cart', [App\Http\Controllers\Public\KeranjangController::class, 'showCartPage']);
 Route::post('/cart/add', [App\Http\Controllers\Public\KeranjangController::class, 'addToCart'])->name('add-to-cart');
+Route::post('/cart/update', [App\Http\Controllers\Public\KeranjangController::class, 'updateCart'])->name('update-cart');
 Route::delete('/cart/delete/{id}', [App\Http\Controllers\Public\KeranjangController::class, 'deleteCart'])->name('delete-singleton-cart');
 
 Route::get('/profile/{slug}', [App\Http\Controllers\Public\ProfileController::class, 'showProfilePage'])->name('profile.show');
+Route::put('/profile/{slug}/update', [App\Http\Controllers\Public\ProfileController::class, 'update'])->name('profile.update')->middleware(['auth']);
+Route::put('/profile/{slug}/update_photo', [App\Http\Controllers\Public\ProfileController::class, 'updatePhoto'])->name('profile.update-photo')->middleware(['auth']);
+
+Route::name('order.')->prefix('order')->middleware(['auth'])->group(function() {
+    Route::post('/checkout', [App\Http\Controllers\Public\OrderController::class, 'checkData'])->name('proses.checkdata');
+    Route::get('/checkout', [App\Http\Controllers\Public\OrderController::class, 'checkoutView'])->name('proses.checkout.view');
+    Route::post('/process_payment', [App\Http\Controllers\Public\OrderController::class, 'processPayment'])->name('proses.init_payment');
+    Route::get('/payment', [App\Http\Controllers\Public\OrderController::class, 'makePayment'])->name('proses.payment');
+});
 
 Route::prefix('auth')->group(function() {
     Route::middleware(['guest'])->group(function() {

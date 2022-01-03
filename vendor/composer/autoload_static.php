@@ -116,6 +116,7 @@ class ComposerStaticInit3dde75d3b61ee5015306ddf305d366d2
         'M' => 
         array (
             'Monolog\\' => 8,
+            'Midtrans\\' => 9,
         ),
         'L' => 
         array (
@@ -375,6 +376,10 @@ class ComposerStaticInit3dde75d3b61ee5015306ddf305d366d2
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
+        'Midtrans\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/midtrans/midtrans-php/Midtrans',
+        ),
         'League\\MimeTypeDetection\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/mime-type-detection/src',
@@ -523,6 +528,7 @@ class ComposerStaticInit3dde75d3b61ee5015306ddf305d366d2
     public static $classMap = array (
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
+        'App\\Helpers\\AppSupport' => __DIR__ . '/../..' . '/app/Helpers/AppSupport.php',
         'App\\Http\\Controllers\\Admin\\KategoriController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/KategoriController.php',
         'App\\Http\\Controllers\\Admin\\LiveChatController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/LiveChatController.php',
         'App\\Http\\Controllers\\Admin\\ProdukController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/ProdukController.php',
@@ -533,7 +539,10 @@ class ComposerStaticInit3dde75d3b61ee5015306ddf305d366d2
         'App\\Http\\Controllers\\Auth\\RegisterController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/RegisterController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\Public\\BaseViewController' => __DIR__ . '/../..' . '/app/Http/Controllers/Public/BaseViewController.php',
+        'App\\Http\\Controllers\\Public\\KeranjangController' => __DIR__ . '/../..' . '/app/Http/Controllers/Public/KeranjangController.php',
+        'App\\Http\\Controllers\\Public\\OrderController' => __DIR__ . '/../..' . '/app/Http/Controllers/Public/OrderController.php',
         'App\\Http\\Controllers\\Public\\ProductController' => __DIR__ . '/../..' . '/app/Http/Controllers/Public/ProductController.php',
+        'App\\Http\\Controllers\\Public\\ProfileController' => __DIR__ . '/../..' . '/app/Http/Controllers/Public/ProfileController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\AuthAdmin' => __DIR__ . '/../..' . '/app/Http/Middleware/AuthAdmin.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
@@ -544,7 +553,11 @@ class ComposerStaticInit3dde75d3b61ee5015306ddf305d366d2
         'App\\Http\\Middleware\\TrustHosts' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustHosts.php',
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
+        'App\\Models\\DetailPesanan' => __DIR__ . '/../..' . '/app/Models/DetailPesanan.php',
         'App\\Models\\Kategori' => __DIR__ . '/../..' . '/app/Models/Kategori.php',
+        'App\\Models\\Keranjang' => __DIR__ . '/../..' . '/app/Models/Keranjang.php',
+        'App\\Models\\Pembayaran' => __DIR__ . '/../..' . '/app/Models/Pembayaran.php',
+        'App\\Models\\Pesanan' => __DIR__ . '/../..' . '/app/Models/Pesanan.php',
         'App\\Models\\Produk' => __DIR__ . '/../..' . '/app/Models/Produk.php',
         'App\\Models\\Profile' => __DIR__ . '/../..' . '/app/Models/Profile.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
@@ -554,6 +567,8 @@ class ComposerStaticInit3dde75d3b61ee5015306ddf305d366d2
         'App\\Providers\\BroadcastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/BroadcastServiceProvider.php',
         'App\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/app/Providers/EventServiceProvider.php',
         'App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/app/Providers/RouteServiceProvider.php',
+        'App\\Services\\Midtrans\\CreateSnapTokenService' => __DIR__ . '/../..' . '/app/Services/Midtrans/CreateSnapTokenService.php',
+        'App\\Services\\Midtrans\\Midtrans' => __DIR__ . '/../..' . '/app/Services/Midtrans/Midtrans.php',
         'Asm89\\Stack\\Cors' => __DIR__ . '/..' . '/asm89/stack-cors/src/Cors.php',
         'Asm89\\Stack\\CorsService' => __DIR__ . '/..' . '/asm89/stack-cors/src/CorsService.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
@@ -3041,6 +3056,14 @@ class ComposerStaticInit3dde75d3b61ee5015306ddf305d366d2
         'League\\MimeTypeDetection\\GeneratedExtensionToMimeTypeMap' => __DIR__ . '/..' . '/league/mime-type-detection/src/GeneratedExtensionToMimeTypeMap.php',
         'League\\MimeTypeDetection\\MimeTypeDetector' => __DIR__ . '/..' . '/league/mime-type-detection/src/MimeTypeDetector.php',
         'League\\MimeTypeDetection\\OverridingExtensionToMimeTypeMap' => __DIR__ . '/..' . '/league/mime-type-detection/src/OverridingExtensionToMimeTypeMap.php',
+        'Midtrans\\ApiRequestor' => __DIR__ . '/..' . '/midtrans/midtrans-php/Midtrans/ApiRequestor.php',
+        'Midtrans\\Config' => __DIR__ . '/..' . '/midtrans/midtrans-php/Midtrans/Config.php',
+        'Midtrans\\CoreApi' => __DIR__ . '/..' . '/midtrans/midtrans-php/Midtrans/CoreApi.php',
+        'Midtrans\\Notification' => __DIR__ . '/..' . '/midtrans/midtrans-php/Midtrans/Notification.php',
+        'Midtrans\\Sanitizer' => __DIR__ . '/..' . '/midtrans/midtrans-php/Midtrans/Sanitizer.php',
+        'Midtrans\\Snap' => __DIR__ . '/..' . '/midtrans/midtrans-php/Midtrans/Snap.php',
+        'Midtrans\\SnapApiRequestor' => __DIR__ . '/..' . '/midtrans/midtrans-php/Midtrans/SnapApiRequestor.php',
+        'Midtrans\\Transaction' => __DIR__ . '/..' . '/midtrans/midtrans-php/Midtrans/Transaction.php',
         'Mockery' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery.php',
         'Mockery\\Adapter\\Phpunit\\MockeryPHPUnitIntegration' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/MockeryPHPUnitIntegration.php',
         'Mockery\\Adapter\\Phpunit\\MockeryPHPUnitIntegrationAssertPostConditions' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/MockeryPHPUnitIntegrationAssertPostConditions.php',

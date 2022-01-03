@@ -28,7 +28,7 @@ class LoginController extends Controller
         if (auth()->attempt($credentials)) {
             $request->session()->regenerate();
 
-            $user = auth()->user();
+            $user = auth()->user(); 
             $user->online = 1;
             $user->save();
 

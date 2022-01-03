@@ -66,11 +66,11 @@ $(document).ready(function() {
     </div>
 </div><!-- alert -->
 @endif
-<div class="mt-5" style="min-height:600px;">
+<div class="pd-20" style="min-height:600px;">
     <div class="container">
         <div class="d-flex">
             <div class="row">
-                <div class="col-md-12 mg-b-10">
+                <div class="col-md-12 mg-b-20 bd-b pd-l-0">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb breadcrumb-style2">
                             <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
@@ -80,23 +80,23 @@ $(document).ready(function() {
                         </ol>
                     </nav>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-5 pd-l-0">
                     <!-- <img src="{{ asset('/uploads/produk/'.$produk->gambar) }}" alt="" srcset="" class="img-fluid"> -->
                     <img src="{{ asset('/assets/dist-base/img/carousel/banner_1.jpg') }}" alt="" srcset="" class="img-fluid">
                 </div>
                 <div class="col-md-7">
                     <form action="{{ route('add-to-cart') }}" method="post">
                         <div class="bd-b bd-2 bd-gray-200 mg-b-20">
-                            <div class="tx-28 mg-b-20">{{ $produk->nama_produk }}</div>
-                            <div class="tx-18 tx-semibold mg-b-20">Rp. {{ number_format($produk->harga) }}</div>
+                            <div class="tx-28 mg-b-10">{{ $produk->nama_produk }}</div>
+                            <div class="tx-18 tx-semibold mg-b-10">Rp. {{ number_format($produk->harga) }}</div>
                                 @csrf
                                 <div class="d-flex align-items-center mg-b-10">
                                     <div class="bd-r bd-2 bd-r-gray-500 px-3 tx-gray-500 tx-12">{{ number_format($produk->stok) }} stok tersisa</div>
                                     <div class="px-3">Quantitas</div>
-                                    <button class="btn btn-icon remove-quantity"><i class="typcn typcn-minus-outline"></i></button>
+                                    <button class="btn btn-icon remove-quantity" type="button"><i class="typcn typcn-minus-outline"></i></button>
                                     <input type="hidden" name="produk_id" value="{{ $produk->id_produk }}" />
                                     <input type="text" name="kuantitas" class="form-control rounded-pill text-center wd-100" id="quantity-for-" value="1" />
-                                    <button class="btn btn-icon add-quantity"><i class="typcn typcn-plus-outline"></i></button>
+                                    <button class="btn btn-icon add-quantity" type="button"><i class="typcn typcn-plus-outline"></i></button>
                                 </div>
                         </div>
                         @error('kuantitas')

@@ -24,12 +24,12 @@
       </ul>
     </div><!-- az-header-menu -->
     <div class="az-header-right justify-content-end">
-      <form class="az-header-search-link">
-        <input type="text" class="form-control rounded-pill bd-indigo px-4" placeholder="Cari produk..."  disabled/>
+      <form class="az-header-search-link" action="{{ url('/products') }}" method="get">
+        <input type="text" name="q" class="form-control rounded-pill bd-indigo px-4" placeholder="Cari produk..." />
       </form>
       
       <div class="az-header-message">
-        <a href="{{ url('/cart') }}" class="new"><i class="typcn typcn-shopping-cart"></i></a>
+        <a href="{{ url('/cart') }}" @auth class="{{ auth()->user()->carts->count() > 0 ? 'new': '' }}" @endauth><i class="typcn typcn-shopping-cart"></i></a>
       </div>
       @auth
       <div class="dropdown az-header-notification">
@@ -85,7 +85,7 @@
       <div class="dropdown az-profile-menu">
         <a href="#" class="az-img-user rounded-circle bd bd-2 bd-indigo">
           <!-- <i class="typcn typcn-user"></i> -->
-          <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" alt="">
+          <img src="{{ asset('assets/'.(auth()->user()->profile->photo ? 'uploads/users/'.auth()->user()->profile->photo: 'dist-base/img/faces/face10.jpg')) }}" alt="">
         </a>
         <div class="dropdown-menu">
           <div class="az-dropdown-header d-sm-none">
@@ -93,15 +93,15 @@
           </div>
           <div class="az-header-profile">
             <div class="az-img-user">
-              <!-- <img src="../img/faces/face1.jpg" alt=""> -->
-              <i class="typcn typcn-user"></i>
+              <img src="{{ asset('assets/'.(auth()->user()->profile->photo ? 'uploads/users/'.auth()->user()->profile->photo: 'dist-base/img/faces/face10.jpg')) }}" alt="">
             </div><!-- az-img-user -->
             <h6>{{ auth()->user()->profile ? auth()->user()->profile->nama: '[Belum di Setel]' }}</h6>
             <span>{{ auth()->user()->email }}</span>
           </div><!-- az-header-profile -->
 
           <a href="{{ route('profile.show', auth()->user()->email) }}" class="dropdown-item"><i class="typcn typcn-user-outline"></i> Profilku</a>
-          <a href="{{ route('profile.show', auth()->user()->email) }}" class="dropdown-item"><i class="typcn typcn-edit"></i> Edit Profile</a>
+          <a href="{{ route('profile.show', auth()->user()->email) }}?o=setting" class="dropdown-item"><i class="typcn typcn-edit"></i> Edit Profile</a>
+          <a href="{{ route('profile.show', auth()->user()->email) }}?o=history" class="dropdown-item"><i class="typcn typcn-document-text"></i> Pesananku</a>
           <form action="{{ route('user.logout') }}" method="post" id="logout" class="w-100 d-flex justify-content-center my-2">
             @csrf
             <button type="submit" class="btn btn-danger rounded-pill flex-grow-1">Keluar</button>

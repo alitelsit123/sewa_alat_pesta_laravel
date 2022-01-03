@@ -20,9 +20,19 @@ class ProductController extends Controller
                 $q->where('nama_kategori', $querys['k']);
             });
         })
-        ->when(in_array('t', $validated_query), function($query) use ($querys) {
-            $query->where('id_kategori', $querys['k']);
+        ->when(in_array('q', $validated_query), function($query) use ($querys) {
+            $arr = explode(' ', $querys['q']);
+            $query->where('nama_produk', 'like', '%'.$querys['q'].'%');
+            foreach($arr as $k => $v) {
+                $query->orWhere('nama_produk', 'like', '%'.$v.'%');
+            }
         })
+        // ->when(in_array('f', $validated_query), function($query) {
+        //     $query->where('stok', '>', 0);
+        // })
+        // ->when(in_array('to', $validated_query),function($query) {
+        //     $query->where('stok', '>', 0);
+        // })
         ->latest()->paginate(15);
 
         $query_new = [];
@@ -50,11 +60,26 @@ class ProductController extends Controller
 
     private function filterValidator($query) {
         $validated_query = [];
+        // kategori
         if(array_key_exists('k', $query)) {
             $validated_kategori = Kategori::whereId_kategori($query['k'])->orWhere('nama_kategori',$query['k'])->first();
             if($validated_kategori) {
                 array_push($validated_query, 'k');
             }
+            // time to
+            array_push($validated_query, 'to');
+        } 
+        // search
+        if(array_key_exists('q', $query)) {
+            array_push($validated_query, 'q');
+        }
+        // time from
+        if(array_key_exists('f', $query)) {
+            array_push($validated_query, 'f');
+        }
+        // time to
+        if(array_key_exists('to', $query)) {
+            array_push($validated_query, 'to');
         }
 
         return $validated_query;

@@ -63,25 +63,43 @@ $('#order-listing').each(function() {
 
 <script>
     $(document).ready(function() {
+        var content_wrapper = document.getElementById('content-wrapper');
         var btn_submit = document.getElementById("btn_submit");
         var all_cart_check = document.querySelector("input[name='semua_keranjang']");
         var carts = document.querySelectorAll("input[name='keranjang[]']");
-        var checked_carts = [];
+        var inputs_init = document.querySelectorAll("input[name='kuantitas[]']");
+        var btn_update_keranjang = document.getElementById('btn_update_keranjang');
+        var submitter = [];
+        var checked_carts = {};
+        function add_checked_cart(key){
+            var el = document.getElementById('quantity-for-'+key);
+            checked_carts['quantity-for-'+key] = el;
+        }
+        function remove_checked_cart(key) {
+            var el = document.getElementById('quantity-for-'+key);
+            delete checked_carts['quantity-for-'+key];
+        }
+
+        inputs_init.forEach(function(item) {
+            checked_carts[item.getAttribute('id')] = item;
+        });
         all_cart_check.addEventListener("change", function() {
             if(this.checked) {
                 for(let i = 0 ; i < carts.length ; i++) {
                     carts[i].checked = true;
                 }
                 btn_submit.disabled = false;
+                btn_update_keranjang.disabled = false;
             } else {
                 for(let i = 0 ; i < carts.length ; i++) {
                     carts[i].checked = false;
                 }
                 btn_submit.disabled = true;
+                btn_update_keranjang.disabled = true;
             }
         });
         carts.forEach(function(item) {
-            item.addEventListener("change", function() {
+            item.addEventListener("change", function(e) {
                 function currentStateChange() {
                     var checked_count = 0
                     carts.forEach(function(iteme) {
@@ -92,20 +110,26 @@ $('#order-listing').each(function() {
                     if(checked_count == carts.length) {
                         all_cart_check.checked = true;
                         btn_submit.disabled = false;
+                        btn_update_keranjang.disabled = false;
                     } else if(checked_count > 0) {
                         btn_submit.disabled = false;
+                        btn_update_keranjang.disabled = false;
                     } else {
                         btn_submit.disabled = true;
+                        btn_update_keranjang.disabled = true;
                     }
                 }
                 if(!this.checked) {
                     all_cart_check.checked = false;
-                    currentStateChange()
+                    currentStateChange();
+                    remove_checked_cart(e.target.dataset.produk);
                 } else {
-                    currentStateChange()
-                }    
-            })
+                    currentStateChange();
+                    add_checked_cart(e.target.dataset.produk);
+                }   
+            });
         });
+
         var button_remove_quantity = document.querySelectorAll('.removeQuantity');
         var button_add_quantity = document.querySelectorAll('.addQuantity');
         var quantity = document.querySelectorAll('.quantity');
@@ -167,7 +191,56 @@ $('#order-listing').each(function() {
                 }
             });
         });
-    })
+        
+        btn_update_keranjang.addEventListener('click', function() {
+            var form_keranjang = document.createElement("form");
+            form_keranjang.style.display = 'none';
+            form_keranjang.setAttribute('method', 'post');
+            form_keranjang.setAttribute('action', '{{ route("update-cart") }}');
+            content_wrapper.appendChild(form_keranjang);
+            
+            var inputs_keranjang = checked_carts;
+            var input_token = document.createElement("input");
+            input_token.setAttribute('type', 'hidden');
+            input_token.setAttribute('name', '_token');
+            input_token.setAttribute('value', '{{ csrf_token() }}');
+            
+            var inputs_keranjang_to_array = Object.values(inputs_keranjang);
+            inputs_keranjang_to_array.map(function(item) {
+                var input_val = item.cloneNode();
+                input_val.removeAttribute('id');
+                input_val.setAttribute('name', 'kuantitas_'+input_val.dataset.produk);
+                form_keranjang.appendChild(input_val);    
+            });
+            form_keranjang.appendChild(input_token);
+            form_keranjang.submit();
+        });
+
+        btn_submit.addEventListener('click', function() {
+            var form_keranjang = document.createElement("form");
+            var inputs_keranjang = checked_carts;
+            var input_token = document.createElement("input");
+            form_keranjang.style.display = 'none';
+            form_keranjang.setAttribute('method', 'post');
+            form_keranjang.setAttribute('action', '{{ route("order.proses.checkdata") }}');
+            content_wrapper.appendChild(form_keranjang);
+            input_token.setAttribute('type', 'hidden');
+            input_token.setAttribute('name', '_token');
+            input_token.setAttribute('value', '{{ csrf_token() }}');
+            form_keranjang.appendChild(input_token);
+            Object.keys(checked_carts).map(function(item) {
+                var input_val = item.replace('quantity-for-', ''); 
+                var input_selected_keranjang = document.createElement("input");
+                input_selected_keranjang.setAttribute('type', 'text');
+                input_selected_keranjang.setAttribute('name', 'produk[]');
+                input_selected_keranjang.setAttribute('value', input_val);
+                form_keranjang.appendChild(input_selected_keranjang);
+            });
+            form_keranjang.submit();
+        });
+
+        
+    });
 </script>
 @endsection
 
@@ -182,7 +255,17 @@ $('#order-listing').each(function() {
     </div>
 </div><!-- alert -->
 @endif
-<div class="mt-5 mb-5" style="min-height:600px;">
+@if(session()->has('msg_error'))
+<div class="alert alert-danger" role="alert">
+    <div class="container">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>!</strong> {{ session('msg_error') }}
+    </div>
+</div><!-- alert -->
+@endif
+<div class="mt-5 mb-5" style="min-height:600px;" id="content-wrapper">
     <div class="container px-0">
         <!-- <div class="az-content-label mg-b-10">Keranjang</div> -->
         <div class="d-flex">
@@ -190,13 +273,28 @@ $('#order-listing').each(function() {
                 <ul class="list-group">
                     <li class="list-group-item" style="min-height: 500px;">
                         <h6 class="tx-inverse tx-semibold mg-b-30 mg-t-8 tx-24">Keranjang ({{ sizeof($keranjangs) }})</h6>
+                        <div class="mg-b-20 alert alert-info">
+                            <strong>Catatan: </strong> 
+                            <br />
+                            - Jika update kuantitas barang mohon klik update keranjang agar kuantitas diubah.
+                            <br />
+                            - Alamat harus diisi!
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
                         @if(sizeof($keranjangs) > 0)
                         <div class="form-check w-100 bd-b bd-4 pd-b-10 mg-b-20 bd-gray-100 d-flex align-items-center">
-                            <input class="form-check-input mg-r-10 mg-t-1" type="checkbox" value="0" name="semua_keranjang"
-                            id="semua_keranjang_checkbox" style="width: 20px;height: 20px;">
-                            <label class="form-check-label tx-medium tx-gray-500 mg-t-1" for="defaultCheck1">
-                                Pilih Semua
-                            </label>
+                            <div class="d-flex justify-content-between align-items-center w-100">
+                                <div>
+                                    <input class="form-check-input mg-r-10 mg-t-1" type="checkbox" value="0" name="semua_keranjang"
+                                    id="semua_keranjang_checkbox" style="width: 20px;height: 20px;" checked="true">
+                                    <label class="form-check-label tx-medium tx-gray-500 mg-t-1" for="defaultCheck1">
+                                        Pilih Semua
+                                    </label>
+                                </div>
+                                <button class="btn tx-indigo" style="text-decoration: none;" id="btn_update_keranjang">Upgrade Keranjang</button>
+                            </div>
                         </div>
                         @else
                         <div class="form-check w-100 bd-b bd-4 pd-b-10 mg-b-20 bd-gray-100 d-flex align-items-center">
@@ -209,7 +307,6 @@ $('#order-listing').each(function() {
                         <div class="bd-b bd-4 pd-b-10 bd-gray-100 mg-b-20">
                             <div class="d-flex align-items-start mg-b-10">
                                 <div class="image mg-r-10">
-                                    
                                     <img src="{{ asset('/uploads/produk/'.$row['gambar']) }}" class="img-fluid rounded-10" 
                                     style="width: 80px; height: 80px;" alt="Responsive image">
                                 </div>
@@ -220,14 +317,14 @@ $('#order-listing').each(function() {
                             </div>
                             <div class="d-flex align-items-center">
                                 <div class="form-check mg-r-auto mg-l-0">
-                                    <input class="form-check-input mg-r-10 mg-t-1" type="checkbox" name="keranjang[]" value="" 
-                                    id="" style="width: 20px;height: 20px;">
+                                    <input class="form-check-input mg-r-10 mg-t-1" type="checkbox" name="keranjang[]" value="" data-produk="{{ $row['id_produk'] }}"
+                                    id="" style="width: 20px;height: 20px;" checked="true">
                                 </div>
                                 <div class="d-flex mg-l-auto align-items-center">
                                     <div class="bd-r bd-2 bd-r-gray-500 px-3 tx-gray-500 tx-12">{{ $row['stok'] }} stok tersisa</div>
                                     <div class="px-3">Update Kuantitas</div>
                                     <button class="btn btn-icon removeQuantity" data-produk="{{ $row['id_produk'] }}"><i class="typcn typcn-minus-outline"></i></button>
-                                    <input type="text" name="kuantitas[]" data-stok="{{ $row['stok'] }}" class="form-control rounded-pill text-center wd-100 quantity" id="quantity-for-{{ $row['id_produk'] }}" data-produk="{{ $row['id_produk'] }}" value="{{ $row['pivot']['kuantitas'] }}" />
+                                    <input type="text" name="kuantitas[]" data-stok="{{ $row['stok'] }}" data-produk="{{ $row['id_produk'] }}" class="form-control rounded-pill text-center wd-100 quantity" id="quantity-for-{{ $row['id_produk'] }}" data-produk="{{ $row['id_produk'] }}" value="{{ $row['pivot']['kuantitas'] }}" />
                                     <button class="btn btn-icon addQuantity" data-stok="{{ $row['stok'] }}" data-produk="{{ $row['id_produk'] }}"><i class="typcn typcn-plus-outline"></i></button>
                                     <form action="{{ route('delete-singleton-cart', $row['id_produk']) }}" method="post">
                                         @csrf
@@ -246,27 +343,6 @@ $('#order-listing').each(function() {
                 </ul>
             </div>
             <div class="pd-l-10" style="width: 250px;">
-                <ul class="list-group">
-                    <li class="list-group-item d-flex align-items-center">
-                        <div class="w-100">
-                            <div class="d-flex justify-content-between align-items-center w-100 mg-b-10">
-                                <h6 class="tx-inverse tx-semibold mg-b-10 mg-t-8">Alamat Pengiriman</h6>
-                                <button class="btn icon p-0">
-                                    <i class="typcn icon typcn-pencil"></i> Edit
-                                </button>
-                            </div>
-                            <div>
-                                <p class="tx-medium tx-15 m-0" id="alamat-nama">Moch Reza</p>
-                                <p class="tx-13">62895355094422</p>
-                                <p>
-                                moch reza (warna biru menghadap selatan) Utama
-                                jalan bima rumah no 39 rt 02 rw 40 wedomartani sleman[Tokopedia notes: menghadap selatan]
-                                Ngemplak, Kab. Sleman, 55584
-                                </p>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
                 <ul class="list-group">
                     <li class="list-group-item d-flex align-items-center">
                         <div class="w-100">
@@ -293,7 +369,7 @@ $('#order-listing').each(function() {
                             <span class="tx-semibold">Rp. {{ number_format($stat['total_harga']) }}</span>
                         </div>
                         @auth
-                        <button class="btn btn-indigo btn-block w-100" id="btn_submit" disabled="true">Pembayaran</button>
+                        <button class="btn btn-indigo btn-block w-100" id="btn_submit" @if(auth()->user()->carts->count() == 0) disabled="true" @endif>Checkout</button>
                         @endauth
                         @guest
                         <div class="w-100 d-flex justify-content-center align-items-center">
@@ -304,7 +380,6 @@ $('#order-listing').each(function() {
                 </ul>
             </div>
         </div>
-        
     </div>
 </div>
 @endsection

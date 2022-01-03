@@ -62,6 +62,44 @@ class User extends Authenticatable
     public function carts() {
         return $this->belongsToMany('App\Models\Produk', 'keranjang', 'id_user', 'id_produk')->withPivot('kuantitas')->withTimestamps();
     }
+    public function cartWithStat($produk = null) {
+        $stats = ['total_kuantitas' => 0, 'total_harga' => 0];
+        $keranjangs = $produk ? $this->carts->whereIn('id_produk', $produk): $this->carts;
+        $keranjangs_array = $keranjangs->toArray();
+        $keranjangs_array = array_map(function($item){
+            $item['total'] = $item['harga'] * $item['pivot']['kuantitas'];
+            return $item;
+        },$keranjangs_array);
+        $keranjangs_pivot = array_map(function($item){
+            return $item['pivot'];
+        },$keranjangs_array);
+
+        $keranjang_total_kuantitas = array_sum(array_column($keranjangs_pivot, 'kuantitas'));
+        
+        $keranjang_total_price = array_sum(array_column($keranjangs_array, 'total'));
+
+        $stats['total_kuantitas'] = $keranjang_total_kuantitas;
+        $stats['total_harga'] = $keranjang_total_price;
+
+        return [
+            'keranjangs' => $keranjangs_array,
+            'stat' => $stats,
+        ];
+    }
+
+    public function order() {
+        return $this->hasMany('App\Models\Pesanan', 'id_user')->latest();
+    }
+    public function orderWithFilter($tipe = null) {
+        if($tipe == 1 || $tipe == 2) {
+            return $this->order()->whereIn('status', [1,2])->get();
+        } else if($tipe == 3) {
+            return $this->order()->whereStatus(3)->get();
+        } else if($tipe == 4) {
+            return $this->order()->whereStatus(4)->get();
+        }
+        return $this->order;
+    }
 
     public function isAdmin() {
         $role_validator = $this->roles()->whereTipe(2)->first();

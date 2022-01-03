@@ -38,13 +38,13 @@ class KeranjangController extends Controller
             'stat' => $stats,
         ];
 
-
         return view('public-pages.keranjang', $data);
     }
     public function addToCart(Request $request) {
+        $temp_product = Produk::findOrFail($request->all()['produk_id']);
         $validator = \Validator::make($request->all(), [
             'produk_id' => ['required', 'integer', 'min:1'],
-            'kuantitas' => ['required', 'integer', 'min:1']
+            'kuantitas' => ['required', 'integer', 'min:1', 'max:'.$temp_product->stok],
         ]);
 
         if($validator->fails()):
@@ -62,10 +62,28 @@ class KeranjangController extends Controller
             return back()->with(['msg_success' => 'Produk Di tambahkan ke Keranjang']);
         } else {
             // session()->store('cart', []);
-            return var_dump([]);
+            return ('/auth/login');
         }
         
 
+        return back();
+    }
+    public function updateCart(Request $request) {
+        $user = auth()->user();
+        if($user) {
+            $validated_input = $request->except(['_token']);
+            $produk_ids = [];
+            $keranjang_item = [];
+            foreach($validated_input as $index => $item) {
+                $r_id = explode('_', $index);
+                $keranjang = $user->carts->where('id_produk', $r_id[1])->first();
+                if($keranjang) {
+                    $keranjang_item[$r_id[1]] = ['kuantitas' => $item];
+                }
+            }
+            $user->carts()->syncWithoutDetaching($keranjang_item);
+            return back()->with(['msg_success' => 'Keranjang di update']);
+        }
         return back();
     }
     public function deleteCart($id) {
