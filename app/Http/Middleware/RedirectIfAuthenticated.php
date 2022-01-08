@@ -19,16 +19,16 @@ class RedirectIfAuthenticated
      */
     public function handle(Request $request, Closure $next, ...$guards)
     {
-        $guards = empty($guards) ? [null] : $guards;
-        foreach ($guards as $guard) {
-            if (Auth::guard($guard)->check()) {
+        $guards = Auth::user();
+        // foreach ($guards as $guard) {
+            if ($guards) {
                 if($request->route()->getName() == 'admin.login-form') {
                     return redirect(RouteServiceProvider::HOME_ADMIN);
-                } else {
+                } elseif($request->route()->getName() == 'login-form') {
                     return redirect(RouteServiceProvider::HOME);
                 }
             }
-        }
+        // }
 
         return $next($request);
     }

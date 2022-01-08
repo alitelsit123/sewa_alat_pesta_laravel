@@ -2,36 +2,214 @@
 @section('css_head')
 <!-- Toastr -->
 <link rel="stylesheet" href="{{ asset('/assets/plugins/toastr/toastr.min.css') }}">
+<!-- summernote -->
+<link rel="stylesheet" href="{{ asset('/assets/plugins/summernote/summernote-bs4.min.css') }}">
 @endsection
 
 @section('script_body')
 <!-- Toastr -->
 <script src="{{ asset('/assets/plugins/toastr/toastr.min.js') }}"></script>
+<!-- Summernote -->
+<script src="{{ asset('/assets/plugins/summernote/summernote-bs4.min.js') }}"></script>
+
 <script>
+    // Summernote
+    $('.summernote').summernote({
+        toolbar: [
+            // [groupName, [list of button]]
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['font', ['strikethrough']],
+            ['fontsize', ['fontsize']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['link']
+        ],
+        height: 200
+    });
+
     @if (session('notes') && (!in_array('type', session('notes')) || session('notes')['type'] == 'success') )
     window.addEventListener('load', function() {
-        toastr.success('{{ session("notes")["text"] ?? "success" }}');
+        toastr.success('{{ session("notes")["text"] ?? "Success" }}');
     });
     @elseif (session('notes') && (session('notes')['type'] == 'error'))
     window.addEventListener('load', function() {
-        toastr.error('{{ session("notes")["text"] ?? "success" }}');
+        toastr.error('{{ session("notes")["text"] ?? "Error" }}');
     });
-    @else
+    @elseif (session('notes') && (session('notes')['type'] == 'warning'))
+    window.addEventListener('load', function() {
+        toastr.warning('{{ session("notes")["text"] ?? "!" }}');
+    });
+    @else 
 
     @endif
     var selected_data_id = -1;
+    var chat_history = JSON.parse('{!! $sesi->toJson() !!}');
+    var current_user = JSON.parse('{!! auth()->user()->toJson() !!}');
     function hapusData() {
-      $('#confirm-box').modal('hide');
-      $('#form-delete').attr('action', "{{ url('/admin/produk') }}/"+selected_data_id);
-      $('#form-delete').submit();
-      selected_data_id = -1;
+        $('#confirm-box').modal('hide');
+        $('#form-delete').attr('action', "{{ url('/admin/livecommunication/bot') }}/"+selected_data_id+'/destroy');
+        $('#form-delete').submit();
+        selected_data_id = -1;
     }
     function openModal(key) {
-      selected_data_id = key
-      $('#confirm-box').modal();
+        selected_data_id = key
+        $('#confirm-box').modal();
     }
+
+    var pill_pane_active = '#chat-welcome'; 
+    $('.nav-pills a').click(function() {
+        var pill_pane = $($(this).data('target'))
+        if(pill_pane.hasClass('show') || pill_pane.hasClass('active')) {
+            return;
+        } else {
+            $(pill_pane_active).removeClass('show');    
+            $(pill_pane_active).removeClass('active');    
+        }
+        pill_pane.addClass('show active')
+        pill_pane_active = $(this).data('target');
+    });
+
+    function insertRightChat(chat) {
+        var content = '<div class="chat-right d-flex justify-content-end align-items-start mb-1">'+
+                '<div class="sub-chat-right">'+
+                '<div class="py-1 px-2 bg-light rounded-5">'+chat+'</div>'+
+                '</div>'+
+                '<img src="{{ auth()->user() ? auth()->user()->getPhoto():'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png' }}"'+ 
+                'class="rounded-circle ml-1" alt="" style="width: 40px; height: 40px;">'+
+            '</div>';
+        return content;
+    }
+    function insertLeftChat(chat, data) {
+        var content = '<div class="chat-right d-flex align-items-start mb-1">'+
+                '<img src="'+data.photo+'"'+ 
+                'class="rounded-circle mr-1" alt="" style="width: 40px; height: 40px;">'+
+                '<div class="sub-chat-right">'+
+                '<div class="py-1 px-2 bg-indigo tx-white rounded-5">'+chat+'</div>'+
+                '</div>'+
+            '</div>';
+        return content;
+    }
+    function insertCenterChat(chat, id) {
+        var content = '<div class="chat-center w-100 d-flex justify-content-center align-items-center mb-1" id="'+id+'">'+
+                '<div class="sub-chat-right">'+
+                '<div class="py-1 px-2 bg-gray-300 rounded-5">'+chat+'</div>'+
+                '</div>'+
+            '</div>';
+        return content;
+    }
+    function connected(id) {
+        $('.btn-connect[data-target-id="'+id+'"]').hide();
+        $('.btn-busy[data-target-id="'+id+'"]').hide();
+        $('.btn-disconnect[data-target-id="'+id+'"]').show();
+    }
+    function disconnected(id) {
+        $('.chat-data[data-target-id="'+id+'"]').remove();
+        $('.user-chat-request[data-target-id="'+id+'"]').remove();
+        pill_pane_active = '#chat-welcome';
+        $(pill_pane_active).addClass('show');    
+        $(pill_pane_active).addClass('active');   
+        toastr.success('Disconnected');
+    }
+    function scrollBottom(id) {
+        let container = document.getElementById('chat-body-'+id);
+        if (container.scrollTop + container.clientHeight <= container.scrollHeight) {
+            container.scrollTop = container.scrollHeight;
+        }
+    }
+    function sendChat(url, chat, id_sesi) {
+        $.post(url, {
+            '_token': '{{ csrf_token() }}',
+            'id_sesi': id_sesi,
+            'chat': chat,
+        }, function(data, status) {
+            insertLeftChat(data.msg)
+        }).done(function() {
+            scrollBottom(id_sesi);
+        });
+    }
+    function uuidv4() {
+        return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        );
+    }
+    $('.btn-connect').click(function() {
+        let current_el = $(this);
+        let element_id = uuidv4();
+        let chat_body = $('.chat-body[data-target-id="'+current_el.data('target-id')+'"]');
+        chat_body.append(insertCenterChat('Conneting', element_id));
+        $.post('{{ route("admin.livechat.connect-to-user") }}', {
+            '_token': '{{ csrf_token() }}',
+            'id_sesi': current_el.data('target-id')
+        }, function(data, status) {
+            if(data.status == 1) {
+                connected(current_el.data('target-id'));
+                let element_id_2 = uuidv4();
+                chat_body.append(insertCenterChat(data.msg, element_id_2));
+                setTimeout(function() {
+                    
+                }, 2000);
+                $(".chat-content[data-target-id='"+current_el.data('target-id')+"'] *").prop('disabled',false);
+                scrollBottom(current_el.data('target-id'));
+            } 
+        }).done(function() {
+
+        });
+    });
+
+    $('.btn-disconnect').click(function() {
+        let current_el = $(this);
+        let element_id = uuidv4();
+        let chat_body = $('.chat-body[data-target-id="'+current_el.data('target-id')+'"]');
+        chat_body.append(insertCenterChat('diskonekting', element_id));
+        $.post('{{ route("admin.livechat.disconnect-chat") }}', {
+            '_token': '{{ csrf_token() }}',
+            'id_sesi': current_el.data('target-id'),
+        }, function(data, status) {
+            if(data.status == 1) {
+                disconnected(current_el.data('target-id'));
+                let element_id_2 = uuidv4();
+                chat_body.append(insertCenterChat(data.msg, element_id_2));
+                setTimeout(function() {
+                    
+                }, 2000);   
+            } 
+        }).done(function() {
+
+        });
+    });
+        
+    $('.input-chat').keyup(function(e) {
+        let current_el = $(this);
+        if(e.key == 'Enter') {
+            if(e.target.value.length > 0) {
+                var v = e.target.value;
+                let e2 = uuidv4();
+                let chat_body = $('.chat-body[data-target-id="'+current_el.data('target-id')+'"]');
+                e.target.value = '';
+                chat_body.append(insertRightChat(v, e2));
+                sendChat('{{ route("admin.livechat.chat-with-user") }}', v, current_el.data('target-id'));
+            }
+            scrollBottom(current_el.data('target-id'));
+        }
+    });
+
     $(document).ready(function() {
-            
+        $.each(chat_history, function(index, item) {
+            if(item.status == 1) {
+                $(".chat-content[data-target-id='"+item.id_chat_sesi+"'] *").prop('disabled',true);
+            } else {
+                connected(item.id_chat_sesi);
+            }
+            $.each(item.chats, function(index2, item2) {
+                let chat_body = $('.chat-body[data-target-id="'+item.id_chat_sesi+'"]');
+                let e2 = uuidv4();
+                if(item2.pengirim == current_user.id_user) {
+                    chat_body.append(insertRightChat(item2.chat, e2));
+                } else {
+                    let photo_url = '{{ asset("assets/uploads/users") }}/' 
+                    chat_body.append(insertLeftChat(item2.chat, {photo: photo_url+item.user.profile.photo }));
+                }
+            });    
+        });
     });
 
 </script>
@@ -43,8 +221,49 @@
 @section('content-body')
 <div class="container-fluid">
     <div class="row">
+        
         <!-- list -->
-        <div class="col-md-5">
+        <div class="col-md-5 tab-container" role="tablist">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Chat Bot</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group">
+                        @forelse($bots as $row)
+                        <li class="list-group-item" style="border-bottom: 0;">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>{{ $row->chat }}</div>
+                                <div class="d-flex align-items-center">
+                                    <a href="#bot-chat-update-{{ $row->id_chat_bot }}" class="btn btn-xs btn-secondary mr-2" data-toggle="modal"><i class="typcn typcn-edit"></i> Edit</a>
+                                    <button class="btn btn-xs btn-danger" onclick="openModal({{ $row->id_chat_bot }})" type="button">Hapus</button>
+                                </div>
+                            </div>
+                            @include('admin-pages.live-chat.edit-bot', ['bot' => $row])
+                        </li>
+                        @empty
+                        <li class="list-group-item" style="border-bottom: 0;">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <div class="my-2">Opps tidak ada chat.</div>
+                            </div>
+                        </li>
+                        @endforelse
+                        <li class="list-group-item nav-pills">
+                            <a class="btn btn-sm btn-primary ml-2" 
+                            role="tab" data-target="#chat-bot-add">
+                                <i class="typcn typcn-edit"></i> Tambah Chat
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Permintaan Chat</h3>
@@ -55,20 +274,25 @@
                     </div>
                 </div>
                 <div class="card-body p-0">
-                    <ul class="nav nav-pills flex-column">
-                        <li class="nav-item active" style="border-bottom: 0;">
-                            <div href="#" class="nav-link">
+                    <ul class="list-group">
+                        @forelse($sesi as $row)
+                        <li class="nav-pills user-chat-request" data-target-id="{{ $row->id_chat_sesi }}" style="border-bottom: 0;">
+                            <a data-target="#chat-{{ $row->id_chat_sesi }}" class="list-group-item" style="cursor: pointer;" id="btn-open-chat-{{ $row->id_chat_sesi }}">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div class="d-flex flex-grow-1 align-items-center">
-                                        <img src="data:image/png;base64,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
-            I=" alt="" srcset="" style="width: 20px; height: 20px;" class="mr-1" />
-                                        <div>John snow</div>
+                                        <img src="{{ $row->user->getPhoto() }}" alt="" srcset="" style="width: 20px; height: 20px;" class="mr-1" />
+                                        <div>{{ $row->user->profile->nama ?? $row->user->profile->email }}</div>
                                     </div>
-                                    <button class="btn btn-xs btn-primary badge ml-1">Connect</button>
-                                    <button class="btn btn-xs btn-danger badge ml-1">Sibuk</button>
                                 </div>
+                            </a>
+                        </li>
+                        @empty
+                        <li class="list-group-item" style="border-bottom: 0;">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <div class="my-2">tidak ada permintaan.</div>
                             </div>
                         </li>
+                        @endforelse
                     </ul>
                 </div>
                 <!-- /.card-body -->
@@ -77,27 +301,30 @@
         </div>
         <!-- /.list -->
         <div class="col-md-7">
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="d-flex flex-grow-1 align-items-center">
-                            <img src="data:image/png;base64,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
-I=" alt="" srcset="" style="width: 20px; height: 20px;" class="mr-1" />
-                            <div>John snow</div>
+            <div class="tab-content">
+                <div id="chat-welcome" role="tabpanel" class="tab-pane fade show active">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="font-weight-bold">Halaman Chat</h6>
                         </div>
-                        <!-- <button class="btn btn-xs btn-primary badge">Connect</button> -->
                     </div>
                 </div>
-                <div class="card-body p-0 position-relative" style="min-height: 400px;">
-                    
-                    <div class="d-flex position-absolute w-100 p-2" style="bottom: 0;left: 0;">
-                        <input type="text" name="" id="" class="form-control rounded-pill flex-grow-1" placeholder="Pesan">
-                        <button type="button" class="btn btn-primary rounded-circle ml-2"><i class="fas fa-paper-plane"></i></button>
+                <!-- CHAT BOT -->
+                <div id="chat-bot-add" role="tabpanel" class="tab-pane fade">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6>Tambah Source</h6>
+                        </div>
+                        <div class="card-body position-relative" style="min-height: 400px;">
+                            @include('admin-pages.live-chat.tambah-bot')
+                        </div>
                     </div>
+                    <!-- /.card-body -->
                 </div>
-                <!-- /.card-body -->
+                <!-- /.card -->
+                <!-- END CHAT BOT -->
+                @include('admin-pages.live-chat.chat-item', ['sesi' => $sesi])
             </div>
-            <!-- /.card -->
         </div>
         <!-- /.list -->
     </div>

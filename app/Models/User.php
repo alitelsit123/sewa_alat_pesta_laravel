@@ -53,6 +53,14 @@ class User extends Authenticatable
     public function profile() {
         return $this->hasOne('App\Models\Profile', 'id_user');
     }
+    public function getPhoto() {
+        if($this->profile->photo == '' || $this->profile->photo == null) {
+            return 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png';
+        } else {
+            return url('/assets/uploads/users').'/'.$this->profile->photo;
+        }
+        return url('/assets/uploads/users').'/'.$this->profile->photo;
+    }
 
 
     public function roles() {
@@ -107,5 +115,13 @@ class User extends Authenticatable
             return true;
         }
         return false;
+    }
+
+    public function sesiChat() {
+        if($this->isAdmin()) {
+            return $this->hasMany('App\Models\ChatSesi', 'id_admin');
+        } else {
+            return $this->hasOne('App\Models\ChatSesi', 'id_user');
+        }
     }
 }

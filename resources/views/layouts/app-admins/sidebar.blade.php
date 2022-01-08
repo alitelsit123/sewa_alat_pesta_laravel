@@ -87,7 +87,7 @@
           <a href="{{ route('admin.livechat.index') }}" class="nav-link">
             <i class="nav-icon fas fa-headset"></i>
             <p>
-              Live Chat
+              Chat
               <!-- <span class="right badge badge-danger">New</span> -->
             </p>
           </a>

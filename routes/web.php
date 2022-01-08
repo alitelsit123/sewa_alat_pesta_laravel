@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use \App\Http\Controllers\Publics\BaseViewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,27 +14,38 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [App\Http\Controllers\Public\BaseViewController::class, 'showHomePage']);
+Route::get('/notif', function() {
+    return view('tests');
+});
+Route::get('send', [App\Http\Controllers\PusherTestController::class, 'notification']);
 
-Route::get('/products', [App\Http\Controllers\Public\ProductController::class, 'showProductsPage']);
-Route::get('/products/{kategori}/{slug}/{id}', [App\Http\Controllers\Public\ProductController::class, 'showProductsItemPage'])->name('product-view');
 
-Route::get('/about', [App\Http\Controllers\Public\BaseViewController::class, 'showAboutPage']);
+Route::get('/', [BaseViewController::class, 'showHomePage']);
 
-Route::get('/cart', [App\Http\Controllers\Public\KeranjangController::class, 'showCartPage']);
-Route::post('/cart/add', [App\Http\Controllers\Public\KeranjangController::class, 'addToCart'])->name('add-to-cart');
-Route::post('/cart/update', [App\Http\Controllers\Public\KeranjangController::class, 'updateCart'])->name('update-cart');
-Route::delete('/cart/delete/{id}', [App\Http\Controllers\Public\KeranjangController::class, 'deleteCart'])->name('delete-singleton-cart');
+Route::get('/products', [App\Http\Controllers\Publics\ProductController::class, 'showProductsPage']);
+Route::get('/products/{kategori}/{slug}/{id}', [App\Http\Controllers\Publics\ProductController::class, 'showProductsItemPage'])->name('product-view');
 
-Route::get('/profile/{slug}', [App\Http\Controllers\Public\ProfileController::class, 'showProfilePage'])->name('profile.show');
-Route::put('/profile/{slug}/update', [App\Http\Controllers\Public\ProfileController::class, 'update'])->name('profile.update')->middleware(['auth']);
-Route::put('/profile/{slug}/update_photo', [App\Http\Controllers\Public\ProfileController::class, 'updatePhoto'])->name('profile.update-photo')->middleware(['auth']);
+Route::get('/about', [App\Http\Controllers\Publics\BaseViewController::class, 'showAboutPage']);
+
+Route::get('/cart', [App\Http\Controllers\Publics\KeranjangController::class, 'showCartPage']);
+Route::post('/cart/add', [App\Http\Controllers\Publics\KeranjangController::class, 'addToCart'])->name('add-to-cart');
+Route::post('/cart/update', [App\Http\Controllers\Publics\KeranjangController::class, 'updateCart'])->name('update-cart');
+Route::delete('/cart/delete/{id}', [App\Http\Controllers\Publics\KeranjangController::class, 'deleteCart'])->name('delete-singleton-cart');
+
+Route::get('/profile/{slug}', [App\Http\Controllers\Publics\ProfileController::class, 'showProfilePage'])->name('profile.show');
+Route::put('/profile/{slug}/update', [App\Http\Controllers\Publics\ProfileController::class, 'update'])->name('profile.update')->middleware(['auth']);
+Route::put('/profile/{slug}/update_photo', [App\Http\Controllers\Publics\ProfileController::class, 'updatePhoto'])->name('profile.update-photo')->middleware(['auth']);
+
+Route::post('/chat_with_bot', [App\Http\Controllers\Admin\LiveChatController::class, 'chatwithBot'])->name('chat-with-bot');
+Route::post('/searching_for_costumer_service', [App\Http\Controllers\Admin\LiveChatController::class, 'searchOnlineCs'])->name('search-online-cs');
+Route::post('/chat', [App\Http\Controllers\Admin\LiveChatController::class, 'chat'])->name('send_chat');
+Route::post('/chat/cs/store', [App\Http\Controllers\Admin\LiveChatController::class, 'chatWithCs'])->name('chat-with-cs');
 
 Route::name('order.')->prefix('order')->middleware(['auth'])->group(function() {
-    Route::post('/checkout', [App\Http\Controllers\Public\OrderController::class, 'checkData'])->name('proses.checkdata');
-    Route::get('/checkout', [App\Http\Controllers\Public\OrderController::class, 'checkoutView'])->name('proses.checkout.view');
-    Route::post('/process_payment', [App\Http\Controllers\Public\OrderController::class, 'processPayment'])->name('proses.init_payment');
-    Route::get('/payment', [App\Http\Controllers\Public\OrderController::class, 'makePayment'])->name('proses.payment');
+    Route::post('/checkout', [App\Http\Controllers\Publics\OrderController::class, 'checkData'])->name('proses.checkdata');
+    Route::get('/checkout', [App\Http\Controllers\Publics\OrderController::class, 'checkoutView'])->name('proses.checkout.view');
+    Route::post('/process_payment', [App\Http\Controllers\Publics\OrderController::class, 'processPayment'])->name('proses.init_payment');
+    Route::get('/payment', [App\Http\Controllers\Publics\OrderController::class, 'makePayment'])->name('proses.payment');
 });
 
 Route::prefix('auth')->group(function() {
@@ -66,6 +78,12 @@ Route::middleware(['auth.admin'])->name('admin.')->group(function() {
         });
         Route::name('livechat.')->prefix('livecommunication')->group(function() {
             Route::get('/', [App\Http\Controllers\Admin\LiveChatController::class, 'index'])->name('index');
+            Route::post('/bot/add', [App\Http\Controllers\Admin\LiveChatController::class, 'botStore'])->name('bot.store');
+            Route::put('/bot/{id}/update', [App\Http\Controllers\Admin\LiveChatController::class, 'botUpdate'])->name('bot.update');
+            Route::delete('/bot/{id}/destroy', [App\Http\Controllers\Admin\LiveChatController::class, 'botDestroy'])->name('bot.destroy');
+            Route::post('/connect_to_user', [App\Http\Controllers\Admin\LiveChatController::class, 'connectToUser'])->name('connect-to-user');
+            Route::post('/disconnect_to_user', [App\Http\Controllers\Admin\LiveChatController::class, 'disconnectToUser'])->name('disconnect-chat');
+            Route::post('/chat/user/store', [App\Http\Controllers\Admin\LiveChatController::class, 'chatWithUser'])->name('chat-with-user');            
         });
         Route::name('transaksi.')->prefix('transaksi')->group(function() {
             Route::get('/', [App\Http\Controllers\Admin\TransaksiController::class, 'index'])->name('index');

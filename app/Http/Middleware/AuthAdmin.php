@@ -21,10 +21,9 @@ class AuthAdmin
             return redirect(route('admin.login-form'));
         } else {
             if(!$user->isAdmin()) {
-                return redirect(route('/'));
+                return redirect(route('admin.login-form'));
             }
         }
-
         return $next($request);
     }
 }
