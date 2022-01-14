@@ -4,16 +4,29 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Services\Pushers;
+use Pusher\Pusher;
+
 use App\Models\ChatBot;
 use App\Models\ChatSesi;
 use App\Models\User;
-use App\Services\Pushers;
+
 
 class LiveChatController extends Controller
 {
     protected $notify;
+    protected $pusher;
     public function __construct() {
         $this->notify = new Pushers('chat-channel', 'Chat');
+        $this->pusher = new Pusher(
+			env('PUSHER_APP_KEY'),
+			env('PUSHER_APP_SECRET'),
+			env('PUSHER_APP_ID'), 
+			[
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'encrypted' => true
+            ]
+		);
     }
 
     public function index() {
@@ -116,7 +129,18 @@ class LiveChatController extends Controller
                         'id_admin' => $cs->id_user,
                         'status' => 1
                     ]);
-                    return response()->json(['msg' => '', 'status' => 0, 'found' => true, 'cs' => $cs]);
+                    $retreive_sesi = ChatSesi::with(['user' => function($query) {
+                        $query->with(['profile']);
+                    }])->where('id_chat_sesi', $sesi->id_chat_sesi)->first();
+
+                    $chat = [
+                        'type' => 'user_request',
+                        'sesi' => $retreive_sesi,
+                    ];
+
+                    $this->pusher->trigger('private-chat-request.'.$cs->id_user, 'App\\Events\\Chat', ['msg' => 'Request chat from'.$retreive_sesi->user->email, 'event' => 'chat', 'data' => $chat]);
+
+                    return response()->json(['msg' => '', 'status' => 0, 'found' => true, 'sesi' => $sesi]);
                 }
                 return response()->json(['msg' => '', 'status' => -1, 'found' => false, 'cs' => null]);
             }    
@@ -137,10 +161,34 @@ class LiveChatController extends Controller
         $input = $validator->validated();
 
         $sesi = ChatSesi::find($input['id_sesi']);
+        $chat = [
+            'type' => 'connected', 
+            'connection_status' => 1,
+            'sesi' => $sesi,
+        ];
+
+        if($request->has('reject')) {
+            $chat['type'] = 'rejected';
+            $chat['connection_status'] = 0;
+            $this->pusher->trigger('private-chat.'.$sesi->id_chat_sesi, 'App\\Events\\Chat', [
+                'msg' => 'Sesi ditolak. Admin sibuk. Silahkan hubungi beberapa saat.', 
+                'event' => 'chat', 
+                'data' => $chat]);
+            $sesi->hapus();
+            return response()->json(['msg' => 'Rejected.', 'status' => 1, 'data' => $chat]);
+        } else if($request->has('wait')) {
+            $chat['type'] = 'waited';
+            $chat['connection_status'] = 1;
+            $this->pusher->trigger('private-chat.'.$sesi->id_chat_sesi, 'App\\Events\\Chat', ['msg' => 'Mohon tunggu sebentar.', 'event' => 'chat', 'data' => $chat]);
+            return response()->json(['msg' => 'Menunggu ...', 'status' => 1, 'data' => $chat]);
+        }
+        
         $sesi->status = 2;
         $sesi->save();
 
-        $this->notify->send(['msg' => 'Connected', 'type' => 'connection_info', 'sesi' => $sesi->toJson()]);
+        $chat['sesi'] = $sesi;
+        $chat['type'] = 'connected';
+        $this->pusher->trigger('private-chat.'.$sesi->id_chat_sesi, 'App\\Events\\Chat', ['msg' => 'Connected.', 'event' => 'chat', 'data' => $chat]);
 
         return response()->json(['msg' => 'connected', 'status' => 1]);
     }
@@ -158,11 +206,18 @@ class LiveChatController extends Controller
         $sesi = ChatSesi::find($input['id_sesi']);
         $sesi->status = 1;
         $sesi->save();
+
+        $chat = [
+            'type' => 'disconnected', 
+            'connection_status' => 0,
+            'sesi' => $sesi,
+        ];
+
+        $this->pusher->trigger('private-chat.'.$sesi->id_chat_sesi, 'App\\Events\\Chat', ['msg' => 'Sesi Berakhir.', 'event' => 'chat', 'data' => $chat]);
+
         $sesi->hapus();
 
-        $this->notify->send(['msg' => 'Sesi Berakhir.', 'type' => 'connection_info']);
-
-        return response()->json(['msg' => 'disconnected', 'status' => 1]);
+        return response()->json(['msg' => 'disconnected', 'status' => 1, 'data' => $chat]);
     }
     public function chatWithUser(Request $request) {
         $validator = \Validator::make($request->all(), [
@@ -183,7 +238,14 @@ class LiveChatController extends Controller
             'pengirim' => auth()->user()->id_user
         ]);
 
-        $this->notify->send(['msg' => $input['chat'], 'type' => 'receive', 'sesi' => $sesi->toJson()]);
+        $chat = [
+            'type' => 'received', 
+            'connection_status' => 1,
+            'sesi' => $sesi,
+            'receiver' => $sesi->id_user
+        ];
+
+        $this->pusher->trigger('private-chat.'.$sesi->id_chat_sesi, 'App\\Events\\Chat', ['msg' => $input['chat'], 'event' => 'chat', 'data' => $chat]);
 
         return response()->json(['msg' => '']);
     }
@@ -191,6 +253,7 @@ class LiveChatController extends Controller
         $validator = \Validator::make($request->all(), [
             'id_sesi' => ['required'],
             'chat' => ['required'],
+            'user' => ['required'],
         ]);
         
         if($validator->fails()):
@@ -201,11 +264,37 @@ class LiveChatController extends Controller
 
         $sesi = ChatSesi::find($input['id_sesi']);
 
+        if($sesi->status == 1) {
+            return response()->json(['msg' => 'not connected']);
+        }
+
         $sesi->chats()->create([
             'chat' => $input['chat'],
             'pengirim' => auth()->user()->id_user
         ]);
 
-        return response()->json(['msg' => '']);
+        $chat = [
+            'type' => 'received', 
+            'connection_status' => 1,
+            'sesi' => $sesi,
+            'receiver' => $sesi->id_admin
+        ];
+
+        $this->pusher->trigger('private-chat.'.$sesi->id_chat_sesi, 'App\\Events\\Chat', ['msg' => $input['chat'], 'event' => 'chat', 'data' => $chat]);
+
+        return response()->json(['msg' => 'msg sent']);
+    }
+    public function authorizeUser(Request $request) {
+        if (!auth()->check()) {
+            return response('Forbidden', 403);
+        }
+        echo $this->pusher->socket_auth(
+            $request->input('channel_name'), 
+            $request->input('socket_id')
+        );
+        // return true;
+    }
+    public function testBroadcast($id) {
+        $this->pusher->trigger('private-chat.'.$id, 'App\\Events\\Chat', ['msg' => 'success dong']);
     }
 }

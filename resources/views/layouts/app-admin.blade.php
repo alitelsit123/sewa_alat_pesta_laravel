@@ -112,7 +112,12 @@
 <script src="{{ asset('/assets/dist/js/demo.js') }}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ asset('/assets/dist/js/pages/dashboard.js') }}"></script>
+<script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+<script>
+  var app_url = '';
+</script>
 @yield('script_body')
+
 
 </body>
 </html>

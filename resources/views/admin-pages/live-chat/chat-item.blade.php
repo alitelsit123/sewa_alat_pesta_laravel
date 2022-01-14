@@ -10,6 +10,8 @@ I=" alt="" srcset="" style="width: 20px; height: 20px;" class="mr-1" />
             </div>
             <div class="btn-tools">
                 <button type="button" class="btn btn-xs btn-primary badge btn-connect" data-target-id="{{ $row->id_chat_sesi }}" data-target-user-photo="{{ $row->user->getPhoto() }}">Connect</button>
+                <button class="btn btn-xs btn-secondary badge ml-1 btn-wait" 
+                data-target-id="{{ $row->id_chat_sesi }}">Tunggu</button>
                 <button class="btn btn-xs btn-danger badge ml-1 btn-busy" 
                 data-target-id="{{ $row->id_chat_sesi }}">Sibuk</button>
                 <button class="btn btn-xs btn-danger badge ml-1 btn-disconnect" style="display: none;" 

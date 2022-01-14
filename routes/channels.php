@@ -16,3 +16,7 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
+Broadcast::channel('App.Models.ChatSesi.{sesi_id}', function ($sesi, $sesi_id) {
+    return (int) $sesi->id_chat_sesi === (int) $sesi_id;
+});
+

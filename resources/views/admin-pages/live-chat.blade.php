@@ -12,6 +12,8 @@
 <!-- Summernote -->
 <script src="{{ asset('/assets/plugins/summernote/summernote-bs4.min.js') }}"></script>
 
+@include('admin-pages.live-chat.script-chat')
+
 <script>
     // Summernote
     $('.summernote').summernote({
@@ -25,6 +27,7 @@
         ],
         height: 200
     });
+    
 
     @if (session('notes') && (!in_array('type', session('notes')) || session('notes')['type'] == 'success') )
     window.addEventListener('load', function() {
@@ -42,8 +45,7 @@
 
     @endif
     var selected_data_id = -1;
-    var chat_history = JSON.parse('{!! $sesi->toJson() !!}');
-    var current_user = JSON.parse('{!! auth()->user()->toJson() !!}');
+    var selected_sesi_id = -1;
     function hapusData() {
         $('#confirm-box').modal('hide');
         $('#form-delete').attr('action', "{{ url('/admin/livecommunication/bot') }}/"+selected_data_id+'/destroy');
@@ -57,7 +59,8 @@
 
     var pill_pane_active = '#chat-welcome'; 
     $('.nav-pills a').click(function() {
-        var pill_pane = $($(this).data('target'))
+        var pill_pane = $($(this).data('target'));
+        var target_sesi_id = $(this).data('target-id');
         if(pill_pane.hasClass('show') || pill_pane.hasClass('active')) {
             return;
         } else {
@@ -66,152 +69,40 @@
         }
         pill_pane.addClass('show active')
         pill_pane_active = $(this).data('target');
+        selected_sesi_id = target_sesi_id;
     });
+    
+    // channel.bind('App\\Events\\Chat', function(data) {
+    //     if(data.event == 'chat') {
+    //         if(data.is_request == true && data.data.sesi.id_admin == current_user.id_user) {
+    //             if(data.data.sesi) {
+    //                 @if(sizeof($sesi) > 0) 
+    //                 $('.chat-list-request').prepend(insertRequestLists(data.data.sesi));
+    //                 @else
+    //                 $('.chat-list-request').html(insertRequestLists(data.data.sesi));
+    //                 @endif
+    //                 $('.tab-content').append(insertContentChat(data.data.sesi));
+    //             } else {
+    //                 toastr.success('Ada request baru mohon refresh Halaman.');
+    //             }
+    //         } else {
+    //             if(data.data.sesi) {
+    //                 let chat_body = $('.chat-body[data-target-id="'+data.data.sesi.id_chat_sesi+'"]');
+    //                 if(data.data.sesi.id_admin == current_user.id_user && data.data.sesi.id_user == selected_sesi_id) {
+    //                     if(data.data.connection_status == 1 && data.data.connection_info_type == 1) {
+    //                         if(data.data.type == 'receive') {
+    //                             let e2 = uuidv4();
+    //                             chat_body.append(insertLeftChat(data.msg, e2));
+    //                         } else if(data.data.type == 'connection_info') {
 
-    function insertRightChat(chat) {
-        var content = '<div class="chat-right d-flex justify-content-end align-items-start mb-1">'+
-                '<div class="sub-chat-right">'+
-                '<div class="py-1 px-2 bg-light rounded-5">'+chat+'</div>'+
-                '</div>'+
-                '<img src="{{ auth()->user() ? auth()->user()->getPhoto():'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png' }}"'+ 
-                'class="rounded-circle ml-1" alt="" style="width: 40px; height: 40px;">'+
-            '</div>';
-        return content;
-    }
-    function insertLeftChat(chat, data) {
-        var content = '<div class="chat-right d-flex align-items-start mb-1">'+
-                '<img src="'+data.photo+'"'+ 
-                'class="rounded-circle mr-1" alt="" style="width: 40px; height: 40px;">'+
-                '<div class="sub-chat-right">'+
-                '<div class="py-1 px-2 bg-indigo tx-white rounded-5">'+chat+'</div>'+
-                '</div>'+
-            '</div>';
-        return content;
-    }
-    function insertCenterChat(chat, id) {
-        var content = '<div class="chat-center w-100 d-flex justify-content-center align-items-center mb-1" id="'+id+'">'+
-                '<div class="sub-chat-right">'+
-                '<div class="py-1 px-2 bg-gray-300 rounded-5">'+chat+'</div>'+
-                '</div>'+
-            '</div>';
-        return content;
-    }
-    function connected(id) {
-        $('.btn-connect[data-target-id="'+id+'"]').hide();
-        $('.btn-busy[data-target-id="'+id+'"]').hide();
-        $('.btn-disconnect[data-target-id="'+id+'"]').show();
-    }
-    function disconnected(id) {
-        $('.chat-data[data-target-id="'+id+'"]').remove();
-        $('.user-chat-request[data-target-id="'+id+'"]').remove();
-        pill_pane_active = '#chat-welcome';
-        $(pill_pane_active).addClass('show');    
-        $(pill_pane_active).addClass('active');   
-        toastr.success('Disconnected');
-    }
-    function scrollBottom(id) {
-        let container = document.getElementById('chat-body-'+id);
-        if (container.scrollTop + container.clientHeight <= container.scrollHeight) {
-            container.scrollTop = container.scrollHeight;
-        }
-    }
-    function sendChat(url, chat, id_sesi) {
-        $.post(url, {
-            '_token': '{{ csrf_token() }}',
-            'id_sesi': id_sesi,
-            'chat': chat,
-        }, function(data, status) {
-            insertLeftChat(data.msg)
-        }).done(function() {
-            scrollBottom(id_sesi);
-        });
-    }
-    function uuidv4() {
-        return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-        );
-    }
-    $('.btn-connect').click(function() {
-        let current_el = $(this);
-        let element_id = uuidv4();
-        let chat_body = $('.chat-body[data-target-id="'+current_el.data('target-id')+'"]');
-        chat_body.append(insertCenterChat('Conneting', element_id));
-        $.post('{{ route("admin.livechat.connect-to-user") }}', {
-            '_token': '{{ csrf_token() }}',
-            'id_sesi': current_el.data('target-id')
-        }, function(data, status) {
-            if(data.status == 1) {
-                connected(current_el.data('target-id'));
-                let element_id_2 = uuidv4();
-                chat_body.append(insertCenterChat(data.msg, element_id_2));
-                setTimeout(function() {
-                    
-                }, 2000);
-                $(".chat-content[data-target-id='"+current_el.data('target-id')+"'] *").prop('disabled',false);
-                scrollBottom(current_el.data('target-id'));
-            } 
-        }).done(function() {
-
-        });
-    });
-
-    $('.btn-disconnect').click(function() {
-        let current_el = $(this);
-        let element_id = uuidv4();
-        let chat_body = $('.chat-body[data-target-id="'+current_el.data('target-id')+'"]');
-        chat_body.append(insertCenterChat('diskonekting', element_id));
-        $.post('{{ route("admin.livechat.disconnect-chat") }}', {
-            '_token': '{{ csrf_token() }}',
-            'id_sesi': current_el.data('target-id'),
-        }, function(data, status) {
-            if(data.status == 1) {
-                disconnected(current_el.data('target-id'));
-                let element_id_2 = uuidv4();
-                chat_body.append(insertCenterChat(data.msg, element_id_2));
-                setTimeout(function() {
-                    
-                }, 2000);   
-            } 
-        }).done(function() {
-
-        });
-    });
-        
-    $('.input-chat').keyup(function(e) {
-        let current_el = $(this);
-        if(e.key == 'Enter') {
-            if(e.target.value.length > 0) {
-                var v = e.target.value;
-                let e2 = uuidv4();
-                let chat_body = $('.chat-body[data-target-id="'+current_el.data('target-id')+'"]');
-                e.target.value = '';
-                chat_body.append(insertRightChat(v, e2));
-                sendChat('{{ route("admin.livechat.chat-with-user") }}', v, current_el.data('target-id'));
-            }
-            scrollBottom(current_el.data('target-id'));
-        }
-    });
-
-    $(document).ready(function() {
-        $.each(chat_history, function(index, item) {
-            if(item.status == 1) {
-                $(".chat-content[data-target-id='"+item.id_chat_sesi+"'] *").prop('disabled',true);
-            } else {
-                connected(item.id_chat_sesi);
-            }
-            $.each(item.chats, function(index2, item2) {
-                let chat_body = $('.chat-body[data-target-id="'+item.id_chat_sesi+'"]');
-                let e2 = uuidv4();
-                if(item2.pengirim == current_user.id_user) {
-                    chat_body.append(insertRightChat(item2.chat, e2));
-                } else {
-                    let photo_url = '{{ asset("assets/uploads/users") }}/' 
-                    chat_body.append(insertLeftChat(item2.chat, {photo: photo_url+item.user.profile.photo }));
-                }
-            });    
-        });
-    });
-
+    //                         }
+    //                     }
+    //                     scrollBottom(data.data.sesi.id_chat_sesi);
+    //                 }
+    //             }
+    //         }            
+    //     }
+    // });
 </script>
 
 <!-- <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default">
@@ -247,7 +138,7 @@
                             @include('admin-pages.live-chat.edit-bot', ['bot' => $row])
                         </li>
                         @empty
-                        <li class="list-group-item" style="border-bottom: 0;">
+                        <li class="list-group-item" id="empty-chat-list" style="border-bottom: 0;">
                             <div class="d-flex align-items-center justify-content-center">
                                 <div class="my-2">Opps tidak ada chat.</div>
                             </div>
@@ -274,10 +165,10 @@
                     </div>
                 </div>
                 <div class="card-body p-0">
-                    <ul class="list-group">
+                    <ul class="list-group chat-list-request">
                         @forelse($sesi as $row)
                         <li class="nav-pills user-chat-request" data-target-id="{{ $row->id_chat_sesi }}" style="border-bottom: 0;">
-                            <a data-target="#chat-{{ $row->id_chat_sesi }}" class="list-group-item" style="cursor: pointer;" id="btn-open-chat-{{ $row->id_chat_sesi }}">
+                            <a data-target="#chat-{{ $row->id_chat_sesi }}" data-target-id="{{ $row->id_chat_sesi }}" class="list-group-item" style="cursor: pointer;" id="btn-open-chat-{{ $row->id_chat_sesi }}">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div class="d-flex flex-grow-1 align-items-center">
                                         <img src="{{ $row->user->getPhoto() }}" alt="" srcset="" style="width: 20px; height: 20px;" class="mr-1" />
@@ -302,8 +193,8 @@
         <!-- /.list -->
         <div class="col-md-7">
             <div class="tab-content">
-                <div id="chat-welcome" role="tabpanel" class="tab-pane fade show active">
-                    <div class="card">
+                <div id="chat-welcome" role="tabpanel" class="tab-pane fade show active" >
+                    <div class="card" style="height: 500px;">
                         <div class="card-header">
                             <h6 class="font-weight-bold">Halaman Chat</h6>
                         </div>
