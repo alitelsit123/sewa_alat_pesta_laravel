@@ -77,6 +77,13 @@
   </body>
 
   <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+  <script>
+    var page_data = null;
+
+    $.get(url, function(data, status) {
+      page_data = data;
+    });
+  </script>
   @yield('js_body')
   @include('layouts.apps.script-chat')
 </html>

@@ -25,7 +25,6 @@ I=" alt="" srcset="" style="width: 20px; height: 20px;" class="mr-1" />
             <input type="text" id="" class="form-control rounded-pill flex-grow-1 input-chat" data-target-id="{{ $row->id_chat_sesi }}" placeholder="Pesan">
         </div>
     </div>
-    <!-- /.card-body -->
 </div>
 <!-- /.card -->
 <!-- END CHAT -->

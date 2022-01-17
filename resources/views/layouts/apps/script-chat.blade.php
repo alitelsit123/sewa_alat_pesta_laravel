@@ -11,9 +11,9 @@ var chat_session = @if(auth()->user()) @if(auth()->user()->sesiChat()) true @els
 var polling = {
     'chat': null
 };
-var pusher = new Pusher('{{env("PUSHER_APP_KEY")}}', {
+var pusher = new Pusher('{{config("pusher.APP_KEY")}}', {
     authEndpoint: '/auth/channels/authorize',
-    cluster: '{{env("PUSHER_APP_CLUSTER")}}',
+    cluster: '{{config("pusher.APP_CLUSTER")}}',
     encrypted: true,
     auth: {
         headers: {

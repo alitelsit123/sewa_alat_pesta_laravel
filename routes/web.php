@@ -22,6 +22,9 @@ Route::get('send', [App\Http\Controllers\PusherTestController::class, 'notificat
 
 
 Route::get('/', [BaseViewController::class, 'showHomePage']);
+Route::get('/recached', function() {
+    \Artisan::call('config:cache');
+});
 
 Route::get('/products', [App\Http\Controllers\Publics\ProductController::class, 'showProductsPage']);
 Route::get('/products/{kategori}/{slug}/{id}', [App\Http\Controllers\Publics\ProductController::class, 'showProductsItemPage'])->name('product-view');
@@ -37,10 +40,10 @@ Route::get('/profile/{slug}', [App\Http\Controllers\Publics\ProfileController::c
 Route::put('/profile/{slug}/update', [App\Http\Controllers\Publics\ProfileController::class, 'update'])->name('profile.update')->middleware(['auth']);
 Route::put('/profile/{slug}/update_photo', [App\Http\Controllers\Publics\ProfileController::class, 'updatePhoto'])->name('profile.update-photo')->middleware(['auth']);
 
-Route::post('/chat_with_bot', [App\Http\Controllers\Admin\LiveChatController::class, 'chatwithBot'])->name('chat-with-bot');
-Route::post('/searching_for_costumer_service', [App\Http\Controllers\Admin\LiveChatController::class, 'searchOnlineCs'])->name('search-online-cs');
-Route::post('/chat', [App\Http\Controllers\Admin\LiveChatController::class, 'chat'])->name('send_chat');
-Route::post('/chat/cs/store', [App\Http\Controllers\Admin\LiveChatController::class, 'chatWithCs'])->name('chat-with-cs');
+Route::post('/api_v1/chat_with_bot', [App\Http\Controllers\Admin\LiveChatController::class, 'chatwithBot'])->name('chat-with-bot');
+Route::post('/api_v1/searching_for_costumer_service', [App\Http\Controllers\Admin\LiveChatController::class, 'searchOnlineCs'])->name('search-online-cs');
+Route::post('/api_v1/chat', [App\Http\Controllers\Admin\LiveChatController::class, 'chat'])->name('send_chat');
+Route::post('/api_v1/chat/cs/store', [App\Http\Controllers\Admin\LiveChatController::class, 'chatWithCs'])->name('chat-with-cs');
 
 Route::name('order.')->prefix('order')->middleware(['auth'])->group(function() {
     Route::post('/checkout', [App\Http\Controllers\Publics\OrderController::class, 'checkData'])->name('proses.checkdata');
@@ -109,3 +112,8 @@ Route::get('user-image', function() {
     I=';
 });
 
+Route::get('/default/data', function() {
+    return response()->json([
+        'user_image' => 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png',
+    ]);
+})->name('data-page');

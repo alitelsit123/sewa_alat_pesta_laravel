@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Services\Pushers;
+// use App\Services\Pushers;
 use Pusher\Pusher;
 
 use App\Models\ChatBot;
@@ -14,17 +14,17 @@ use App\Models\User;
 
 class LiveChatController extends Controller
 {
-    protected $notify;
+    // protected $notify;
     protected $pusher;
     public function __construct() {
-        $this->notify = new Pushers('chat-channel', 'Chat');
+        // $this->notify = new Pushers('chat-channel', 'Chat');
         $this->pusher = new Pusher(
-			env('PUSHER_APP_KEY'),
-			env('PUSHER_APP_SECRET'),
-			env('PUSHER_APP_ID'), 
+			config('pusher.APP_KEY'),
+			config('pusher.APP_SECRET'),
+			config('pusher.APP_ID'), 
 			[
-                'cluster' => env('PUSHER_APP_CLUSTER'),
-                'encrypted' => true
+                'cluster' => config('pusher.APP_CLUSTER'),
+                'encrypted' => config('pusher.encrypted')
             ]
 		);
     }
@@ -231,7 +231,9 @@ class LiveChatController extends Controller
 
         $input = $validator->validated();
 
-        $sesi = ChatSesi::find($input['id_sesi']);
+        $sesi = ChatSesi::with(['chats', 'user' => function($query) {
+            $query->with(['profile']);
+        }])->where('id_chat_sesi', $input['id_sesi'])->first();
 
         $sesi->chats()->create([
             'chat' => $input['chat'],
@@ -262,7 +264,9 @@ class LiveChatController extends Controller
 
         $input = $validator->validated();
 
-        $sesi = ChatSesi::find($input['id_sesi']);
+        $sesi = ChatSesi::with(['chats', 'user' => function($query) {
+            $query->with(['profile']);
+        }])->where('id_chat_sesi', $input['id_sesi'])->first();
 
         if($sesi->status == 1) {
             return response()->json(['msg' => 'not connected']);

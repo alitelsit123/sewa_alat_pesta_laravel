@@ -115,6 +115,12 @@
 <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
 <script>
   var app_url = '';
+  var page_data = null;
+
+  $.get('{{ route('data-page') }}', function(data, status) {
+    page_data = data;
+    window.page_data = data;
+  });
 </script>
 @yield('script_body')
 
