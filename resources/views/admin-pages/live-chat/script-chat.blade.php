@@ -313,7 +313,7 @@ $(document).ready(function() {
                 if(item2.pengirim == current_user.id_user) {
                     chat_body.append(insertRightChat(item2.chat, e2));
                 } else {
-                    let photo_url = '{{ asset("assets/uploads/users") }}/' 
+                    let photo_url = '{{ asset("assets/uploads/users") }}/';
                     chat_body.append(insertLeftChat(item2.chat, {photo: (item.user.profile.photo ? photo_url+item.user.profile.photo: page_data.user_image) }));
                 }
             });
