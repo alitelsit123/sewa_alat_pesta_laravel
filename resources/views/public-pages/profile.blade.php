@@ -269,9 +269,9 @@
             <div class="card-body">
               <div class="d-flex pd-b-10 mg-b-10">
                 <div class="d-flex bd-r bd-2 bd-gray-300 flex-grow-1">
-                  <img src="{{ asset('/assets/uploads/produk/'.$row->details[0]->produk->gambar) }}" alt="image responsive" srcset="" class="img-fluid mg-r-10" />
+                  <img src="{{ asset('/assets/uploads/produk/'.$row->details()->firstOrFail()->produk->gambar) }}" alt="image responsive" srcset="" class="img-fluid mg-r-10" />
                   <div class="d-flex flex-column">
-                    <span class="tx-14">{{ $row->details->count() > 1 ? $row->details->get(0)->produk->nama_produk.' <span=\'tx-medium\'>+'.($row->details->count()-1).'</span>':$row->details->get(0)->produk->nama_produk }}</span>
+                    <span class="tx-14">{{ $row->details->count() > 1 ? $row->details()->firstOrFail()->produk->nama_produk.' <span=\'tx-medium\'>+'.($row->details->count()-1).'</span>':$row->details->firstOrFail()->produk->nama_produk }}</span>
                     <span class="tx-12">x{{ $row->details->sum('kuantitas') }} item</span>
                   </div>
                 </div>
@@ -283,11 +283,17 @@
               <div class="d-flex justify-content-end bd-t pd-t-10">
                 <button class="btn tx-semibold btn-sm rounded-pill tx-gray-700" data-toggle="modal" data-target="#detail-{{ $row->kode_pesanan }}">Lihat detail</button>
                 @if($row->status < 3)
-                  @if(!$row->dpPayment() || !$row->fullPayment())
-                  <a href="https://app.sandbox.veritrans.co.id/snap/v2/vtweb/{{ $row->status == 1 ? $row->payment->where('tipe_pembayaran', 1)->first()->snap_token: $row->payment->where('tipe_pembayaran', 2)->first()->snap_token }}" target="_blank" class="btn btn-outline-indigo tx-medium btn-sm rounded-pill mg-l-10">
-                    Bayar
+                  @if($row->dpPayment()->status == 1)
+                  <a href="https://app.sandbox.veritrans.co.id/snap/v2/vtweb/{{ $row->dpPayment()->snap_token }}" target="_blank" class="btn btn-outline-indigo tx-medium btn-sm rounded-pill mg-l-10">
+                    Bayar DP
                   </a>
-                  <!-- @endif -->
+                  @elseif($row->fullPayment()->status == 1)
+                  <a href="https://app.sandbox.veritrans.co.id/snap/v2/vtweb/{{ $row->fullPayment()->snap_token }}" target="_blank" class="btn btn-outline-indigo tx-medium btn-sm rounded-pill mg-l-10">
+                    Bayar FULL
+                  </a>
+                  @else
+
+                  @endif
                 @endif
               </div>
             </div><!-- card-body -->

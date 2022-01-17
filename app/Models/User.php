@@ -105,6 +105,8 @@ class User extends Authenticatable
             return $this->order()->whereStatus(3)->get();
         } else if($tipe == 4) {
             return $this->order()->whereStatus(4)->get();
+        } else {
+            return $this->order;
         }
         return $this->order;
     }

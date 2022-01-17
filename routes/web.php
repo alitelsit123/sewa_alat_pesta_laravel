@@ -50,6 +50,10 @@ Route::name('order.')->prefix('order')->middleware(['auth'])->group(function() {
     Route::get('/checkout', [App\Http\Controllers\Publics\OrderController::class, 'checkoutView'])->name('proses.checkout.view');
     Route::post('/process_payment', [App\Http\Controllers\Publics\OrderController::class, 'processPayment'])->name('proses.init_payment');
     Route::get('/payment', [App\Http\Controllers\Publics\OrderController::class, 'makePayment'])->name('proses.payment');
+
+
+    // Payment Notification
+    Route::get('/payment/notification', [App\Http\Controllers\Publics\OrderController::class, 'paymentNotification'])->name('payment.notification');
 });
 
 

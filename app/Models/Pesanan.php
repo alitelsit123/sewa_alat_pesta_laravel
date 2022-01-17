@@ -10,6 +10,7 @@ class Pesanan extends Model
     use HasFactory;
     protected $table = 'pesanan';
     protected $primaryKey = 'kode_pesanan';
+    protected $keyType = 'string';
 
     public $incrementing = false;
     protected $fillable = [
@@ -29,23 +30,25 @@ class Pesanan extends Model
         return $this->hasMany('App\Models\Pembayaran', 'kode_pesanan');
     }
     public function selectedPayment() {
-        return $this->payment->first()->tipe_pembayaran;
+        $dp = $this->payment()->where('tipe_pembayaran', 1)->first();
+        return $dp->total_bayar > 0 ? 'dp': 'full';
     }
     public function dpPayment() {
-        return $this->payment->where('tipe_pembayaran', 1)->first()->status == 2;
+        return $this->payment()->where('tipe_pembayaran', 1)->first();
     }
     public function fullPayment() {
-        $payment_obj = $this->payment->where('tipe_pembayaran', 2)->first();
-        if($payment_obj) {
-            return $payment_obj->status == 2;
-        }
-        return false;
+        return $this->payment()->where('tipe_pembayaran', 2)->first();
     }
 
     public function user() {
         return $this->belongsTo('App\Models\User', 'id_user');
     }
     
+    public function hapus() {
+        $this->payment()->delete();
+        $this->details()->delete();
+        $this->delete();
+    }
     public function statusText() {
         if($this->status == 1) {
             return 'menunggu pembayaran';

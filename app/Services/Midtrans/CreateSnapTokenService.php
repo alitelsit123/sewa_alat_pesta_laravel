@@ -7,12 +7,14 @@ use Midtrans\Snap;
 class CreateSnapTokenService extends Midtrans
 {
     protected $order;
+    protected $payment;
 
-    public function __construct($order)
+    public function __construct($payment)
     {
         parent::__construct();
 
-        $this->order = $order;
+        $this->payment = $payment;
+        $this->order = $this->payment->order;
     }
 
     public function getSnapToken()
@@ -28,10 +30,17 @@ class CreateSnapTokenService extends Midtrans
         });
         $params = [
             'transaction_details' => [
-                'order_id' => $this->order->kode_pesanan,
-                'gross_amount' => $this->order->total_bayar,
+                'order_id' => (string)$this->payment->kode_pembayaran,
+                'gross_amount' => $this->payment->total_bayar,
             ],
-            'item_details' => $serialized_details->toArray(),
+            'item_details' => [
+                [
+                    'id' => \uniqid(),
+                    'price' => $this->payment->total_bayar,
+                    'quantity' => 1,
+                    'name' => 'Pembayaran '.$this->payment->getTipe()
+                ]
+            ],
             'customer_details' => [
                 'first_name' => $this->order->user->profile->nama,
                 'email' => $this->order->user->email,

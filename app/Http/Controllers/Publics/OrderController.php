@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Services\Midtrans\CreateSnapTokenService;
 
 use App\Models\Pesanan as Order;
+use App\Models\DetailPesanan as OrderDetail;
 
 class OrderController extends Controller
 {
@@ -122,24 +123,11 @@ class OrderController extends Controller
         $order->tanggal_selesai = $additional_data_order['tanggal_selesai'];
         $order->save();
 
-
-        array_map(function($item) use ($order, $user){
-            $order->details()->create([
-                'kuantitas' => $item['pivot']['kuantitas'],
-                'id_produk' => $item['id_produk'],
-                'kode_pesanan' => $order['kode_pesanan'],
-                'total_harga' => $item['pivot']['kuantitas']*$item['harga']
-            ]);
-            $user->carts()->detach([$item['id_produk']]);
-        },$keranjangs_array);
-
         $pay_total = $additional_data_order['tipe_pembayaran'] == 1 ? (int)$stats['total_harga']-(40*(int)$stats['total_harga']/100): (int)$stats['total_harga'];
 
-        $midtrans = new CreateSnapTokenService($order);
-        $snapToken = $midtrans->getSnapToken();
         if($additional_data_order['tipe_pembayaran'] == 2) {
             $order->payment()->create([
-                'kode_pembayaran' => 'PAY-'.\Str::upper(uniqid()).'-'.$user->profile->telepon.'-'.$dt,
+                'kode_pembayaran' => 'PAY-'.\Str::upper(uniqid()).'-'.(string)$user->profile->telepon.'-'.(string)$dt,
                 'snap_token' => '',
                 'total_bayar' => 0,
                 'tipe_pembayaran' => 1,
@@ -159,16 +147,68 @@ class OrderController extends Controller
             ]);
         }
 
-        $order->payment()->create([
+        $current_payment = $order->payment()->create([
             'kode_pembayaran' => 'PAY-'.\Str::upper(uniqid()).'-'.$user->profile->telepon.'-'.$dt,
-            'snap_token' => $snapToken,
+            'snap_token' => '',
             'total_bayar' => $pay_total,
             'tipe_pembayaran' => $additional_data_order['tipe_pembayaran'],
             'status' => 1, 
             'kode_pesanan' => $kode_pesanan_build
         ]);
 
+        $midtrans = new CreateSnapTokenService($current_payment);
+        $snapToken = $midtrans->getSnapToken();
+
+        $current_payment->snap_token = $snapToken;
+        $current_payment->save();
+
         session()->forget(['cart', 'additional_data_order']);
+        array_map(function($item) use ($order, $user){
+            $order->details()->create([
+                'kuantitas' => $item['pivot']['kuantitas'],
+                'id_produk' => $item['id_produk'],
+                'kode_pesanan' => $order['kode_pesanan'],
+                'total_harga' => $item['pivot']['kuantitas']*$item['harga']
+            ]);
+            $user->carts()->detach([$item['id_produk']]);
+        },$keranjangs_array);
+
         return response()->json(['msg' => '', 'snap_token' => $snapToken]);
+    }
+    public function paymentNotification(Request $request) {
+        $payment_data = \json_decode($request->getContent(), true);
+        $type = $payment_data['payment_type'];
+        $kode_bayar = $payment_data['order_id'];
+        $status_code = $payment_data['status_code'];
+        $status = $payment_data['transaction_status'];
+        $payment = OrderDetail::where('kode_pembayaran', $kode_bayar)->first();
+        $order = $payment->order;
+        $payment->jenis_pembayaran = $type;
+        if($payment) {
+            if($status == 'settlement' && $status_code == '200') {
+                if($payment->tipe_pembayaran == 1) {
+                    $rest_payment = $order->fullPayment();
+                    $midtrans = new CreateSnapTokenService($rest_payment);
+                    $snapToken = $midtrans->getSnapToken();
+
+                    $rest_payment->snap_token = $snapToken;
+                    $rest_payment->save();
+
+                    $order->status = 3;
+                }
+                $payment->status = 2;
+                $payment->save();
+                $order->save();
+            } else if($status == 'pending' && $status_code == '201') {
+                
+            } else if($status == 'cancel' && $status_code == '202') {
+                $order->status = 4;
+                $order->save();
+                $order->hapus();
+            } else {
+                $order->status = 4;
+                $order->save();
+            }
+        }
     }
 }
