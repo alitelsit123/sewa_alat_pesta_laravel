@@ -47,8 +47,7 @@
         <div class="col-md-12">
         <div class="card" style="min-height: 500px;">
               <div class="card-header">
-                    <h5>Transaksi</h5>
-                    
+                    <h5>Sewa</h5>
               </div>
               <!-- /.card-header -->
               <div class="card-header">
@@ -59,21 +58,38 @@
                 </form>    
               </div>
               <div class="card-body p-0">
-                
+                <div class="callout callout-info">
+                    <h5><i class="fas fa-info"></i> Note:</h5>
+                    Dengan klik selesai, semua status transaksi mulai pembayaran sampai pengiriman dll. diselesaikan!
+                </div>
                 <table class="table">
                   <thead>
                     <tr>
                       <th>Nama</th>
+                      <th>Waktu Sewa</th>
+                      <th>Dikirim</th>
+                      <th>Dikembalikan</th>
+                      <!-- <th>Pembayaran</th> -->
+                      <th>Status</th>
                       <th style="width: 20%" class="text-center">#</th>
                     </tr>
                   </thead>
                   <tbody>
-                    @forelse([] as $row)  
+                    @forelse($sewa as $row)  
                     <tr>
-                      <td>{{ $row->nama_kategori }}</td>
+                      <td>{{ $row->user()->profile->nama }}</td>
+                      <td>{{ $row->order->tanggal_mulai.' - '.$row->order->tanggal_selesai }}</td>
+                      <td>{{ $row->waktu_pengiriman ?? '-' }}</td>
+                      <td>{{ $row->waktu_pengembalian ?? '-' }}</td>
+                      <!-- <td>{{ $row->order->fullPayment()->status == 1 ? 'Belum Lunas': 'Lunas' }}</td> -->
+                      <td>{{ $row->getStatusText() }}</td>
                       <td class="text-center">
-                          <a href="{{ route('admin.kategori.edit', $row->id_kategori) }}" class="btn btn-sm btn-warning">Edit</a>
-                          <button class="btn btn-sm btn-danger" onclick="openModal({{ $row->id_kategori }})" >Hapus</button>
+                          @if($row->status == 4)
+                          -
+                          @else
+                          <a href="{{ route('admin.sewa.complete', $row->id_sewa) }}" class="btn btn-sm btn-success">Selesai</a>
+                          @endif
+                          <!-- <button class="btn btn-sm btn-danger" onclick="openModal({{ $row->id_kategori }})" >Hapus</button> -->
                       </td>
                     </tr>
                     @empty

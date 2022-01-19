@@ -49,24 +49,10 @@
               </div><!-- media-body -->
             </div><!-- media -->
             <div class="media new">
-              <div class="az-img-user online"><img src="../img/faces/face3.jpg" alt=""></div>
+              <!-- <div class="az-img-user online"><img src="../img/faces/face3.jpg" alt=""></div> -->
               <div class="media-body">
                 <p><strong>Joyce Chua</strong> just created a new blog post</p>
                 <span>Mar 13 04:16am</span>
-              </div><!-- media-body -->
-            </div><!-- media -->
-            <div class="media">
-              <div class="az-img-user"><img src="../img/faces/face4.jpg" alt=""></div> 
-              <div class="media-body">
-                <p><strong>Althea Cabardo</strong> just created a new blog post</p>
-                <span>Mar 13 02:56am</span>
-              </div><!-- media-body -->
-            </div><!-- media -->
-            <div class="media">
-              <div class="az-img-user"><img src="../img/faces/face5.jpg" alt=""></div>
-              <div class="media-body">
-                <p><strong>Adrian Monino</strong> added new comment on your photo</p>
-                <span>Mar 12 10:40pm</span>
               </div><!-- media-body -->
             </div><!-- media -->
           </div><!-- az-notification-list -->

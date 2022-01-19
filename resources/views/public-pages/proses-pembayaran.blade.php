@@ -3,26 +3,13 @@
 @section('css_head')
 <!-- vendor css -->
 <link href="{{ asset('/assets/plugins/fontawesome-free/css/all.min.css') }}" rel="stylesheet"/>
-<link href="{{ asset('/assets/plugins/ionicons/css/ionicons.min.css') }}" rel="stylesheet"/>
 <link href="{{ asset('/assets/plugins/typicons.font/typicons.css') }}" rel="stylesheet"/>
-<link href="{{ asset('/assets/plugins/datatables.net-dt/css/jquery.dataTables.min.css') }}" rel="stylesheet">
-<link href="{{ asset('/assets/plugins/datatables.net-responsive-dt/css/responsive.dataTables.min.css') }}" rel="stylesheet">
-<link href="{{ asset('/assets/plugins/select2/css/select2.min.css') }}" rel="stylesheet">
 
 <!-- azia CSS -->
 <link href="{{ asset('/assets/dist-base/css/azia.css') }}" rel="stylesheet"/>
 @endsection
 
 @section('js_body')
-<script src="{{ asset('/assets/plugins/jquery/jquery.min.js') }}"></script>
-<script src="{{ asset('/assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('/assets/plugins/ionicons/ionicons.js') }}"></script>
-<script src="{{ asset('/assets/plugins/chart.js/Chart.bundle.min.js') }}"></script>
-<script src="{{ asset('/assets/plugins/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('/assets/plugins/datatables.net-dt/js/dataTables.dataTables.min.js') }}"></script>
-<script src="{{ asset('/assets/plugins/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
-<script src="{{ asset('/assets/plugins/datatables.net-responsive-dt/js/responsive.dataTables.min.js') }}"></script>
-<script src="{{ asset('/assets/plugins/select2/js/select2.min.js') }}"></script>
 
 <script src="{{ asset('/assets/dist-base/js/azia.js') }}"></script>
 
@@ -67,6 +54,10 @@ $('#order-listing').each(function() {
   setTimeout(function(){
     $.get("{{ route('order.proses.payment') }}", function(data, status) {
       if(status) {
+        if(data.msg_error) {
+          document.location.href = '{{ url('/cart') }}';
+          return;
+        }
         snap.pay(data['snap_token'], {
             onSuccess: function(result) {
                 loading_element.innerHTML = '<h3>Tunggu sebentar. Sedang dialihkan.</h3>';

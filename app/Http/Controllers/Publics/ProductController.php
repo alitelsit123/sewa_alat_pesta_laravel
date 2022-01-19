@@ -27,12 +27,11 @@ class ProductController extends Controller
                 $query->orWhere('nama_produk', 'like', '%'.$v.'%');
             }
         })
-        // ->when(in_array('f', $validated_query), function($query) {
-        //     $query->where('stok', '>', 0);
+        // ->when(in_array('f', $validated_query), function($query) use ($querys) {
+        //     // $query->where('tanggal_mulai', '>', $querys['f']);
+        //     // $query->whereHas('', '>', $querys['f']);
         // })
-        // ->when(in_array('to', $validated_query),function($query) {
-        //     $query->where('stok', '>', 0);
-        // })
+        ->where('stok', '>', '0')
         ->latest()->paginate(15);
 
         $query_new = [];

@@ -2,15 +2,6 @@
 <html lang="en">
   
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-90680653-2"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'UA-90680653-2');
-    </script>
-
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -75,15 +66,23 @@
       <!-- <img src="https://www.clipartmax.com/png/middle/258-2587133_superior-customer-service-phone-service-icon.png" alt="" srcset="" width="40px" height="40px"> -->
     </button>
   </body>
-
+  <script src="{{ asset('/assets/plugins/jquery/jquery.min.js') }}"></script>
+  <script src="{{ asset('/assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
   <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
   <script>
     var page_data = null;
-
-    $.get(url, function(data, status) {
-      page_data = data;
-    });
+    var polling = {
+      'order': {
+        'activate': true,
+        'execute': null,
+      }
+    };
+    var polling_activate = true;
+    var num = 0;
+    // $.get('http://mita.42web.io/default/data', function(data, status) {
+    //   page_data = data;
+    // });
   </script>
   @yield('js_body')
-  @include('layouts.apps.script-chat')
+  @include('layouts.apps.script')
 </html>

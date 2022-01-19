@@ -8,9 +8,6 @@ var input_chat = document.querySelector('input[name=input_chat]');
 var chat_type = 0;
 var opened_chat = 0;
 var chat_session = @if(auth()->user()) @if(auth()->user()->sesiChat()) true @else false @endif @else false @endif;
-var polling = {
-    'chat': null
-};
 var pusher = new Pusher('{{config("pusher.APP_KEY")}}', {
     authEndpoint: '/auth/channels/authorize',
     cluster: '{{config("pusher.APP_CLUSTER")}}',
@@ -202,11 +199,34 @@ $(document).ready(function() {
 $.get('{{ route("user.collect") }}', function(data, status) {
     if(data.user) {
         current_user = Object.assign(current_user, {}, data.user);
+        // // Order
+        // polling['order']['execute'] = function() {
+        //     if(polling_activate && polling.order.activate) {
+        //         window.setTimeout(function () {
+        //             $.post('{{ route('polling.payment.status') }}', {
+        //             '_token': '{{ csrf_token() }}',
+        //             'user': current_user.id_user
+        //             }, function (data) {
+        //             console.log(data);
+        //             }).done(function() {
+        //             polling.order.execute();
+        //             });
+        //         }, 5000);
+        //     }
+        // };
+        
+        // $.each(Object.keys(polling), function(index,item) {
+        // polling[item]['execute']();
+        // // console.log(item);
+        // });
+        // // End Order
     } else {
 
     }
+
 }); 
 $.get('{{ route("sesi.collect.user") }}', function(data, status) {
+    // Chat
     if(data.sesi) {
         chat_history = Object.assign(chat_history, {}, data.sesi);
         if(data.sesi.status == 1) {
@@ -238,5 +258,7 @@ $.get('{{ route("sesi.collect.user") }}', function(data, status) {
     } else {
         btn_cs_chat.disabled = false;
     }
+    // End Chat
 }); 
+
 </script>

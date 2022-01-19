@@ -8,6 +8,7 @@ use App\Services\Midtrans\CreateSnapTokenService;
 
 use App\Models\Pesanan as Order;
 use App\Models\DetailPesanan as OrderDetail;
+use App\Models\Pembayaran as OrderPayment;
 
 class OrderController extends Controller
 {
@@ -92,10 +93,18 @@ class OrderController extends Controller
             return redirect('/cart');
         };
 
+        
+
         $user = auth()->user();
         $stats = ['total_harga' => 0];
         $keranjangs = session('cart')['maintains'];
         $keranjangs_array = $keranjangs;
+        $checkoutable = $user->checkoutable();
+        if(!$checkoutable['boolean']) {
+            session()->flash('msg_error', 'Mohon pesan ulang Stok '.$checkoutable['msg'].' tidak mencukupi.');
+            return response()->json(['msg_error' => 'Mohon pesan ulang Stok '.$checkoutable['msg'].' tidak mencukupi.']);
+        }
+
         $keranjangs_array = array_map(function($item){
             $item['total'] = $item['harga'] * $item['pivot']['kuantitas'];
             return $item;
@@ -103,7 +112,6 @@ class OrderController extends Controller
         $keranjangs_pivot = array_map(function($item){
             return $item['pivot'];
         },$keranjangs_array);
-
         
         $keranjang_total_price = array_sum(array_column($keranjangs_array, 'total'));
 
@@ -117,13 +125,12 @@ class OrderController extends Controller
         $order->kode_pesanan = $kode_pesanan_build;
         $order->status = 1;
         $order->total_bayar = $stats['total_harga'];
-        $order->total_pending_bayar = $stats['total_harga'];
         $order->id_user = $user->id_user;
         $order->tanggal_mulai = $additional_data_order['tanggal_mulai'];
         $order->tanggal_selesai = $additional_data_order['tanggal_selesai'];
         $order->save();
 
-        $pay_total = $additional_data_order['tipe_pembayaran'] == 1 ? (int)$stats['total_harga']-(40*(int)$stats['total_harga']/100): (int)$stats['total_harga'];
+        $pay_total = $additional_data_order['tipe_pembayaran'] == 1 ? (40*(int)$stats['total_harga']/100): (int)$stats['total_harga'];
 
         if($additional_data_order['tipe_pembayaran'] == 2) {
             $order->payment()->create([
@@ -134,17 +141,16 @@ class OrderController extends Controller
                 'status' => 2, 
                 'kode_pesanan' => $kode_pesanan_build
             ]);    
-            $order->status = 2;
-            $order->save();
         } else {
             $order->payment()->create([
                 'kode_pembayaran' => 'PAY-'.\Str::upper(uniqid()).'-'.$user->profile->telepon.'-'.$dt,
                 'snap_token' => '',
-                'total_bayar' => (int)$stats['total_harga'] - $pay_total,
+                'total_bayar' => $pay_total,
                 'tipe_pembayaran' => 2,
                 'status' => 1, 
                 'kode_pesanan' => $kode_pesanan_build
             ]);
+            $pay_total -= (int)$stats['total_harga'];
         }
 
         $current_payment = $order->payment()->create([
@@ -181,11 +187,29 @@ class OrderController extends Controller
         $kode_bayar = $payment_data['order_id'];
         $status_code = $payment_data['status_code'];
         $status = $payment_data['transaction_status'];
-        $payment = OrderDetail::where('kode_pembayaran', $kode_bayar)->first();
+        $payment = OrderPayment::where('kode_pembayaran', $kode_bayar)->first();
+        
+        if(!$payment) {
+            return response()->json(['msg' => '']);
+        }
+
         $order = $payment->order;
+        $details = $order->details()->with(['produk'])->get();
         $payment->jenis_pembayaran = $type;
         if($payment) {
             if($status == 'settlement' && $status_code == '200') {
+                $sewa = $order->sewa()->create([
+                    'status' => 1,
+                ]);
+                
+                if($order->status) {
+                    foreach($details as $row) {
+                        $produk = $row->produk;
+                        $produk->stok = (int)$produk->stok - (int)$row->kuantitas;
+                        $produk->save();
+                    }
+                }
+
                 if($payment->tipe_pembayaran == 1) {
                     $rest_payment = $order->fullPayment();
                     $midtrans = new CreateSnapTokenService($rest_payment);
@@ -193,12 +217,16 @@ class OrderController extends Controller
 
                     $rest_payment->snap_token = $snapToken;
                     $rest_payment->save();
-
+                    $order->status = 2;
+                } else {
                     $order->status = 3;
                 }
+
                 $payment->status = 2;
                 $payment->save();
                 $order->save();
+
+
             } else if($status == 'pending' && $status_code == '201') {
                 
             } else if($status == 'cancel' && $status_code == '202') {
@@ -210,5 +238,13 @@ class OrderController extends Controller
                 $order->save();
             }
         }
+
+        return response()->json(['msg' => '']);
+    }
+    public function finishPayment() {
+        return redirect(route('profile.show', auth()->user->email));
+    }
+    public function paymentCheckStatus(Request $request) {
+        return $response->json($request->getContent());
     }
 }

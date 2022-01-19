@@ -3,7 +3,6 @@
 @section('css_head')
 <!-- vendor css -->
 <link href="{{ asset('/assets/plugins/fontawesome-free/css/all.min.css') }}" rel="stylesheet"/>
-<link href="{{ asset('/assets/plugins/ionicons/css/ionicons.min.css') }}" rel="stylesheet"/>
 <link href="{{ asset('/assets/plugins/typicons.font/typicons.css') }}" rel="stylesheet"/>
 
 <!-- azia CSS -->
@@ -11,11 +10,6 @@
 @endsection
 
 @section('js_body')
-<script src="{{ asset('/assets/plugins/jquery/jquery.min.js') }}"></script>
-<script src="{{ asset('/assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('/assets/plugins/ionicons/ionicons.js') }}"></script>
-<script src="{{ asset('/assets/plugins/chart.js/Chart.bundle.min.js') }}"></script>
-
 <script src="{{ asset('/assets/dist-base/js/azia.js') }}"></script>
 
 <script>

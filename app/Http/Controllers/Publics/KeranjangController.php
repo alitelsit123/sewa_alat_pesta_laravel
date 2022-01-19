@@ -62,7 +62,7 @@ class KeranjangController extends Controller
             return back()->with(['msg_success' => 'Produk Di tambahkan ke Keranjang']);
         } else {
             // session()->store('cart', []);
-            return ('/auth/login');
+            return redirect('/auth/login');
         }
         
 
@@ -77,8 +77,10 @@ class KeranjangController extends Controller
             foreach($validated_input as $index => $item) {
                 $r_id = explode('_', $index);
                 $keranjang = $user->carts->where('id_produk', $r_id[1])->first();
-                if($keranjang) {
+                if($keranjang && $keranjang->stok >= $item) {
                     $keranjang_item[$r_id[1]] = ['kuantitas' => $item];
+                } else {
+                    return back()->with(['msg_error' => 'Kuantitas melebihi batas']);
                 }
             }
             $user->carts()->syncWithoutDetaching($keranjang_item);

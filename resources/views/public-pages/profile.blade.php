@@ -3,7 +3,6 @@
 @section('css_head')
 <!-- vendor css -->
 <link href="{{ asset('/assets/plugins/fontawesome-free/css/all.min.css') }}" rel="stylesheet"/>
-<link href="{{ asset('/assets/plugins/ionicons/css/ionicons.min.css') }}" rel="stylesheet"/>
 <link href="{{ asset('/assets/plugins/typicons.font/typicons.css') }}" rel="stylesheet"/>
 
 <!-- azia CSS -->
@@ -11,10 +10,6 @@
 @endsection
 
 @section('js_body')
-<script src="{{ asset('/assets/plugins/jquery/jquery.min.js') }}"></script>
-<script src="{{ asset('/assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('/assets/plugins/ionicons/ionicons.js') }}"></script>
-<script src="{{ asset('/assets/plugins/chart.js/Chart.bundle.min.js') }}"></script>
 
 <script src="{{ asset('/assets/dist-base/js/azia.js') }}"></script>
 <script>
@@ -257,16 +252,87 @@
           <div class="card mg-b-20">
             <div class="card-header">
               <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                  <span class="badge {{ $row->badge() }}">{{ ucfirst($row->statusText()) }}</span>
-                  <span class="tx-14 tx-semibold tx-gray-700 mx-2">&bull;</span>
-                  <span class="tx-12 tx-gray-700">{{ $row->created_at }}</span>
-                  <span class="tx-14 tx-semibold tx-gray-700 mx-2">&bull;</span>
-                  <span class="tx-12 tx-gray-700">{{ $row->kode_pesanan }}</span>
+                <div class="d-flex flex-column">
+                  <span class="tx-14 tx-semibold tx-gray-700">#{{ $row->kode_pesanan }}</span>
+                  <div class="d-flex align-items-center">
+                    <span class="tx-12 tx-gray-700 mg-r-5">{{ $row->created_at }}</span>
+                    @if($row->status > 1)
+                    <span class="badge {{ $row->badge() }}">{{ ucfirst($row->statusText()) }}</span>
+                    @endif
+                  </div>
+
+
                 </div>
               </div>
             </div><!-- card-header -->
+            
             <div class="card-body">
+              @if($row->status > 1)
+              <!-- Wizard -->
+              <div class="d-flex w-80 justify-content-center mg-b-10 pd-b-10 bd-b">
+                @if($row->sewa->status == 1) 
+                <div class="tx-indigo d-flex flex-column justify-content-center align-items-center flex-grow-1">
+                  <div class="text-center mg-b-5">
+                    <i class="fas fa-box" style="font-size: 30px;"></i>
+                  </div>
+                  <div class="tx-semibold">Disiapkan</div>
+                </div>
+                @else
+                <div class="d-flex flex-column justify-content-center align-items-center flex-grow-1" style="opacity: 0.4;">
+                  <div class="text-center mg-b-5">
+                    <i class="fas fa-box" style="font-size: 30px;"></i>
+                  </div>
+                  <div class="tx-gray-700">Disiapkan</div>
+                </div>
+                @endif
+                @if($row->sewa->status == 2) 
+                <div class="tx-indigo d-flex flex-column justify-content-center align-items-center flex-grow-1 mx-2">
+                  <div class="text-center mg-b-5">
+                    <i class="fas fa-truck-loading" style="font-size: 30px;"></i>
+                  </div>
+                  <div class="tx-semibold">Dikirim</div>
+                </div>
+                @else
+                <div class="d-flex flex-column justify-content-center align-items-center flex-grow-1 mx-2" style="opacity: 0.4;">
+                  <div class="text-center mg-b-5">
+                    <i class="fas fa-truck-loading" style="font-size: 30px;"></i>
+                  </div>
+                  <div class="tx-gray-700">Dikirim</div>
+                </div>
+                @endif
+                @if($row->sewa->status == 3) 
+                <div class="tx-indigo d-flex flex-column justify-content-center align-items-center flex-grow-1 mx-2">
+                  <div class="text-center mg-b-5">
+                    <i class="fas fa-glass-cheers" style="font-size: 30px;"></i>
+                  </div>
+                  <div class="tx-semiboldtx-gray-700">Sewa</div>
+                </div>
+                @else
+                <div class="d-flex flex-column justify-content-center align-items-center flex-grow-1 mx-2" style="opacity: 0.4;">
+                  <div class="text-center mg-b-5">
+                    <i class="fas fa-glass-cheers" style="font-size: 30px;"></i>
+                  </div>
+                  <div class="tx-gray-700">Sewa</div>
+                </div>
+                @endif
+                @if($row->sewa->status == 4) 
+                <div class="tx-indigo d-flex flex-column justify-content-center align-items-center flex-grow-1">
+                  <div class="text-center mg-b-5">
+                    <i class="fas fa-check" style="font-size: 30px;"></i>
+                  </div>
+                  <div class="tx-semibold">Selesai</div>
+                </div>
+                @else
+                <div class="d-flex flex-column justify-content-center align-items-center flex-grow-1" style="opacity: 0.4;">
+                  <div class="text-center mg-b-5">
+                    <i class="fas fa-check" style="font-size: 30px;"></i>
+                  </div>
+                  <div class="tx-gray-700">Selesai</div>
+                </div>
+                @endif
+              </div>
+              <!-- End Wizard -->
+              @endif
               <div class="d-flex pd-b-10 mg-b-10">
                 <div class="d-flex bd-r bd-2 bd-gray-300 flex-grow-1">
                   <img src="{{ asset('/assets/uploads/produk/'.$row->details()->firstOrFail()->produk->gambar) }}" alt="image responsive" srcset="" class="img-fluid mg-r-10" />
@@ -282,18 +348,16 @@
               </div>  
               <div class="d-flex justify-content-end bd-t pd-t-10">
                 <button class="btn tx-semibold btn-sm rounded-pill tx-gray-700" data-toggle="modal" data-target="#detail-{{ $row->kode_pesanan }}">Lihat detail</button>
-                @if($row->status < 3)
-                  @if($row->dpPayment()->status == 1)
-                  <a href="https://app.sandbox.veritrans.co.id/snap/v2/vtweb/{{ $row->dpPayment()->snap_token }}" target="_blank" class="btn btn-outline-indigo tx-medium btn-sm rounded-pill mg-l-10">
-                    Bayar DP
-                  </a>
-                  @elseif($row->fullPayment()->status == 1)
-                  <a href="https://app.sandbox.veritrans.co.id/snap/v2/vtweb/{{ $row->fullPayment()->snap_token }}" target="_blank" class="btn btn-outline-indigo tx-medium btn-sm rounded-pill mg-l-10">
-                    Bayar FULL
-                  </a>
-                  @else
-
-                  @endif
+                @if($row->dpPayment()->status == 1)
+                <a href="https://app.sandbox.veritrans.co.id/snap/v2/vtweb/{{ $row->dpPayment()->snap_token }}" target="_blank" class="btn btn-outline-indigo tx-medium btn-sm rounded-pill mg-l-10">
+                  Bayar
+                </a>
+                @elseif($row->fullPayment()->status == 1)
+                <a href="https://app.sandbox.veritrans.co.id/snap/v2/vtweb/{{ $row->fullPayment()->snap_token }}" target="_blank" class="btn btn-outline-indigo tx-medium btn-sm rounded-pill mg-l-10">
+                  Bayar
+                </a>
+                @else
+                
                 @endif
               </div>
             </div><!-- card-body -->
@@ -326,21 +390,23 @@
                       <span>Pembayaran</span>
                     </h6>
                     @foreach($row->payment as $p_row)
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        {{ $p_row->getTipe() }} 
-                        @if($p_row->total_bayar == 0) 
-                          <span class="badge badge-info">Skip</span>
-                        @else
-                          @if($p_row->status == 1)
-                          <span class="badge badge-warning">Pending</span>
-                          @else
-                          <span class="badge badge-success">Sukses</span>
-                          @endif
-                        @endif
-                      </div>
-                      <div>Rp. {{ $p_row->total_bayar }}</div>
-                    </div>
+                      @if($p_row->total_bayar > 0)
+                        <div class="d-flex justify-content-between">
+                          <div>
+                            {{ $p_row->getTipe() }} 
+                            @if($p_row->total_bayar == 0) 
+                              <span class="badge badge-info">Skip</span>
+                            @else
+                              @if($p_row->status == 1)
+                              <span class="badge badge-warning">Pending</span>
+                              @else
+                              <span class="badge badge-success">Sukses</span>
+                              @endif
+                            @endif
+                          </div>
+                          <div class="tx-medium">Rp. {{ $p_row->total_bayar }}</div>
+                        </div>
+                      @endif
                     @endforeach
                   </div>
                   <h6>Info</h6>

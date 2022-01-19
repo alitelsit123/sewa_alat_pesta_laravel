@@ -12,7 +12,7 @@ use App\Models\Kategori;
 class BaseViewController extends Controller
 {
     public function showHomePage() {
-        $produks = Produk::take(6)->latest()->get();
+        $produks = Produk::take(6)->where('stok', '>', 0)->latest()->get();
         $kategoris = Kategori::all();
         $rekomendasi_ids = DetailPesanan::select('id_produk')
         ->groupBy('id_produk')
@@ -31,18 +31,6 @@ class BaseViewController extends Controller
         ];
 
         return view('public-pages.home', $data);
-    }
-    public function showProductsPage() {
-        $produks = Produk::latest()->simplePaginate(12);
-        $kategori = Kategori::latest()->get();
-        $data = [
-            'produk_new' => $produks,
-            'kategoris' => $kategori,
-        ];
-        return view('public-pages.products', $data);
-    }
-    public function showCartPage() {
-        return view('public-pages.keranjang');
     }
     public function showAboutPage() {
         return view('public-pages.tentang');

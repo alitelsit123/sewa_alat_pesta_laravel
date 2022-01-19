@@ -10,4 +10,8 @@ class Keranjang extends Model
     use HasFactory;
     protected $table = 'keranjang';
     protected $primaryKey = 'id_keranjang';
+
+    public function produk() {
+        return $this->belongsTo('App\Models\Produk', 'id_produk');
+    }
 }

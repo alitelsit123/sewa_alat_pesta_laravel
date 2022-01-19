@@ -94,6 +94,27 @@ class User extends Authenticatable
             'stat' => $stats,
         ];
     }
+    public function checkoutable() {
+        $keranjang = $this->carts;
+        $data = [];
+        $validated = true;
+        foreach($keranjang as $row) {
+            if((int)$row->pivot->kuantitas > (int)$row->stok) {
+                array_push($data, $row->nama_produk); 
+                $validated = false;
+            }
+        }
+        if(!$validated) {
+            $text = implode(', ', $data);
+            return [
+                'boolean' => $validated,
+                'msg' => '"'.$text.'"'
+            ];
+        }
+        return [
+            'boolean' => $validated,
+        ];
+    }
 
     public function order() {
         return $this->hasMany('App\Models\Pesanan', 'id_user')->latest();

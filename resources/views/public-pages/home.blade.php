@@ -3,7 +3,6 @@
 @section('css_head')
 <!-- vendor css -->
 <link href="{{ asset('/assets/plugins/fontawesome-free/css/all.min.css') }}" rel="stylesheet"/>
-<link href="{{ asset('/assets/plugins/ionicons/css/ionicons.min.css') }}" rel="stylesheet"/>
 <link href="{{ asset('/assets/plugins/typicons.font/typicons.css') }}" rel="stylesheet"/>
 
 <!-- azia CSS -->
@@ -11,10 +10,6 @@
 @endsection
 
 @section('js_body')
-<script src="{{ asset('/assets/plugins/jquery/jquery.min.js') }}"></script>
-<script src="{{ asset('/assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('/assets/plugins/ionicons/ionicons.js') }}"></script>
-<script src="{{ asset('/assets/plugins/chart.js/Chart.bundle.min.js') }}"></script>
 
 <script src="{{ asset('/assets/dist-base/js/azia.js') }}"></script>
 <script>
@@ -41,7 +36,7 @@
             <form action="{{ url('/products') }}" method="get">
                 <div class="row row-xs">
                     <div class="col-md-12 mb-2">
-                        <div class="tx-16 tx-medium">Quick Find</div>
+                        <div class="tx-16 tx-medium">Ingin Menyewa Kapan ?</div>
                     </div>
                     <div class="col-md-4">
                         <input type="date" name="f" class="form-control" placeholder="" value="">
@@ -50,7 +45,7 @@
                         <input type="date" name="to" class="form-control" placeholder="" value="">
                     </div><!-- col -->
                     <div class="col-md-4">
-                        <button class="btn btn-indigo w-100" type="submit">Find</button>
+                        <button class="btn btn-indigo w-100" type="submit">Lihat Katalog</button>
                     </div><!-- col -->
                 </div><!-- row -->
                 <div class="tx-11 tx-danger mg-t-10">Pencarian waktu dalam prosess</div>

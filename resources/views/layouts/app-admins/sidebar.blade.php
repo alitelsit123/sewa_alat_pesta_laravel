@@ -21,7 +21,7 @@
     <!-- SidebarSearch Form -->
     <div class="form-inline">
       <div class="input-group" data-widget="sidebar-search">
-        <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+        <input disabled="true" class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
         <div class="input-group-append">
           <button class="btn btn-sidebar">
             <i class="fas fa-search fa-fw"></i>
@@ -66,10 +66,19 @@
           </a>
         </li>
         <li class="nav-item">
-          <a href="{{ route('admin.transaksi.index') }}" class="nav-link">
+          <a href="{{ route('admin.order.index') }}" class="nav-link">
             <i class="nav-icon fas fa-money-check-alt"></i>
             <p>
-              Transaksi
+              Pesanan
+              <!-- <span class="right badge badge-danger">New</span> -->
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ route('admin.sewa.index') }}" class="nav-link">
+            <i class="nav-icon fas fa-fire"></i>
+            <p>
+              Sewa
               <!-- <span class="right badge badge-danger">New</span> -->
             </p>
           </a>

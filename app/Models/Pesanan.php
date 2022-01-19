@@ -15,7 +15,6 @@ class Pesanan extends Model
     public $incrementing = false;
     protected $fillable = [
         'kode_pesanan',
-        'total_pending_bayar',
         'tanggal_mulai',
         'tanggal_selesai',
         'status',
@@ -43,6 +42,10 @@ class Pesanan extends Model
     public function user() {
         return $this->belongsTo('App\Models\User', 'id_user');
     }
+
+    public function sewa() {
+        return $this->hasOne('App\Models\Sewa', 'kode_pesanan');
+    }
     
     public function hapus() {
         $this->payment()->delete();
@@ -53,7 +56,7 @@ class Pesanan extends Model
         if($this->status == 1) {
             return 'menunggu pembayaran';
         } else if($this->status == 2) {
-            return 'pending';
+            return 'pembayaran dp';
         } else if($this->status == 3) {
             return 'sukses';
         }
