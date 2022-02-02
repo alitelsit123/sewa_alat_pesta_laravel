@@ -22,4 +22,7 @@ class DetailPesanan extends Model
     public function produk() {
         return $this->belongsTo('App\Models\Produk', 'id_produk');
     }
+    public function order() {
+        return $this->belongsTo('App\Models\Pesanan', 'kode_pesanan');
+    }
 }

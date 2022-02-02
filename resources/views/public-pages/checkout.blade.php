@@ -46,6 +46,32 @@ $('#order-listing').each(function() {
     $('.dataTables_length select').select2({ minimumResultsForSearch: Infinity });
 
     });
+    // Create our number formatter.
+    var formatter = new Intl.NumberFormat('en-US');
+    $('#payment-type-1').click(function() {
+        $.get('{{ route('order.payment.type.change', 1) }}', function(data) {
+            $('#final-price').html(''+
+                '<div class="d-flex justify-content-between align-items-center w-100">'+
+                    '<span class="tx-14 tx-inverse tx-semibold mg-b-10 mg-t-8">DP</span>'+
+                    '<span class="tx-semibold">Rp. '+formatter.format(data.dp)+'</span>'+
+                '</div>'+
+                '<div class="d-flex justify-content-between align-items-center w-100">'+
+                    '<span class="tx-14 tx-inverse tx-semibold mg-b-10 mg-t-8">Pelunasan</span>'+
+                    '<span class="tx-semibold">Rp. '+formatter.format(data.other)+'</span>'+
+                '</div>'+
+            '');
+        });
+    });
+    $('#payment-type-2').click(function() {
+        $.get('{{ route('order.payment.type.change', 2) }}', function(data) {
+            $('#final-price').html(''+
+                '<div class="d-flex justify-content-between align-items-center w-100">'+
+                    '<span class="tx-14 tx-inverse tx-semibold mg-b-10 mg-t-8">Bayar FULL</span>'+
+                    '<span class="tx-semibold">Rp. '+formatter.format(data.other)+'</span>'+
+                '</div>'+
+            '');
+        });
+    });
 </script>
 <script>
   setTimeout(function(){
@@ -55,26 +81,6 @@ $('#order-listing').each(function() {
 @endsection
 
 @section('content-body')
-@if(session()->has('msg_success'))
-<div class="alert alert-success" role="alert">
-    <div class="container">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <strong>Berhasil!</strong> {{ session('msg_success') }}
-    </div>
-</div><!-- alert -->
-@endif
-@if(session()->has('msg_error'))
-<div class="alert alert-danger" role="alert">
-    <div class="container">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <strong>!</strong> {{ session('msg_error') }}
-    </div>
-</div><!-- alert -->
-@endif
 <form action="{{ route('order.proses.init_payment') }}" method="post">
 @csrf
 <div class="mt-5 mb-5" style="min-height:600px;">
@@ -130,24 +136,36 @@ $('#order-listing').each(function() {
             </div><!-- alert -->
             @enderror
             <div class="d-flex w-100 justify-content-between align-items-center pd-b-10 mg-b-10 bd-b bd-gray-200">
-                <h6 class="tx-inverse tx-medium mg-t-8 tx-16">Pilih Durasi</h6>
+                <h6 class="tx-inverse tx-medium mg-t-8 tx-16">Durasi</h6>
                 <div class="d-flex align-items-center">
+                    @if(session()->has('book'))
+                    <div class="tx-medium tx-gray-500">
+                        <span>Dari {{ session('book.from') }}</span>
+                    </div>
+                    <span class="mg-x-20">|</span>
+                    <div class="tx-medium tx-gray-500">
+                        <span>Sampai {{ session('book.to') }}</span>
+                    </div>
+                    <input type="hidden" name="tanggal_mulai" class="form-control" placeholder="" value="{{ session('book.from') }}" required>
+                    <input type="hidden" name="tanggal_selesai" class="form-control" placeholder="" value="{{ session('book.to') }}" class="mg-l-10" required>
+                    @else
                     <input type="date" name="tanggal_mulai" class="form-control" placeholder="" value="" required>
                     <span class="px-2">Sampai</span>
                     <input type="date" name="tanggal_selesai" class="form-control" placeholder="" value="" class="mg-l-10" required>
+                    @endif
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-between align-items-center pd-b-10 mg-b-10 bd-b bd-gray-200">
                 <h6 class="tx-inverse tx-medium mg-t-8 tx-16">Pilih Tipe Pembayaran</h6>
                 <div class="d-flex align-items-center">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="tipe_pembayaran" id="flexRadioDefault1" value="1">
+                        <input class="form-check-input" type="radio" name="tipe_pembayaran" id="payment-type-1" value="1">
                         <label class="form-check-label" for="flexRadioDefault1">
                             DP
                         </label>
                     </div>
                     <div class="form-check mg-l-10">
-                        <input class="form-check-input" type="radio" name="tipe_pembayaran" id="flexRadioDefault2" checked value="2">
+                        <input class="form-check-input" type="radio" name="tipe_pembayaran" id="payment-type-2" checked value="2">
                         <label class="form-check-label" for="flexRadioDefault2">
                             FULL
                         </label>
@@ -169,8 +187,11 @@ $('#order-listing').each(function() {
                             <tr>
                                 <th scope="row">{{ $row['kode_produk'] }}</th>
                                 <td>
-                                    <div class="d-flex align-items-center">
-                                        <img src="{{ asset('/assets/uploads/produk/'.$row['gambar']) }}" alt="Produk Image" srcset="" class="img-fluid">
+                                    <div class="d-flex align-items-start">
+                                        <img src="{{ asset('/assets/uploads/produk/'.$row['gambar']) }}" 
+                                        alt="Produk Image" srcset="" 
+                                        class="img-fluid rounded-10 mg-r-10" 
+                                        style="width: 100px;">
                                         <div>{{ $row['nama_produk'] }}</div>
                                     </div>
                                 </td>
@@ -235,6 +256,12 @@ $('#order-listing').each(function() {
                 </div>
             </li>
             <li class="list-group-item d-flex flex-column">
+                <div id="final-price" class="w-100">
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                        <span class="tx-14 tx-inverse tx-semibold mg-b-10 mg-t-8">Bayar FULL</span>
+                        <span class="tx-semibold">Rp. {{ number_format($stat['total_harga']) }}</span>
+                    </div>
+                </div>
                 <div class="d-flex justify-content-between align-items-center w-100">
                     <h6 class="tx-18 tx-inverse tx-semibold mg-b-10 mg-t-8">Total</h6>
                     <span class="tx-semibold">Rp. {{ number_format($stat['total_harga']) }}</span>

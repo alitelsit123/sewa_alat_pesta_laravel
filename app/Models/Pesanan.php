@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Pesanan extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
     protected $table = 'pesanan';
     protected $primaryKey = 'kode_pesanan';
     protected $keyType = 'string';
@@ -50,6 +51,7 @@ class Pesanan extends Model
     public function hapus() {
         $this->payment()->delete();
         $this->details()->delete();
+        $this->sewa()->delete();
         $this->delete();
     }
     public function statusText() {

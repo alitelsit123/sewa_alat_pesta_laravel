@@ -17,6 +17,19 @@ class SewaController extends Controller
         return view('admin-pages.sewa', $data);
     }
     public function complete($id) {
-        return back()->with('notes', ['text' => 'Yeay Transaksi selesai!']);;
+        $sewa = Sewa::findOrFail($id);
+        $order = $sewa->order;
+        $details = $order->details;
+        // foreach($details as $row) {
+        //     $produk = $row->produk;
+        //     $produk->stok = $produk->stok + $row->kuantitas;
+        //     $produk->save();
+        // }
+
+        $sewa->status = 4;
+        $sewa->waktu_pengembalian = now();
+        $sewa->save();
+
+        return back()->with('notes', ['text' => 'Yeay Sewa selesai!']);;
     }
 }

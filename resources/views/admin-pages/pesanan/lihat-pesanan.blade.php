@@ -56,6 +56,8 @@
                     <span class="badge badge-info">
                         @if($order->status > 1) 
                             {{ $order->sewa->getShipmentStatusText() }} 
+                        @else 
+                            Belum Dikirim
                         @endif
                     </span>
                 </div>
@@ -92,7 +94,7 @@
                     <span>Payment Code:</span> {{ $order->dpPayment()->kode_pembayaran }}
                     <span>Payment Amount:</span> {{ $order->dpPayment()->total_bayar }}<br>
                     <span>Payment Due:</span> 2/22/2014<br>
-                    <span>Status:</span> <strong>{{ $order->fullPayment()->getStatusText() }}</strong><br>
+                    <span>Status:</span> <strong>{{ $order->dpPayment()->getStatusText() }}</strong><br>
                 </div>
                 @endif
                 <div class="col-6">
@@ -112,14 +114,19 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Nama Produk</th>
+                                <th>Produk</th>
                                 <th>Jumlah</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($order->details as $row)
                             <tr>
-                                <td>{{ $row->produk->nama_produk }}</td>
+                                <td>
+                                    <div class="d-flex">
+                                        <img class="img-fluid mr-1" src="{{ asset('/assets/uploads/produk/'.$row->produk->gambar) }}" alt="prduct image" class="img-fluid" style="width: 80px; height: 80px;" >
+                                        <div>{{ $row->produk->nama_produk }}</div>
+                                    </div>
+                                </td>
                                 <td>{{ $row->kuantitas }}</td>
                             </tr>
                             @endforeach

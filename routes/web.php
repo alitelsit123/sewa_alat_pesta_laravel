@@ -27,14 +27,17 @@ Route::get('/recached', function() {
 });
 
 Route::get('/products', [App\Http\Controllers\Publics\ProductController::class, 'showProductsPage']);
+Route::post('/products/set_durasi', [App\Http\Controllers\Publics\ProductController::class, 'setDuration'])->name('set.duration');
 Route::get('/products/{kategori}/{slug}/{id}', [App\Http\Controllers\Publics\ProductController::class, 'showProductsItemPage'])->name('product-view');
 
 Route::get('/about', [App\Http\Controllers\Publics\BaseViewController::class, 'showAboutPage']);
 
 Route::get('/cart', [App\Http\Controllers\Publics\KeranjangController::class, 'showCartPage']);
-Route::post('/cart/add', [App\Http\Controllers\Publics\KeranjangController::class, 'addToCart'])->name('add-to-cart');
-Route::post('/cart/update', [App\Http\Controllers\Publics\KeranjangController::class, 'updateCart'])->name('update-cart');
-Route::delete('/cart/delete/{id}', [App\Http\Controllers\Publics\KeranjangController::class, 'deleteCart'])->name('delete-singleton-cart');
+Route::middleware(['ShouldAddDuration', 'CartGuess'])->group(function() {
+    Route::post('/cart/add', [App\Http\Controllers\Publics\KeranjangController::class, 'addToCart'])->name('add-to-cart');
+    Route::post('/cart/update', [App\Http\Controllers\Publics\KeranjangController::class, 'updateCart'])->name('update-cart');
+    Route::delete('/cart/delete/{id}', [App\Http\Controllers\Publics\KeranjangController::class, 'deleteCart'])->name('delete-singleton-cart');
+});
 
 Route::get('/profile/{slug}', [App\Http\Controllers\Publics\ProfileController::class, 'showProfilePage'])->name('profile.show');
 Route::put('/profile/{slug}/update', [App\Http\Controllers\Publics\ProfileController::class, 'update'])->name('profile.update')->middleware(['auth']);
@@ -44,6 +47,8 @@ Route::post('/api_v1/chat_with_bot', [App\Http\Controllers\Admin\LiveChatControl
 Route::post('/api_v1/searching_for_costumer_service', [App\Http\Controllers\Admin\LiveChatController::class, 'searchOnlineCs'])->name('search-online-cs');
 Route::post('/api_v1/chat', [App\Http\Controllers\Admin\LiveChatController::class, 'chat'])->name('send_chat');
 Route::post('/api_v1/chat/cs/store', [App\Http\Controllers\Admin\LiveChatController::class, 'chatWithCs'])->name('chat-with-cs');
+Route::get('/api_v1/checkout/payment/type/{type}/change', [App\Http\Controllers\Publics\OrderController::class, 'changePaymentType'])->name('order.payment.type.change');
+Route::get('/api_v1/web_notification/read', [App\Http\Controllers\Publics\NotificationController::class, 'markAsRead'])->name('notification.markread');
 
 // Payment Notification
 Route::post('/api_v1/order/payment/notification', [App\Http\Controllers\Publics\OrderController::class, 'paymentNotification'])->name('payment.notification');
@@ -54,23 +59,33 @@ Route::post('/api_v1/polling/payment/notification', [App\Http\Controllers\Pollin
 
 
 Route::name('order.')->prefix('order')->group(function() {
-    Route::middleware(['auth'])->group(function() {
+    Route::middleware(['auth', 'verified'])->group(function() {
         Route::post('/checkout', [App\Http\Controllers\Publics\OrderController::class, 'checkData'])->name('proses.checkdata');
         Route::get('/checkout', [App\Http\Controllers\Publics\OrderController::class, 'checkoutView'])->name('proses.checkout.view');
         Route::post('/process_payment', [App\Http\Controllers\Publics\OrderController::class, 'processPayment'])->name('proses.init_payment');
         Route::get('/payment', [App\Http\Controllers\Publics\OrderController::class, 'makePayment'])->name('proses.payment');    
         Route::get('/payment/finish', [App\Http\Controllers\Publics\OrderController::class, 'finishPayment'])->name('payment.finish');    
-    });    
-
+    });
 });
 
 
 
 Route::prefix('auth')->group(function() {
+
+    Route::get('/verify-email', [App\Http\Controllers\Auth\UserVerification::class, 'showVerifyEmail'])
+    ->middleware('auth')
+    ->name('verification.notice');
+    Route::post('/verify-email/resend', [App\Http\Controllers\Auth\UserVerification::class, 'resendEmailVerification'])
+    ->middleware('auth')
+    ->name('verification.resend');
+    Route::get('/verify-email/{id}/{hash}', [App\Http\Controllers\Auth\UserVerification::class, 'verify'])
+    ->middleware(['auth', 'signed'])
+    ->name('verification.verify');
+
     Route::middleware(['guest'])->group(function() {
         Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'index'])->name('login-form');
         Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
-        Route::post('/channels/authorize', [App\Http\Controllers\Admin\LiveChatController::class, 'authorizeUser']);
+        Route::post('/channels/authorize', [App\Http\Controllers\Auth\LoginController::class, 'authorizeWebsocket']);
         Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'index']);
         Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'register']);
 
@@ -87,12 +102,12 @@ Route::middleware(['auth.admin'])->name('admin.')->group(function() {
         Route::get('/', function () {
             return redirect('/admin/dashboard');
         });
-        Route::get('/dashboard', function () {
-            return view('admin-pages.dashboard');
-        })->name('index');
+        Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('index');
         Route::name('user.')->prefix('users')->group(function() {
             Route::get('/', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('index');
             Route::get('/{id}', [App\Http\Controllers\Admin\UserController::class, 'showUser'])->name('show');
+            Route::get('/{id}/set_admin', [App\Http\Controllers\Admin\UserController::class, 'setAsAdmin'])->name('set.role.admin');
+            Route::get('/{id}/remove_admin', [App\Http\Controllers\Admin\UserController::class, 'removeAdminRole'])->name('remove.role.admin');
         });
         Route::name('livechat.')->prefix('livecommunication')->group(function() {
             Route::get('/', [App\Http\Controllers\Admin\LiveChatController::class, 'index'])->name('index');
@@ -103,8 +118,12 @@ Route::middleware(['auth.admin'])->name('admin.')->group(function() {
             Route::post('/disconnect_to_user', [App\Http\Controllers\Admin\LiveChatController::class, 'disconnectToUser'])->name('disconnect-chat');
             Route::post('/chat/user/store', [App\Http\Controllers\Admin\LiveChatController::class, 'chatWithUser'])->name('chat-with-user');            
         });
+        Route::name('transaksi.')->prefix('transaksi')->group(function() {
+            Route::get('/', [App\Http\Controllers\Admin\TransaksiController::class, 'index'])->name('index');
+        });
         Route::name('order.')->prefix('order')->group(function() {
             Route::get('/', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('index');
+            Route::get('/{kode_pesanan}/destroy', [App\Http\Controllers\Admin\OrderController::class, 'destroy'])->name('destroy');
             Route::get('/{kode_pesanan}/{type}/ship', [App\Http\Controllers\Admin\OrderController::class, 'shipmentOut'])->name('shipment');
             Route::get('/v/{kode_pesanan}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('show');
         });

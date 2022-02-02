@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 
 use App\Models\User;
 use App\Models\Profile;
@@ -20,6 +21,7 @@ class RegisterController extends Controller
     
     public function register(Request $request) {
         $validator = Validator::make($request->all(), [
+            'nama' => ['required', 'string'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'confirmed', 'min:8'],
         ]);
@@ -35,7 +37,9 @@ class RegisterController extends Controller
 
         $user->roles()->syncWithoutDetaching([UserRole::getBasicRole()]);
 
-        $user->profile()->create([]);
+        $user->profile()->create([
+            'nama' => $request->nama
+        ]);
 
         return redirect('/auth/login');
     }

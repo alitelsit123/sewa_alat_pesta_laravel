@@ -32,7 +32,7 @@ class Pembayaran extends Model
         return $this->tipe_pembayaran == 1 ? 'Dp': 'Full';
     }
     public function getStatusText() {
-        return $this->tipe_pembayaran == 1 ? 'belum membayar': 'sudah bayar';
+        return $this->status == 1 ? 'belum membayar': 'sudah bayar';
     }
 
 }

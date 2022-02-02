@@ -11,7 +11,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        $users = User::where('id_user', '<>', auth()->user()->id_user)->get();
 
         $data = [
             'users' => $users
@@ -25,5 +25,15 @@ class UserController extends Controller
             'user' => $user
         ];
         return view('admin-pages.user.lihat-user', $data);
+    }
+    public function setAsAdmin($id) {
+        $user = User::whereId_user($id)->first();
+        $user->roles()->syncWithoutDetaching(2);
+        return back()->with('notes', ['text' => 'Berhasil!']);
+    }
+    public function removeAdminRole($id) {
+        $user = User::whereId_user($id)->first();
+        $user->roles()->detach(2);
+        return back()->with('notes', ['text' => 'Berhasil!']);
     }
 }

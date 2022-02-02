@@ -75,6 +75,15 @@
           </a>
         </li>
         <li class="nav-item">
+          <a href="{{ route('admin.transaksi.index') }}" class="nav-link">
+            <i class="nav-icon fas fa-cash-register"></i>
+            <p>
+              Transaksi
+              <!-- <span class="right badge badge-danger">New</span> -->
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
           <a href="{{ route('admin.sewa.index') }}" class="nav-link">
             <i class="nav-icon fas fa-fire"></i>
             <p>

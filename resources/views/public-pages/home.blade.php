@@ -33,22 +33,23 @@
         <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
         <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a> -->
         <div class="d-flex justify-content-center bg-white rounded-md px-4 py-3 rounded-5 bd bd-2 bd-indigo">
-            <form action="{{ url('/products') }}" method="get">
+            <form action="{{ route('set.duration') }}" method="post">
+                @csrf
                 <div class="row row-xs">
                     <div class="col-md-12 mb-2">
                         <div class="tx-16 tx-medium">Ingin Menyewa Kapan ?</div>
                     </div>
                     <div class="col-md-4">
-                        <input type="date" name="f" class="form-control" placeholder="" value="">
+                        <input type="date" name="from" class="form-control" placeholder="" value="" required>
                     </div><!-- col -->
                     <div class="col-md-4">
-                        <input type="date" name="to" class="form-control" placeholder="" value="">
+                        <input type="date" name="to" class="form-control" placeholder="" value="" required>
                     </div><!-- col -->
                     <div class="col-md-4">
                         <button class="btn btn-indigo w-100" type="submit">Lihat Katalog</button>
                     </div><!-- col -->
                 </div><!-- row -->
-                <div class="tx-11 tx-danger mg-t-10">Pencarian waktu dalam prosess</div>
+                <!-- <div class="tx-11 tx-danger mg-t-10">Pencarian waktu dalam prosess</div> -->
             </form>
         </div>
     </div>
@@ -80,7 +81,7 @@
                         @foreach($rekomendasi as $produk)
                         <div class="col-md-3 mb-3">
                             <div class="card bd-0 position-relative">
-                                <img class="img-fluid" src="{{ asset('/uploads/produk/'.$produk->gambar) }}" alt="Produk Images">
+                                <img class="img-fluid" src="{{ asset('/assets/uploads/produk/'.$produk->gambar) }}" alt="Produk Images">
                                 <div class="card-img-overlay bg-black-4 d-flex flex-column justify-content-end">
                                 <a class="btn pd-0 tx-white tx-semibold tx-18 mg-b-15" href="{{ route('product-view', ['kategori' => $produk->kategori->nama_kategori,'slug' => $produk->nama_produk, 'id' => $produk->id_produk]) }}">{{ $produk->nama_produk }}</a>
                                 
@@ -106,7 +107,7 @@
                         @foreach($produk_new as $produk)
                         <div class="col-xs-4 col-sm-3 col-md-2 mb-3">
                             <div class="card bd-0 position-relative">
-                                <img class="img-fluid" src="{{ asset('/uploads/produk/'.$produk->gambar) }}" alt="Produk Images">
+                                <img class="img-fluid" src="{{ asset('/assets/uploads/produk/'.$produk->gambar) }}" alt="Produk Images">
                                 <div class="card-img-overlay bg-black-4 d-flex flex-column justify-content-end align-items-center">
                                     <a class="pd-0 tx-white" style="text-decoration: none;" href="{{ route('product-view', ['kategori' => $produk->kategori->nama_kategori,'slug' => $produk->nama_produk, 'id' => $produk->id_produk]) }}">
                                         <div class="tx-semibold tx-14">{{ ucfirst($produk->nama_produk) }}</div>

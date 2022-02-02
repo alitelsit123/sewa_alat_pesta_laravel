@@ -7,15 +7,16 @@ use Illuminate\Http\Request;
 
 use App\Models\Produk;
 use App\Models\Kategori;
+use App\Models\Sewa;
+use App\Models\Pesanan;
 
 class ProductController extends Controller
 {
     public function showProductsPage() {
         $kategori = Kategori::latest()->get();
-
         $querys = request()->query();
         $validated_query = $this->filterValidator($querys);
-        $produks = Produk::when(in_array('k', $validated_query), function($query) use ($querys) {
+        $produks = Produk::withOrdered()->when(in_array('k', $validated_query), function($query) use ($querys) {
             $query->where('id_kategori', $querys['k'])->orWhereHas('kategori', function($q) use ($querys) {
                 $q->where('nama_kategori', $querys['k']);
             });
@@ -27,14 +28,10 @@ class ProductController extends Controller
                 $query->orWhere('nama_produk', 'like', '%'.$v.'%');
             }
         })
-        // ->when(in_array('f', $validated_query), function($query) use ($querys) {
-        //     // $query->where('tanggal_mulai', '>', $querys['f']);
-        //     // $query->whereHas('', '>', $querys['f']);
-        // })
-        ->where('stok', '>', '0')
-        ->latest()->paginate(15);
+        ->paginate(15);
 
         $query_new = [];
+
         foreach($validated_query as $row) {
             $query_new[$row] = $querys[$row];
         }
@@ -47,8 +44,37 @@ class ProductController extends Controller
 
         return view('public-pages.products', $data);
     }
+    public function setDuration(Request $request) {
+        $validator = \Validator::make($request->all(), [
+            'from' => ['required', 'date'],
+            'to' => ['required', 'date'],
+        ]);
+
+        if($validator->fails()):
+            return back()->withErrors($validator)->withInput();
+        endif;
+
+        $input = $validator->validated();
+
+        if($input['from'] > $input['to']):
+            return back()->with(['msg_error' => 'Tanggal sampai harus lebih dari tanggal mulai.']);
+        endif;
+
+        if(!session()->has('book')) {
+            $book = [
+                'from' => $input['from'],
+                'to' => $input['to'],
+            ];
+            session(['book' => $book]);
+        } else {
+            session()->put('book.from', $input['from']);
+            session()->put('book.to', $input['to']);
+        }
+
+        return redirect('/products');
+    }
     public function showProductsItemPage(Request $request, $kategori, $slug, $id) {
-        $produk = Produk::findOrFail($id);
+        $produk = Produk::withOrdered()->whereId_produk($id)->first();
         $data = [
             'produk' => $produk,
         ];
@@ -75,7 +101,7 @@ class ProductController extends Controller
             array_push($validated_query, 'f');
         }
         // time to
-        if(array_key_exists('to', $query)) {
+        if(array_key_exists('to', $query) && $query['to'] != null) {
             array_push($validated_query, 'to');
         }
 

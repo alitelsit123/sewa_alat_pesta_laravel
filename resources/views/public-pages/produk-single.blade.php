@@ -18,7 +18,7 @@ $(document).ready(function() {
     var button_add_quantity = document.querySelector('.add-quantity');
     button_add_quantity.addEventListener("click", function() {
         var target = document.getElementById('quantity-for-');
-        if(parseInt(target.value) >= {{ $produk->stok }}) {
+        if(parseInt(target.value) >= {{ $produk->stok - $produk->ordered_sum_kuantitas }}) {
             if(!this.disabled) {
                 this.disabled = true;
             }
@@ -50,16 +50,6 @@ $(document).ready(function() {
 @endsection
 
 @section('content-body')
-@if(session()->has('msg_success'))
-<div class="alert alert-success" role="alert">
-    <div class="container">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <strong>Berhasil!</strong> {{ session('msg_success') }}
-    </div>
-</div><!-- alert -->
-@endif
 <div class="pd-20" style="min-height:600px;">
     <div class="container">
         <div class="d-flex">
@@ -76,7 +66,7 @@ $(document).ready(function() {
                 </div>
                 <div class="col-md-5 pd-l-0">
                     <!-- <img src="{{ asset('/uploads/produk/'.$produk->gambar) }}" alt="" srcset="" class="img-fluid"> -->
-                    <img src="{{ asset('/assets/dist-base/img/carousel/banner_1.jpg') }}" alt="" srcset="" class="img-fluid">
+                    <img src="{{ asset('/assets/uploads/produk/'.$produk->gambar) }}" alt="" srcset="" class="img-fluid">
                 </div>
                 <div class="col-md-7">
                     <form action="{{ route('add-to-cart') }}" method="post">
@@ -85,11 +75,11 @@ $(document).ready(function() {
                             <div class="tx-18 tx-semibold mg-b-10">Rp. {{ number_format($produk->harga) }}</div>
                                 @csrf
                                 <div class="d-flex align-items-center mg-b-10">
-                                    <div class="bd-r bd-2 bd-r-gray-500 px-3 tx-gray-500 tx-12">{{ number_format($produk->stok) }} stok tersisa</div>
+                                    <div class="bd-r bd-2 bd-r-gray-500 px-3 tx-gray-500 tx-12">{{ number_format($produk->stok - $produk->ordered_sum_kuantitas) }} stok tersisa</div>
                                     <div class="px-3">Quantitas</div>
                                     <button class="btn btn-icon remove-quantity" type="button"><i class="typcn typcn-minus-outline"></i></button>
                                     <input type="hidden" name="produk_id" value="{{ $produk->id_produk }}" />
-                                    <input type="text" name="kuantitas" class="form-control rounded-pill text-center wd-100" id="quantity-for-" value="1" />
+                                    <input type="text" name="kuantitas" class="form-control rounded-pill text-center wd-100" id="quantity-for-" @if($produk->stok - $produk->ordered_sum_kuantitas < 1) value="0" @else value="1" @endif />
                                     <button class="btn btn-icon add-quantity" type="button"><i class="typcn typcn-plus-outline"></i></button>
                                 </div>
                         </div>
@@ -102,7 +92,7 @@ $(document).ready(function() {
                         @enderror
                         <div class="d-flex">
                             <button class="btn btn-with-icon bd bd-2 bd-gray-700 mg-r-10 disabled"><i class="typcn icon typcn-heart-outline"></i> Favoritkan</button>
-                            <button class="btn btn-with-icon btn-indigo bd bd-2 bd-primary" type="submit"><i class="typcn icon typcn-shopping-cart"></i> Masukkan ke Keranjang</button>
+                            <button class="btn btn-with-icon btn-indigo bd bd-2 bd-primary @if($produk->stok - $produk->ordered_sum_kuantitas < 1) disabled @endif" @if($produk->stok - $produk->ordered_sum_kuantitas < 1) @else type="submit" @endif><i class="typcn icon typcn-shopping-cart"></i> Masukkan ke Keranjang</button>
                         </div>
                     </form>
                 </div>

@@ -173,7 +173,8 @@ class LiveChatController extends Controller
             $this->pusher->trigger('private-chat.'.$sesi->id_chat_sesi, 'App\\Events\\Chat', [
                 'msg' => 'Sesi ditolak. Admin sibuk. Silahkan hubungi beberapa saat.', 
                 'event' => 'chat', 
-                'data' => $chat]);
+                'data' => $chat
+            ]);
             $sesi->hapus();
             return response()->json(['msg' => 'Rejected.', 'status' => 1, 'data' => $chat]);
         } else if($request->has('wait')) {
@@ -287,16 +288,6 @@ class LiveChatController extends Controller
         $this->pusher->trigger('private-chat.'.$sesi->id_chat_sesi, 'App\\Events\\Chat', ['msg' => $input['chat'], 'event' => 'chat', 'data' => $chat]);
 
         return response()->json(['msg' => 'msg sent']);
-    }
-    public function authorizeUser(Request $request) {
-        if (!auth()->check()) {
-            return response('Forbidden', 403);
-        }
-        echo $this->pusher->socket_auth(
-            $request->input('channel_name'), 
-            $request->input('socket_id')
-        );
-        // return true;
     }
     public function testBroadcast($id) {
         $this->pusher->trigger('private-chat.'.$id, 'App\\Events\\Chat', ['msg' => 'success dong']);

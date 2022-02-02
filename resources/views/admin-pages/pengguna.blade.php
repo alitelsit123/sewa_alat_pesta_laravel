@@ -81,6 +81,9 @@
                       <td>
                           <!-- <a href="#" class="btn btn-sm btn-info">Pesan</a> -->
                           <a href="{{ route('admin.user.show', $row->id_user) }}" class="btn btn-sm btn-default">Lihat</a>
+                          @if(!$row->isAdmin())
+                          <a href="{{ route('admin.user.set.role.admin', $row->id_user) }}" class="btn btn-sm btn-info">set as ADMIN</a>
+                          @endif
                       </td>
                     </tr>
                     @empty

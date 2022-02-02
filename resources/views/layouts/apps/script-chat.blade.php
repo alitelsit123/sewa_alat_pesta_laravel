@@ -8,24 +8,14 @@ var input_chat = document.querySelector('input[name=input_chat]');
 var chat_type = 0;
 var opened_chat = 0;
 var chat_session = @if(auth()->user()) @if(auth()->user()->sesiChat()) true @else false @endif @else false @endif;
-var pusher = new Pusher('{{config("pusher.APP_KEY")}}', {
-    authEndpoint: '/auth/channels/authorize',
-    cluster: '{{config("pusher.APP_CLUSTER")}}',
-    encrypted: true,
-    auth: {
-        headers: {
-            'X-CSRF-Token': '{{ csrf_token() }}'
-        }
-    }
-});
 var channel = null;
 
 var inp_ch = document.querySelector('input[name="input_chat"]');
 var current_sesi = -1;
 var chat_history = {};
-var current_user = {};
 box_cs_chat.style.bottom += 20 + btn_cs_chat.offsetHeight + 10 + 'px';
 box_cs_chat.style.display = 'none';
+btn_cs_chat.disabled = true;
 
 function connectedToCs() {
     btn_connect_cs.style.display = 'none';
@@ -104,7 +94,6 @@ function bindChatChannel() {
             let element_id = uuidv4();
             insertCenterChat(data.msg, element_id);
             connectedToCs();
-            console.log('connected');
         } else if(data.data.type == 'disconnected' || data.data.type == 'rejected') {
             chat_channel.unbind('App\\Events\\Chat', function() {
                 console.log('chat disconnected');
@@ -156,7 +145,6 @@ btn_cs_chat_close.addEventListener('click', function() {
 btn_cs_chat.addEventListener('click', function() {
     toogleCsChat();
 });
-btn_cs_chat.disabled = true;
 inp_ch.addEventListener('keyup', function(e) {
     var v = e.target.value;
     if(e.key == 'Enter') {
@@ -196,69 +184,40 @@ $(document).ready(function() {
 });
 @endauth
 
-$.get('{{ route("user.collect") }}', function(data, status) {
-    if(data.user) {
-        current_user = Object.assign(current_user, {}, data.user);
-        // // Order
-        // polling['order']['execute'] = function() {
-        //     if(polling_activate && polling.order.activate) {
-        //         window.setTimeout(function () {
-        //             $.post('{{ route('polling.payment.status') }}', {
-        //             '_token': '{{ csrf_token() }}',
-        //             'user': current_user.id_user
-        //             }, function (data) {
-        //             console.log(data);
-        //             }).done(function() {
-        //             polling.order.execute();
-        //             });
-        //         }, 5000);
-        //     }
-        // };
-        
-        // $.each(Object.keys(polling), function(index,item) {
-        // polling[item]['execute']();
-        // // console.log(item);
-        // });
-        // // End Order
-    } else {
-
-    }
-
-}); 
-$.get('{{ route("sesi.collect.user") }}', function(data, status) {
-    // Chat
-    if(data.sesi) {
-        chat_history = Object.assign(chat_history, {}, data.sesi);
-        if(data.sesi.status == 1) {
-            insertCenterChat('Menyambungkan ke Costumer Service ...');
-        } else {
-            insertCenterChat('Terhubung');
-        }
-        if(chat_history.chats){ 
-            opened_chat = true;
-            current_sesi = chat_history.id_chat_sesi;
-            chat_type = 1;
-            connectedToCs({sesi: chat_history, status: chat_history.status});
-            setTimeout(function() {
-                $.each(chat_history.chats, function(index2, item2) {
-                    let chat_body = $('#chat-body');
-                    let e2 = uuidv4();
-                    if(item2.pengirim == current_user.id_user) {
-                        insertRightChat(item2.chat, e2)
-                    } else {
-                        insertLeftChat(item2.chat, e2)
-                    }
+function activateChatUserSession() {
+    $.get('{{ route("sesi.collect.user") }}', function(data, status) {
+        // Chat
+        if(data.sesi) {
+            chat_history = Object.assign(chat_history, {}, data.sesi);
+            if(data.sesi.status == 1) {
+                insertCenterChat('Menyambungkan ke Costumer Service ...');
+            } else {
+                insertCenterChat('Terhubung');
+            }
+            if(chat_history.chats){ 
+                opened_chat = true;
+                current_sesi = chat_history.id_chat_sesi;
+                chat_type = 1;
+                connectedToCs({sesi: chat_history, status: chat_history.status});
+                setTimeout(function() {
+                    $.each(chat_history.chats, function(index2, item2) {
+                        let chat_body = $('#chat-body');
+                        let e2 = uuidv4();
+                        if(item2.pengirim == current_user.id_user) {
+                            insertRightChat(item2.chat, e2)
+                        } else {
+                            insertLeftChat(item2.chat, e2)
+                        }
+                    });
+                    bindChatChannel();
                 });
-                btn_cs_chat.disabled = false;
-                bindChatChannel();
-            });
-        } else {
-            unConnectedToCs();
+            } else {
+                unConnectedToCs();
+            }
         }
-    } else {
-        btn_cs_chat.disabled = false;
-    }
-    // End Chat
-}); 
+        // End Chat
+    });
+}
+ 
 
 </script>

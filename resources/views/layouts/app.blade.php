@@ -31,12 +31,87 @@
         right: 20px;
         bottom: 20px;
       }
+      .notification-mark{
+        cursor: pointer;
+      }
+      .notification-mark:hover{
+        background-color: #f2f2f2;
+      }
+      .notification-unread{
+        background-color: #f2f2f2;
+        font-weight: bold;  
+      }
     </style>
 
   </head>
   <body>
 
     @include('layouts.apps.navbar')
+
+    @auth
+      @if(!auth()->user()->email_verified_at && !session()->has('disable_unverify_notice'))
+      <div class="alert alert-warning mg-b-0" role="alert">
+          <div class="container">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+              <div class="d-flex align-items-center">
+                <strong>!</strong> Emailmu belum diverifikasi. 
+                <form action="{{ route('verification.resend') }}" method="post">
+                    @csrf
+                    <button type="submit" class="btn tx-indigo">Verify sekarang.</button>
+                </form>
+              </div>
+          </div>
+      </div><!-- alert -->
+      @endif
+    @endauth
+    
+    @if(session()->has('msg_success'))
+    <div class="alert alert-success mg-b-0" role="alert">
+        <div class="container">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="d-flex align-items-center">
+              <strong>Berhasil! </strong> {!! session('msg_success') !!}
+              @if(session()->has('link'))
+                {!! session('link') !!}
+              @endif
+            </div>
+        </div>
+    </div><!-- alert -->
+    @endif
+    @if(session()->has('msg_warning'))
+    <div class="alert alert-warning mg-b-0" role="alert">
+        <div class="container">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="d-flex align-items-center">
+              <strong>!</strong> {!! session('msg_warning') !!}
+              @if(session()->has('link'))
+                {!! session('link') !!}
+              @endif
+            </div>
+        </div>
+    </div><!-- alert -->
+    @endif
+    @if(session()->has('msg_error'))
+    <div class="alert alert-danger mg-b-0" role="alert">
+        <div class="container">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="d-flex align-items-center">
+              <strong>!</strong> {!! session('msg_error') !!}
+              @if(session()->has('link'))
+                {!! session('link') !!}
+              @endif
+            </div>
+        </div>
+    </div><!-- alert -->
+    @endif
 
     @yield('content-body')
 
@@ -71,6 +146,18 @@
   <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
   <script>
     var page_data = null;
+    var current_user = {};
+
+    // var pusher = new Pusher('{{config("pusher.APP_KEY")}}', {
+    //     authEndpoint: '/auth/channels/authorize',
+    //     cluster: '{{config("pusher.APP_CLUSTER")}}',
+    //     encrypted: true,
+    //     auth: {
+    //         headers: {
+    //             'X-CSRF-Token': '{{ csrf_token() }}'
+    //         }
+    //     }
+    // });
     var polling = {
       'order': {
         'activate': true,
@@ -84,5 +171,24 @@
     // });
   </script>
   @yield('js_body')
-  @include('layouts.apps.script')
+
+  @include('layouts.apps.script-chat')
+  @include('layouts.apps.script-notification')
+
+  <script>
+    $.get('{{ route("user.collect") }}', function(data, status) {
+        if(data.user) {
+            current_user = Object.assign(current_user, {}, data.user);
+        } else {
+
+        }
+
+    }).done(function() {
+      if(Object.keys(current_user).length > 0) {
+        // activateChatUserSession();
+        // activateNotificationUserSession();
+      }
+      btn_cs_chat.disabled = false;
+    }); 
+  </script>
 </html>

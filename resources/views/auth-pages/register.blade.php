@@ -45,6 +45,10 @@
       <form action="{{ url('/auth/register') }}" method="post">
       	@csrf
         <div class="form-group mb-2">
+          <label>Nama</label>
+          <input type="text" name="nama" class="form-control" placeholder="Masukkan Nama" value="{{ old('nama') }}" required>
+        </div><!-- form-group -->
+        <div class="form-group mb-2">
           <label>Email</label>
           <input type="email" name="email" class="form-control" placeholder="Masukkan email" value="{{ old('email') }}" required>
         </div><!-- form-group -->

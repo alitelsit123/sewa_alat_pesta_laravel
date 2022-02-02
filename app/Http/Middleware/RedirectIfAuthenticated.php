@@ -21,13 +21,13 @@ class RedirectIfAuthenticated
     {
         $guards = Auth::user();
         // foreach ($guards as $guard) {
-            if ($guards) {
-                if($request->route()->getName() == 'admin.login-form') {
-                    return redirect(RouteServiceProvider::HOME_ADMIN);
-                } elseif($request->route()->getName() == 'login-form') {
-                    return redirect(RouteServiceProvider::HOME);
-                }
+        if ($guards) {
+            if($request->route()->getName() == 'admin.login-form') {
+                return redirect(RouteServiceProvider::HOME_ADMIN);
+            } elseif($request->route()->getName() == 'login-form') {
+                return redirect(RouteServiceProvider::HOME);
             }
+        }
         // }
 
         return $next($request);

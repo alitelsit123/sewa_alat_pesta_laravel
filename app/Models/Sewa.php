@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Sewa extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
     protected $table = 'sewa';
     protected $primaryKey = 'id_sewa';
     public $timestamps = false;
@@ -16,12 +17,13 @@ class Sewa extends Model
         'kode_pesanan',
         'waktu_pengiriman',
         'waktu_pengembalian',
+        'deleted_at',
     ];
     public function order() {
         return $this->belongsTo('App\Models\Pesanan', 'kode_pesanan');
     }
     public function user() {
-        return $this->order->user()->with(['profile'])->first();
+        return $this->order ? $this->order->user()->with(['profile'])->first(): null;
     }
     public function getShipmentStatusText() {
         if($this->status == 1) {

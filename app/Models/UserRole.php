@@ -21,4 +21,10 @@ class UserRole extends Model
     public static function getAdminRole() {
         return 1;
     }
+    public function user() {
+        return $this->belongsToMany('App\Models\User', 'user_roles_pivot', 'id_role', 'id_user')->withTimestamps();
+    }
+    public function UserAdmin() {
+        return $this->user;
+    }
 }

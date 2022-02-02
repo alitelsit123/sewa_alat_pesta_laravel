@@ -65,7 +65,8 @@
                     <tr>
                       <th>#Kode Pesanan</th>
                       <th>Nama</th>
-                      <th>Status</th>
+                      <th>Total Amount</th>
+                      <th>Status Pesanan</th>
                       <th style="width: 20%" class="text-center">#</th>
                     </tr>
                   </thead>
@@ -73,10 +74,12 @@
                     @forelse($orders as $row)  
                     <tr>
                       <td>{{ $row->kode_pesanan }}</td>
-                      <td>{{ $row->user->email }}</td>
+                      <td>{{ $row->user->profile->nama }}</td>
+                      <td>{{ \number_format($row->total_bayar) }}</td>
                       <td><span class="badge @if($row->status == 1) badge-warning @elseif($row->status == 2) badge-info @elseif($row->status == 3) badge-success @endif">{{ $row->statusText() }}</span></td>
                       <td class="text-center">
-                          <a href="{{ route('admin.order.show', $row->kode_pesanan) }}" class="btn btn-sm btn-secondary">Lihat Detail</a>
+                          <!-- <a href="{{ route('admin.order.destroy', $row->kode_pesanan) }}" class="btn mr-1 btn-xs btn-danger">Delete</a> -->
+                          <a href="{{ route('admin.order.show', $row->kode_pesanan) }}" class="btn btn-xs btn-secondary">Lihat Detail</a>
                           <!-- <button class="btn btn-sm btn-danger" onclick="openModal({{ $row->id_kategori }})" >Hapus</button> -->
                       </td>
                     </tr>

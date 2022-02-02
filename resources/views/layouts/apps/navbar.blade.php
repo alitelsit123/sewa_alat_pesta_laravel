@@ -29,34 +29,43 @@
       </form>
       
       <div class="az-header-message">
-        <a href="{{ url('/cart') }}" @auth class="{{ auth()->user()->carts->count() > 0 ? 'new': '' }}" @endauth><i class="typcn typcn-shopping-cart"></i></a>
+        <a id="links" href="{{ url('/cart') }}" @auth class="{{ auth()->user()->unreadNotifications()->count() > 0 ? 'new': '' }}" @endauth><i class="typcn typcn-shopping-cart"></i></a>
       </div>
       @auth
       <div class="dropdown az-header-notification">
-        <a href="#" class="new"><i class="typcn typcn-bell"></i></a>
-        <div class="dropdown-menu">
+        <a href="#" @if(auth()->user()->unreadNotifications()->count() > 0) class="new" @endif id="btn-notification"><i class="typcn typcn-bell"></i></a>
+        <div class="dropdown-menu pd-0" style="width: 500px!important">
           <div class="az-dropdown-header mg-b-20 d-sm-none">
             <a href="#" class="az-header-arrow"><i class="icon ion-md-arrow-back"></i></a>
           </div>
-          <h6 class="az-notification-title">Notifications</h6>
-          <p class="az-notification-text">You have 2 unread notification</p>
-          <div class="az-notification-list">
-            <div class="media new">
-              <div class="az-img-user"><img src="../img/faces/face2.jpg" alt=""></div>
-              <div class="media-body">
-                <p>Congratulate <strong>Socrates Itumay</strong> for work anniversaries</p>
-                <span>Mar 15 12:32pm</span>
-              </div><!-- media-body -->
-            </div><!-- media -->
-            <div class="media new">
-              <!-- <div class="az-img-user online"><img src="../img/faces/face3.jpg" alt=""></div> -->
+          <h6 class="az-notification-title">Notifikasi</h6>
+          <p class="az-notification-text mg-b-0 bd-b pd-b-10">Kamu memiliki {{ auth()->user() ? auth()->user()->unreadNotifications()->count():'0' }} notifikasi yang belum dibaca.</p>
+          <div class="az-notification-list" id="notification-list" style="max-height: 400px;overflow-y: auto;">
+            @auth
+              @foreach(auth()->user()->notifications()->get() as $row)
+              <div class="media notification-item notification-mark @if($row->unread()) notification-unread @else notification-read @endif">
+                <!-- <div class="az-img-user"><img src="" alt=""></div> -->
+                <div class="media-body flex-grow-1">
+                  <p>{!! $row->data['text'] ?? '' !!}</p>
+                  <span>{{ $row->created_at }}</span>
+                </div>
+                <!-- <div class="notification-mark @if($row->unread()) notification-unread @else notification-read @endif">
+                    <i class="">&bull;</i>
+                </div> -->
+              </div>
+              @endforeach
+            @endauth
+
+            <!-- <div class="media new">
+              <div class="az-img-user online"><img src="../img/faces/face3.jpg" alt=""></div>
               <div class="media-body">
                 <p><strong>Joyce Chua</strong> just created a new blog post</p>
                 <span>Mar 13 04:16am</span>
-              </div><!-- media-body -->
-            </div><!-- media -->
+              </div>
+            </div> -->
+
           </div><!-- az-notification-list -->
-          <div class="dropdown-footer"><a href="#">View All Notifications</a></div>
+          <!-- <div class="dropdown-footer"><a href="#">View All Notifications</a></div> -->
         </div><!-- dropdown-menu -->
       </div><!-- az-header-notification -->
       @endauth

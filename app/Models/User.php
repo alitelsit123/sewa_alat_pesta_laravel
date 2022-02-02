@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -50,6 +50,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function receivesBroadcastNotificationsOn()
+    {
+        return 'notification.'.$this->id_user;
+    }
+
     public function profile() {
         return $this->hasOne('App\Models\Profile', 'id_user');
     }
@@ -68,7 +73,7 @@ class User extends Authenticatable
     }
 
     public function carts() {
-        return $this->belongsToMany('App\Models\Produk', 'keranjang', 'id_user', 'id_produk')->withPivot('kuantitas')->withTimestamps();
+        return $this->belongsToMany('App\Models\Produk', 'keranjang', 'id_user', 'id_produk')->withPivot(['kuantitas', 'tanggal_mulai', 'tanggal_selesai'])->withTimestamps();
     }
     public function cartWithStat($produk = null) {
         $stats = ['total_kuantitas' => 0, 'total_harga' => 0];

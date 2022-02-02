@@ -232,26 +232,6 @@ $('#order-listing').each(function() {
 @endsection
 
 @section('content-body')
-@if(session()->has('msg_success'))
-<div class="alert alert-success" role="alert">
-    <div class="container">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <strong>Berhasil!</strong> {{ session('msg_success') }}
-    </div>
-</div><!-- alert -->
-@endif
-@if(session()->has('msg_error'))
-<div class="alert alert-danger" role="alert">
-    <div class="container">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <strong>!</strong> {{ session('msg_error') }}
-    </div>
-</div><!-- alert -->
-@endif
 <div class="mt-5 mb-5" style="min-height:600px;" id="content-wrapper">
     <div class="container px-0">
         <!-- <div class="az-content-label mg-b-10">Keranjang</div> -->
@@ -294,7 +274,7 @@ $('#order-listing').each(function() {
                         <div class="bd-b bd-4 pd-b-10 bd-gray-100 mg-b-20">
                             <div class="d-flex align-items-start mg-b-10">
                                 <div class="image mg-r-10">
-                                    <img src="{{ asset('/uploads/produk/'.$row['gambar']) }}" class="img-fluid rounded-10" 
+                                    <img src="{{ asset('/assets/uploads/produk/'.$row['gambar']) }}" class="img-fluid rounded-10" 
                                     style="width: 80px; height: 80px;" alt="Responsive image">
                                 </div>
                                 <div class="flex-grow-1">
@@ -308,11 +288,12 @@ $('#order-listing').each(function() {
                                     id="" style="width: 20px;height: 20px;" checked="true">
                                 </div>
                                 <div class="d-flex mg-l-auto align-items-center">
-                                    <div class="bd-r bd-2 bd-r-gray-500 px-3 tx-gray-500 tx-12">{{ $row['stok'] }} stok tersisa</div>
-                                    <div class="px-3">Update Kuantitas</div>
+                                    <div class="bd-r bd-2 bd-r-gray-500 px-3 tx-gray-500 tx-12">{{ $row['stok'] - $row['ordered_sum_kuantitas'] }} stok tersisa</div>
+                                    <div class="px-3 tx-medium @if($row['pivot']['kuantitas'] > ($row['stok'] - $row['ordered_sum_kuantitas'])) tx-danger @endif">Kuantitas</div>
                                     <button class="btn btn-icon removeQuantity" data-produk="{{ $row['id_produk'] }}"><i class="typcn typcn-minus-outline"></i></button>
-                                    <input type="text" name="kuantitas[]" data-stok="{{ $row['stok'] }}" data-produk="{{ $row['id_produk'] }}" class="form-control rounded-pill text-center wd-100 quantity" id="quantity-for-{{ $row['id_produk'] }}" data-produk="{{ $row['id_produk'] }}" value="{{ $row['pivot']['kuantitas'] }}" />
-                                    <button class="btn btn-icon addQuantity" data-stok="{{ $row['stok'] }}" data-produk="{{ $row['id_produk'] }}"><i class="typcn typcn-plus-outline"></i></button>
+                                    <input type="text" name="kuantitas[]" data-stok="{{ $row['stok'] - $row['ordered_sum_kuantitas'] }}" data-produk="{{ $row['id_produk'] }}" 
+                                    class="bd @if($row['pivot']['kuantitas'] > ($row['stok'] - $row['ordered_sum_kuantitas'])) bd-danger @endif form-control rounded-pill text-center wd-100 quantity" id="quantity-for-{{ $row['id_produk'] }}" data-produk="{{ $row['id_produk'] }}" value="{{ $row['pivot']['kuantitas'] }}" />
+                                    <button class="btn btn-icon addQuantity" data-stok="{{ $row['stok'] - $row['ordered_sum_kuantitas'] }}" data-produk="{{ $row['id_produk'] }}"><i class="typcn typcn-plus-outline"></i></button>
                                     <form action="{{ route('delete-singleton-cart', $row['id_produk']) }}" method="post">
                                         @csrf
                                         @method('delete')
@@ -360,7 +341,7 @@ $('#order-listing').each(function() {
                         @endauth
                         @guest
                         <div class="w-100 d-flex justify-content-center align-items-center">
-                            <p class="tx-medium tx-indigo tx-18 mg-t-10"><a href="{{ url('/auth/login') }}">Masuk</a> Untuk Order</p>
+                            <p class="tx-medium tx-indigo tx-18 mg-t-10"><a href="{{ url('/auth/login') }}">Masuk</a> Untuk Checkout</p>
                         </div>
                         @endguest
                     </li>

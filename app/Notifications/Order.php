@@ -6,19 +6,21 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class Order extends Notification
 {
     use Queueable;
 
+    public $pesanan;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
-    {
-        //
+    public function __construct($pesanan)
+    {   
+        $this->pesanan = $pesanan;
     }
 
     /**
@@ -29,7 +31,7 @@ class Order extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -56,6 +58,25 @@ class Order extends Notification
     {
         return [
             //
+        ];
+    }
+    /**
+     * Get the broadcastable representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return BroadcastMessage
+     */
+    public function toBroadcast($notifiable)
+    {
+        return new BroadcastMessage([
+            'kode_pesanan' => $this->pesanan->kode_pesanan,
+        ]);
+    }
+
+    public function toDatabase($notifiable) {
+        return [
+            'url' => url('/'),
+            'kode_pesanan' => $this->pesanan->kode_pesanan
         ];
     }
 }

@@ -43,26 +43,6 @@
 @endsection
 
 @section('content-body')
-@if(session()->has('msg_success'))
-<div class="alert alert-success" role="alert">
-    <div class="container">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <strong>Berhasil!</strong> {{ session('msg_success') }}
-    </div>
-</div><!-- alert -->
-@endif
-@if(session()->has('msg_error'))
-<div class="alert alert-danger" role="alert">
-    <div class="container">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <strong>!</strong> {{ session('msg_error') }}
-    </div>
-</div><!-- alert -->
-@endif
 <div class="az-content az-content-profile pd-t-0">
   <div class="container mn-ht-100p" style="min-height: 500px;">
     <div class="az-content-left az-content-left-profile pd-t-10">
@@ -86,7 +66,15 @@
         <div class="d-flex justify-content-between mg-b-20">
           <div>
             <h5 class="az-profile-name">{{ $user->profile->nama ?? '[ Nama Belum di setel ]' }}</h5>
-            <p class="az-profile-name-text">{{ $user->email }}</p>
+            <p class="az-profile-name-text">{{ $user->email }} 
+              @if(auth()->check() && $is_me)
+                @if(auth()->user()->email_verified_at == null)
+                  <span class="badge badge-warning">Not Verified</span>
+                @else 
+                  <span class="badge badge-success">Verified</span>
+                @endif
+              @endif
+            </p>
           </div>
           <div class="btn-icon-list">
           </div>
@@ -108,12 +96,13 @@
         <a href="#profile-setting-tab" class="nav-link {{ request()->input('o') == 'setting' ? 'active': '' }}" data-toggle="tab" id="setting"><i class="typcn typcn-user"></i> Biodata</a>
         <a href="#profile-history-tab" class="nav-link {{ request()->input('o') == 'history' ? 'active': '' }}" data-toggle="tab" id="history"><i class="typcn typcn-document-text"></i> Riwayat</a>
         <a href="#" class="nav-link disabled"><i class="typcn typcn-cog"></i> Pengaturan</a>
+        @else
+        <a href="#profile-setting-tab" class="nav-link {{ request()->input('o') == 'setting' ? 'active': '' }}" data-toggle="tab" id="setting"><i class="typcn typcn-user"></i> Biodata</a>
         @endif
-        @guest
-        <a href="#profile-setting-tab" class="nav-link active" data-toggle="tab" id="setting"><i class="typcn typcn-user"></i> Biodata</a>
-        @endguest
       </nav>
       <div class="tab-content">
+        @if(auth()->check() && $is_me)
+        
         <div class="az-profile-body tab-pane {{
           (request()->input('o') == 'activity') ? 
           'active': (!request()->input('o') ? 
@@ -134,8 +123,8 @@
           </div> -->
         </div>
         <!-- az-profile-body -->
-
-        <div class="az-profile-body tab-pane {{ request()->input('o') == 'setting' ? 'active': (auth()->check() ? 'fade':'active' ) }}" id="profile-setting-tab">
+        @endif
+        <div class="az-profile-body tab-pane @if(auth()->check() && $is_me) {{ request()->input('o') == 'setting' ? 'active': (auth()->check() ? 'fade':'active' ) }} @else active @endif" id="profile-setting-tab">
           
           <div id="profil-info">
             <div class="d-flex mg-b-10 pd-b-10 bd-b bd-gray-200">
@@ -242,10 +231,8 @@
                 'btn-indigo': ((request()->input('t') != '1' && request()->input('t') != '2') && (request()->input('t') != '3') && (request()->input('t') != '4') ? 
                 'btn-indigo': 'btn-outline-light'))
               }} mg-r-10 rounded-pill">Semua</a>
-              <a href="{{ url('/profile/'.auth()->user()->email) }}?o=history&t=1" class="btn {{ request()->input('t') == '1' || request()->input('t') == '2' ? 'btn-indigo': 'btn-outline-light' }} mg-r-10 rounded-pill">Belum di bayar</a>
-              <a href="{{ url('/profile/'.auth()->user()->email) }}?o=history&t=3" class="btn {{ request()->input('t') == '3' ? 'btn-indigo': 'btn-outline-light' }} mg-r-10 rounded-pill">Sudah bayar</a>
-              <a href="{{ url('/profile/'.auth()->user()->email) }}?o=history" class="btn btn-outline-light mg-r-10 rounded-pill disabled">Selesai</a>
-              <a href="{{ url('/profile/'.auth()->user()->email) }}?o=history&t=4" class="btn  {{ request()->input('t') == '4' ? 'btn-indigo': 'btn-outline-light' }} rounded-pill">Kedaluarsa</a>
+              <a href="{{ url('/profile/'.auth()->user()->email) }}?o=history&t=3" class="btn {{ request()->input('t') == '3' ? 'btn-indigo': 'btn-outline-light' }} mg-r-10 rounded-pill">Selesai</a>
+              <a href="{{ url('/profile/'.auth()->user()->email) }}?o=history&t=1" class="btn {{ request()->input('t') == '1' || request()->input('t') == '2' ? 'btn-indigo': 'btn-outline-light' }} mg-r-10 rounded-pill">Belum di lunasi</a>
             </div>
           </div>
           @forelse($user->orderWithFilter(request()->input('t')) as $row)
@@ -315,7 +302,22 @@
                   <div class="tx-gray-700">Sewa</div>
                 </div>
                 @endif
-                @if($row->sewa->status == 4) 
+                @if($row->dpPayment()->total_bayar > 0 == 'dp' && $row->status == 2) 
+                <div class="tx-indigo d-flex flex-column justify-content-center align-items-center flex-grow-1">
+                  <div class="text-center mg-b-5">
+                    <i class="fas fa-money-bill-wave" style="font-size: 30px;"></i>
+                  </div>
+                  <div class="tx-semibold">Lunasi Pembayaran</div>
+                </div>
+                @elseif($row->dpPayment()->total_bayar > 0 == 'dp' && $row->status == 1)
+                <div class="d-flex flex-column justify-content-center align-items-center flex-grow-1" style="opacity: 0.4;">
+                  <div class="text-center mg-b-5">
+                    <i class="fas fa-money-bill-wave" style="font-size: 30px;"></i>
+                  </div>
+                  <div class="tx-gray-700">Lunasi Pembayaran</div>
+                </div>
+                @endif
+                @if($row->sewa->status == 4 && $row->status == 3) 
                 <div class="tx-indigo d-flex flex-column justify-content-center align-items-center flex-grow-1">
                   <div class="text-center mg-b-5">
                     <i class="fas fa-check" style="font-size: 30px;"></i>
@@ -333,31 +335,37 @@
               </div>
               <!-- End Wizard -->
               @endif
-              <div class="d-flex pd-b-10 mg-b-10">
-                <div class="d-flex bd-r bd-2 bd-gray-300 flex-grow-1">
-                  <img src="{{ asset('/assets/uploads/produk/'.$row->details()->firstOrFail()->produk->gambar) }}" alt="image responsive" srcset="" class="img-fluid mg-r-10" />
-                  <div class="d-flex flex-column">
-                    <span class="tx-14">{{ $row->details->count() > 1 ? $row->details()->firstOrFail()->produk->nama_produk.' <span=\'tx-medium\'>+'.($row->details->count()-1).'</span>':$row->details->firstOrFail()->produk->nama_produk }}</span>
-                    <span class="tx-12">x{{ $row->details->sum('kuantitas') }} item</span>
+              @if($row->details->count() > 0)
+                <div class="d-flex pd-b-10 mg-b-10">
+                  <div class="d-flex bd-r bd-2 bd-gray-300 flex-grow-1">
+                    <img src="{{ asset('/assets/uploads/produk/'.$row->details()->firstOrFail()->produk->gambar) }}" alt="image responsive" srcset="" class="img-fluid mg-r-10" style="width: 80px; height: 80px;" />
+                    <div class="d-flex flex-column">
+                      <span class="tx-14">{!! $row->details->count() > 1 ? $row->details()->first()->produk->nama_produk.' <span class=\'badge badge-info\'>+'.($row->details->count()-1).' Produk</span>':$row->details->firstOrFail()->produk->nama_produk !!}</span>
+                      <span class="tx-12">x{{ $row->details->sum('kuantitas') }} item</span>
+                    </div>
                   </div>
-                </div>
-                <div class="d-flex flex-column justify-content-center align-items-center" style="width: 150px;">
-                  <div class="tx-14">Total</div>
-                  <div class="tx-18 tx-medium">Rp. {{ number_format($row->total_bayar) }}</div>
-                </div>
-              </div>  
-              <div class="d-flex justify-content-end bd-t pd-t-10">
-                <button class="btn tx-semibold btn-sm rounded-pill tx-gray-700" data-toggle="modal" data-target="#detail-{{ $row->kode_pesanan }}">Lihat detail</button>
-                @if($row->dpPayment()->status == 1)
-                <a href="https://app.sandbox.veritrans.co.id/snap/v2/vtweb/{{ $row->dpPayment()->snap_token }}" target="_blank" class="btn btn-outline-indigo tx-medium btn-sm rounded-pill mg-l-10">
-                  Bayar
-                </a>
-                @elseif($row->fullPayment()->status == 1)
-                <a href="https://app.sandbox.veritrans.co.id/snap/v2/vtweb/{{ $row->fullPayment()->snap_token }}" target="_blank" class="btn btn-outline-indigo tx-medium btn-sm rounded-pill mg-l-10">
-                  Bayar
-                </a>
-                @else
-                
+                  <div class="d-flex flex-column justify-content-center align-items-center" style="width: 150px;">
+                    <div class="tx-14">Total</div>
+                    <div class="tx-18 tx-medium">Rp. {{ number_format($row->total_bayar) }}</div>
+                  </div>
+                </div>  
+                <div class="d-flex justify-content-end bd-t pd-t-10">
+                  <button class="btn tx-semibold btn-sm rounded-pill tx-gray-700" data-toggle="modal" data-target="#detail-{{ $row->kode_pesanan }}">Lihat detail</button>
+                  @if($row->dpPayment()->status == 1)
+                  <a href="https://app.sandbox.veritrans.co.id/snap/v2/vtweb/{{ $row->dpPayment()->snap_token }}" target="_blank" class="btn btn-outline-indigo tx-medium btn-sm rounded-pill mg-l-10">
+                    Bayar
+                  </a>
+                  @elseif($row->fullPayment()->status == 1)
+                  <a href="https://app.sandbox.veritrans.co.id/snap/v2/vtweb/{{ $row->fullPayment()->snap_token }}" target="_blank" class="btn btn-outline-indigo tx-medium btn-sm rounded-pill mg-l-10">
+                    Bayar
+                  </a>
+                  @else
+                  
+                  @endif
+                @else 
+                  <div>
+                    <h6>Opss ada kesalahan data.</h6>
+                  </div>
                 @endif
               </div>
             </div><!-- card-body -->
@@ -375,7 +383,7 @@
                 <div class="modal-body" style="max-height: 80vh;overflow-y: auto;">
                   <h6 class="d-flex w-100 justify-content-between bd-b bd-gray-200 pd-b-10">
                     <span>Status Pesanan</span>
-                    <span>{{ ucfirst($row->statusText()) }}</span>
+                    <span>@if($row->status == 2) Dipesan @elseif($row->status == 3) Selesai @endif</span>
                   </h6>
                   <div class="bd-b bd-5 bd-gray-100 pd-b-10 mg-b-10">
                     <div class="d-flex justify-content-between">
@@ -430,7 +438,7 @@
                     <div class="bd rounded-10 pd-10 mg-b-10">
                       <div class="d-flex align-items-center">
                         <div class="d-flex bd-r flex-grow-1">
-                          <img src="{{ asset('/assets/uploads/produk/'.$detail->produk->gambar) }}" alt="image responsive" srcset="" class="img-fluid mg-r-10" />
+                          <img src="{{ asset('/assets/uploads/produk/'.$detail->produk->gambar) }}" style="width: 80px; height: 80px;" alt="image responsive" srcset="" class="img-fluid mg-r-10" />
                           <div class="d-flex flex-column">
                             <span class="tx-14">{{ $detail->produk->nama_produk }}</span>
                             <span class="tx-12">{{ $detail->kuantitas }}</span>

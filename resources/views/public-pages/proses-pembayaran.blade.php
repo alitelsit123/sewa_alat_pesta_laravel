@@ -13,7 +13,7 @@
 
 <script src="{{ asset('/assets/dist-base/js/azia.js') }}"></script>
 
-<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}">
+<!-- <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"> -->
 
 <script>
     $(function(){
@@ -52,38 +52,28 @@ $('#order-listing').each(function() {
 <script>
   var loading_element = document.getElementById('loading-box');
   setTimeout(function(){
-    $.get("{{ route('order.proses.payment') }}", function(data, status) {
-      if(status) {
-        if(data.msg_error) {
-          document.location.href = '{{ url('/cart') }}';
-          return;
+    $.ajaxSetup({
+      error: function(data) {
+        if(data.responseText) {
+          loading_element.innerHTML = data.responseJSON.message;
+        } else {
+          loading_element.innerHTML = 'Internal server error. Coba beberapa saat lagi.';
         }
-        snap.pay(data['snap_token'], {
-            onSuccess: function(result) {
-                loading_element.innerHTML = '<h3>Tunggu sebentar. Sedang dialihkan.</h3>';
-                document.location.href = "{{ route('profile.show', auth()->user()->email) }}?o=history";
-                // loading_element.className += ' ' + 'd-none';
-            },
-            onPending: function(result) {
-                loading_element.innerHTML = '<h3>Tunggu sebentar. Sedang dialihkan.</h3>';
-                document.location.href = "{{ route('profile.show', auth()->user()->email) }}?o=history";
-                // loading_element.className += ' ' + 'd-none';
-            },
-            onError: function(result) {
-                // console.log(result);
-                loading_element.innerHTML = '<h3>Error. '+result['status_message']+'</h3>';
-                // document.location.href = "{{ route('profile.show', auth()->user()->email) }}?o=history";
-                // loading_element.className += ' ' + 'd-none';
-            },
-            onClose: function(){
-              loading_element.innerHTML = '<h3>Tunggu sebentar. Sedang dialihkan.</h3>';
-              document.location.href = "{{ route('profile.show', auth()->user()->email) }}?o=history";
-            }
-        });
+        setTimeout(function() {
+          document.location.href = '{{ url('/cart') }}';
+        }, 100000000);
       }
-
     });
-  }, 1000);
+    $.get("{{ route('order.proses.payment') }}", function(data, status) {
+      if(data.msg_error) {
+        document.location.href = '{{ url('/cart') }}';
+        return;
+      } else if(data.snap_token){
+        var url_to = 'https://app.sandbox.veritrans.co.id/snap/v2/vtweb/'+data.snap_token;
+        document.location.href = url_to;
+      }
+    });
+  });
 </script>
 @endsection
 

@@ -12,7 +12,11 @@ class ProfileController extends Controller
     public function showProfilePage($slug) {
         $user = User::where('email', $slug)->orWhereHas('profile', function($q) use ($slug) {
             $q->where('id_profile', $slug);
-        })->firstOrFail();
+        })->first();
+
+        if(!$user) {
+            return redirect('/');
+        }
 
         $data = [
             'user' => $user,

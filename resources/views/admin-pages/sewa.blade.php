@@ -53,48 +53,63 @@
               <div class="card-header">
                     <form action="" class="form-inline w-100">
                     <div class="form-group flex-grow-1">
-                        <input type="text" class="form-control" placeholder="Cari Transaksi" disabled>
+                        <input type="text" class="form-control" placeholder="Cari Sewa" disabled>
                     </div>
                 </form>    
               </div>
               <div class="card-body p-0">
-                <div class="callout callout-info">
-                    <h5><i class="fas fa-info"></i> Note:</h5>
-                    Dengan klik selesai, semua status transaksi mulai pembayaran sampai pengiriman dll. diselesaikan!
-                </div>
-                <table class="table">
+                <!-- <div class="container">
+                  <div class="callout callout-info">
+                      <h5><i class="fas fa-info"></i> Note:</h5>
+                  </div>
+                </div> -->
+                <table class="table text-center">
                   <thead>
                     <tr>
                       <th>Nama</th>
                       <th>Waktu Sewa</th>
                       <th>Dikirim</th>
                       <th>Dikembalikan</th>
-                      <!-- <th>Pembayaran</th> -->
-                      <th>Status</th>
-                      <th style="width: 20%" class="text-center">#</th>
+                      <th>Status Pembayaran</th>
+                      <th>Status Sewa</th>
+                      <th class="text-center">#</th>
                     </tr>
                   </thead>
                   <tbody>
                     @forelse($sewa as $row)  
                     <tr>
                       <td>{{ $row->user()->profile->nama }}</td>
-                      <td>{{ $row->order->tanggal_mulai.' - '.$row->order->tanggal_selesai }}</td>
+                      <td class="text-center">{!! $row->order->tanggal_mulai.' <br/>sampai<br/> '.$row->order->tanggal_selesai !!}</td>
                       <td>{{ $row->waktu_pengiriman ?? '-' }}</td>
                       <td>{{ $row->waktu_pengembalian ?? '-' }}</td>
                       <!-- <td>{{ $row->order->fullPayment()->status == 1 ? 'Belum Lunas': 'Lunas' }}</td> -->
-                      <td>{{ $row->getStatusText() }}</td>
-                      <td class="text-center">
-                          @if($row->status == 4)
-                          -
+                      <td>
+                        <div class="">
+                          @if($row->order->dpPayment()->status == 1) 
+                            <span class="badge badge-warning mr-1">Belum Bayar DP</span>
+                          @elseif($row->order->fullPayment()->status == 1)
+                            <span class="badge badge-warning mr-1">Belum bayar pelunasan</span>
                           @else
-                          <a href="{{ route('admin.sewa.complete', $row->id_sewa) }}" class="btn btn-sm btn-success">Selesai</a>
+                          <span class="badge badge-success">Lunas</span>
                           @endif
-                          <!-- <button class="btn btn-sm btn-danger" onclick="openModal({{ $row->id_kategori }})" >Hapus</button> -->
+                        </div>
+                      </td>
+                      <td class="font-weight-bold">{{ $row->getStatusText() }}</td>
+                      <td>
+                        <div class="d-flex justify-content-center align-items-center">
+                          <a href="{{ route('admin.order.show', $row->order->kode_pesanan) }}" class="btn mr-1 btn-xs btn-secondary">Lihat Detail</a>
+                            @if($row->status == 4)
+
+                            @else
+                            <a href="{{ route('admin.sewa.complete', $row->id_sewa) }}" class="btn btn-xs btn-success">Selesai Sewa</a>
+                            @endif
+                            <!-- <button class="btn btn-sm btn-danger" onclick="openModal({{ $row->id_kategori }})" >Hapus</button> -->  
+                        </div>
                       </td>
                     </tr>
                     @empty
                     <tr>
-                      <td colspan="2">Tidak Ada Transaksi!!!</td>
+                      <td colspan="6">Tidak Ada Sewa!!!</td>
                     </tr>
                     @endforelse
                   </tbody>
