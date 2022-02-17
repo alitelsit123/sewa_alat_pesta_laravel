@@ -1,18 +1,8 @@
 <script>
-var img_default = 'data:image/png;base64,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';
 var chat_history = [];
-var current_user = {};
-var pusher = new Pusher('{{config("pusher.APP_KEY")}}', {
-    authEndpoint: '/auth/channels/authorize',
-    cluster: '{{config("pusher.APP_CLUSTER")}}',
-    encrypted: true,
-    auth: {
-        headers: {
-            'X-CSRF-Token': '{{ csrf_token() }}'
-        }
-    }
-});
-var channels = [];
+var newchat_requests = [];
+var newchat_lists = [];
+var newchat_count = 0;
 
 function insertContentChat(data) {
     var content = ''+
@@ -133,25 +123,17 @@ function uuidv4() {
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     );
 }
-function bindChatChannel(sesi) {
-    channels['channel_'+sesi.id_chat_sesi] = pusher.subscribe('private-chat.'+sesi.id_chat_sesi);
-    channels['channel_'+sesi.id_chat_sesi].bind('App\\Events\\Chat', function(data) {
-        if(data.data.type == 'user_request') {
-            if(data.data.sesi) {
-                
-            } else {
-                toastr.success('Ada request baru mohon refresh Halaman.');
-            }
-        } else if(data.data.type == 'received' && data.data.receiver == current_user.id_user) {
-            let chat_body = $('.chat-body[data-target-id="'+data.data.sesi.id_chat_sesi+'"]');
-            let e2 = uuidv4();
-            console.log(data.data.sesi);
-            let photo_url = (data.data.sesi.user.profile.photo ? "{{ asset('assets/uploads/users') }}/"+data.data.sesi.user.profile.photo : page_data.user_image);
-            chat_body.append(insertLeftChat(data.msg, {photo: photo_url}));     
-            scrollBottom(data.data.sesi.id_chat_sesi);
-        }
-    });
+function handleChatPageSocket(sesi, msg) {
+    let chat_body = $('.chat-body[data-target-id="'+sesi.id_chat_sesi+'"]');
+    let e2 = uuidv4();
+    let photo_uri = (sesi.user.profile.photo ? photo_url+'/'+sesi.user.profile.photo : page_data.user_image);
+    chat_body.append(insertLeftChat(msg, {photo: photo_uri}));     
+    scrollBottom(sesi.id_chat_sesi);
 }
+
+// console.log(Date.UTC());
+// console.log(Date.now());
+
 function btnActions() {
     $('.btn-connect').click(function() {
         let current_el = $(this);
@@ -170,7 +152,10 @@ function btnActions() {
                     
                 }, 2000);
                 $(".chat-content[data-target-id='"+current_el.data('target-id')+"'] *").prop('disabled',false);
+
                 scrollBottom(current_el.data('target-id'));
+                removeRequestedChat(data.data.sesi);
+                setMiniChatBadge();
             } 
         }).done(function() {
 
@@ -197,6 +182,8 @@ function btnActions() {
                     console.log('chat disconnected');
                 }); 
                 channels['channel_'+data.data.sesi.id_chat_sesi] = pusher.unsubscribe('private-chat.'+data.data.sesi.id_chat_sesi);
+                removeRequestedChat(data.data.sesi);
+                setMiniChatBadge();
             } 
         });
     });
@@ -235,12 +222,21 @@ function btnActions() {
                 chat_body.append(insertCenterChat(data.msg, element_id_2));
                 setTimeout(function() {
                     disconnected(current_el.data('target-id'));
+                    $('#chat-request-content-'+current_el.data('target-id')).remove();
                 });   
             }
             channels['channel_'+data.data.sesi.id_chat_sesi].unbind('App\\Events\\Chat', function() {
                 console.log('chat disconnected');
             }); 
             channels['channel_'+data.data.sesi.id_chat_sesi] = pusher.unsubscribe('private-chat.'+data.data.sesi.id_chat_sesi);
+            var index_chat = newchat_lists.findIndex(function(item) {
+                return item.sesi.id_chat_sesi == data.data.sesi.id_chat_sesi;
+            });
+
+            if(index_chat > -1) {
+                newchat_lists.splice(index_chat,1);
+            }
+            handleChatMini();
         }).done(function() {
 
         });
@@ -263,68 +259,257 @@ function btnActions() {
 
 btnActions();
 
-$(document).ready(function() {
-    $.get('{{ route("user.collect") }}', function(data, status) {
-        if(data.user) {
-            current_user = Object.assign(current_user, {}, data.user);
-            channels['channel_chat_request'] = pusher.subscribe('private-chat-request.'+current_user.id_user);
-            channels['channel_chat_request'].bind('App\\Events\\Chat', function(datasesi) {
-                chat_history.splice(chat_history.length, 0, datasesi.data.sesi);
-                $('.chat-list-request').prepend(insertRequestLists(datasesi.data.sesi));
-                $('.tab-content').append(insertContentChat(datasesi.data.sesi));
-                if(datasesi.data.sesi.status == 1) {
-                    $(".chat-content[data-target-id='"+datasesi.data.sesi.id_chat_sesi+"'] *").prop('disabled',true);
-                } else {
-                    connected(datasesi.data.sesi.id_chat_sesi);
-                }
-                $('.nav-pills a').click(function() {
-                    var pill_pane = $($(this).data('target'));
-                    var target_sesi_id = $(this).data('target-id');
-                    if(pill_pane.hasClass('show') || pill_pane.hasClass('active')) {
-                        return;
-                    } else {
-                        $(pill_pane_active).removeClass('show');    
-                        $(pill_pane_active).removeClass('active');    
-                    }
-                    pill_pane.addClass('show active')
-                    pill_pane_active = $(this).data('target');
-                    selected_sesi_id = target_sesi_id;
-                });
-                btnActions();
-                bindChatChannel(datasesi.data.sesi);
-                if(chat_history.length > 0) {
-                    $('#empty-chat-list').first().addClass('d-none');
-                } else {
-                    $('#empty-chat-list').first().removeClass('d-none');
-                }
-            });
+function minichatCount(operator, value = -1) {
+    var minichat_count = parseInt($('#minichat-badge').text());
+    if(operator == '+' || operator == 'increase') {
+        $('#minichat-badge').text(minichat_count+1);    
+    } else if(operator == '-' || operator == 'decrease'){
+        if(minichat_count > 0) {
+            $('#minichat-badge').text(minichat_count-1);
         }
-    }); 
+    }
+}
+function setMiniChatBadge() {
+    var minichat_count = newchat_requests.length + newchat_lists.length;
+    $('#minichat-badge').text(minichat_count);    
+}
+
+function handleRequestedChatPage(datasesi) {
+    chat_history.splice(chat_history.length, 0, datasesi.data.sesi);
+    $('.chat-list-request').prepend(insertRequestLists(datasesi.data.sesi));
+    $('.tab-content').append(insertContentChat(datasesi.data.sesi));
+    if(datasesi.data.sesi.status == 1) {
+        $(".chat-content[data-target-id='"+datasesi.data.sesi.id_chat_sesi+"'] *").prop('disabled',true);
+    } else {
+        connected(datasesi.data.sesi.id_chat_sesi);
+    }
+    $('.nav-pills a').click(function() {
+        var pill_pane = $($(this).data('target'));
+        var target_sesi_id = $(this).data('target-id');
+        if(pill_pane.hasClass('show') || pill_pane.hasClass('active')) {
+            return;
+        } else {
+            $(pill_pane_active).removeClass('show');    
+            $(pill_pane_active).removeClass('active');    
+        }
+        pill_pane.addClass('show active')
+        pill_pane_active = $(this).data('target');
+        selected_sesi_id = target_sesi_id;
+    });
+    btnActions();
+    bindChatChannel(datasesi.data.sesi);
+    if(chat_history.length > 0) {
+        $('#empty-chat-list').first().addClass('d-none');
+    } else {
+        $('#empty-chat-list').first().removeClass('d-none');
+    }
+}
+
+function emptyListContents(text, key = '') {
+    return '<div class="'+key+' w-100"><div class="px-4">'+text+'</div><div class="dropdown-divider my-2"></div>'+
+    '</div>';
+}
+
+// REQUEST MINICHAT
+
+function removeRequestedChat(sesi) {
+    var index_request = newchat_requests.findIndex(function(item) {
+        return item.id_chat_sesi == sesi.id_chat_sesi;
+    });
+
+    if(index_request > -1) {
+        // $('#chat-request-content-'+sesi.id_chat_sesi).remove();
+        newchat_requests.splice(index_request,1);
+
+        setTimeout(function() {
+            handleRequestedChatMini();
+        });
+    }
+}
+
+function requestedMiniChatContent(sesi) {
+    var chat_url = '{{ route('admin.livechat.index') }}';
+    var user_name = sesi.user.profile.nama;
+    var user_photo = photo_url+'/'+sesi.user.profile.photo;
+    return ''+
+        '<div id="chat-request-content-'+sesi.id_chat_sesi+'">'+
+            '<div class="dropdown-divider my-2"></div>'+
+            '<a href="'+chat_url+'?s='+sesi.id_chat_sesi+'" class="dropdown-item">'+
+                '<div class="media">'+
+                    '<img src="'+user_photo+'" alt="User Avatar" class="mr-3 img-circle" width="40px" height="40px">'+
+                    '<div class="media-body">'+
+                    '<h3 class="dropdown-item-title">'+
+                        user_name+
+                    '</h3>'+
+                    '<p class="text-sm">'+
+                        '<span type="button" class="badge badge-primary">Connect</span>'+
+                    '</p>'+
+                    '</div>'+
+                '</div>'+
+            '</a>'+
+        '</div>'+
+    '';
+}
+
+function handleRequestedChatMini() {
+    var showed_list = newchat_requests.slice(0,4);
+    $('#minichat-request').empty();
+
+    if(newchat_requests.length > 0) {
+        $.each(showed_list, function(index, item) {
+            $('#minichat-request').append(requestedMiniChatContent(item));
+        });
+        if(newchat_requests.length > 4) {
+            var rest_list = newchat_requests.slice(4, newchat_requests.length);
+            $('#minichat-request').append(emptyListContents('+' + rest_list.length + ' Request'));
+        }
+    } else {
+        $('#minichat-request').prepend(emptyListContents('Tidak ada chat baru'));
+    }
+    setMiniChatBadge();
+}
+
+function subscribeRequestedChatSocket() {
+    channels['channel_chat_request'] = pusher.subscribe('private-chat-request.'+current_user.id_user);
+    channels['channel_chat_request'].bind('App\\Events\\Chat', function(datasesi) {
+        @if(request()->segment(2) == 'livecommunication')
+        handleRequestedChatPage(datasesi);
+        @endif
+        newchat_requests.unshift(datasesi.data.sesi);
+        handleRequestedChatMini();
+    });
+}
+
+// MINICHAT
+
+function bindChatChannel(sesi) {
+    channels['channel_'+sesi.id_chat_sesi] = pusher.subscribe('private-chat.'+sesi.id_chat_sesi);
+    channels['channel_'+sesi.id_chat_sesi].bind('App\\Events\\Chat', function(data) {
+        if(data.data.type == 'user_request') {
+            if(data.data.sesi) {
+                
+            } else {
+                toastr.success('Ada request baru mohon refresh Halaman.');
+            }
+        } else if(data.data.type == 'received' && data.data.receiver == current_user.id_user) {
+            @if(request()->segment(2) == 'livecommunication')
+            handleChatPageSocket(data.data.sesi, data.msg);
+            @endif
+            var chat_item = {
+                'msg': data.msg,
+                'created_at': data.timestamp
+            };
+            chat_item['sesi'] = data.data.sesi;
+
+            var index_chat = newchat_lists.findIndex(function(item) {
+                return item.sesi.id_chat_sesi == data.data.sesi.id_chat_sesi;
+            });
+
+            if(index_chat > -1) {
+                newchat_lists.splice(index_chat,1,chat_item);
+            } else {
+                newchat_lists.push(chat_item);
+            }
+            handleChatMini();
+        }
+    });
+}
+
+function miniChatContent(chat) {
+    var chat_url = '{{ route('admin.livechat.index') }}';
+    var user_name = chat.sesi.user.profile.nama;
+    var user_photo = chat.sesi.user.profile.photo ? photo_url+'/'+chat.sesi.user.profile.photo: img_default;
+    return ''+
+        '<div id="chat-request-content-'+chat.sesi.id_chat_sesi+'">'+
+            '<div class="dropdown-divider my-2"></div>'+
+            '<a href="'+chat_url+'?c='+chat.sesi.id_chat_sesi+'" class="dropdown-item" style="background-color: rgba(0,0,0,0.1);">'+
+                '<div class="media">'+
+                    '<img src="'+user_photo+'" class="mr-3 img-circle" width="40px" height="40px">'+
+                    '<div class="media-body">'+
+                    '<h3 class="dropdown-item-title">'+
+                        user_name+
+                    '</h3>'+
+                    '<p class="text-sm">'+chat.msg+'</p>'+
+                    '<p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> '+timeConverter(chat.created_at)+'</p>'+
+                    '</div>'+
+                '</div>'+
+            '</a>'+
+        '</div>'+
+    '';
+}
+
+function handleChatMini() {
+    var showed_list = newchat_lists.slice(0,4);
+    $('#minichat-list').empty();
+    if(newchat_lists.length > 0) {
+        $.each(showed_list, function(index, item) {
+            $('#minichat-list').prepend(miniChatContent(item));        
+        });
+        if(newchat_lists.length > 4) {
+            var rest_list = newchat_lists.slice(4, newchat_lists.length);
+            $('#minichat-request').append(emptyListContents('+' + rest_list.length + ' Chat Baru'));
+        }
+    } else {
+        $('#minichat-list').append(emptyListContents('Tidak ada chat baru'));
+    }
+    setMiniChatBadge();
+}
+function subscribeChatSocket() {
+    var last_newchat = [];
+    $.each(chat_history, function(index, item) {
+        $.each(item.chats, function(index2, item2) {
+            let chat_body = $('.chat-body[data-target-id="'+item.id_chat_sesi+'"]');
+            let e2 = uuidv4();
+            if(item2.pengirim == current_user.id_user) {
+                chat_body.append(insertRightChat(item2.chat, e2));
+            } else {
+                let photo_url = '{{ asset("assets/uploads/users") }}/';
+                chat_body.append(insertLeftChat(item2.chat, {photo: (item.user.profile.photo ? photo_url+item.user.profile.photo: page_data.user_image) }));
+            }
+        });
+        if(item.status == 1) {
+            $(".chat-content[data-target-id='"+item.id_chat_sesi+"'] *").prop('disabled',true);
+        } else {
+            connected(item.id_chat_sesi);
+        }
+        // Bind Channel
+        bindChatChannel(item);
+
+        // Request Lists
+        if(item.status == '1') {
+            newchat_requests.unshift(item);
+        }
+
+        // Recent Chat List
+        if(item.chats[item.chats.length-1]?.pengirim == item.id_user && !item.chats[item.chats.length-1]?.read_at) {
+            var chat_item = {
+                'msg': item.chats[item.chats.length-1].chat,
+                'created_at': item.chats[item.chats.length-1].created_at
+            };
+            chat_item['sesi'] = item;
+            last_newchat.push(chat_item);
+        }
+    });
+    last_newchat.sort(function(a,b) {
+        return a.created_at.localeCompare(b.created_at);
+    });
+
+    newchat_lists = last_newchat;
+    
+    handleChatMini();
+    handleRequestedChatMini();
+}
+
+function activateChatSession() {
     $.get('{{ route("sesi.collect") }}', function(data, status) {
         if(data.sesi.length > 0) {
             chat_history = data.sesi;
+            subscribeRequestedChatSocket();
+            subscribeChatSocket()
         }
     }).done(function() {
-        $.each(chat_history, function(index, item) {
-            $.each(item.chats, function(index2, item2) {
-                let chat_body = $('.chat-body[data-target-id="'+item.id_chat_sesi+'"]');
-                let e2 = uuidv4();
-                console.log(item2);
-                if(item2.pengirim == current_user.id_user) {
-                    chat_body.append(insertRightChat(item2.chat, e2));
-                } else {
-                    let photo_url = '{{ asset("assets/uploads/users") }}/';
-                    chat_body.append(insertLeftChat(item2.chat, {photo: (item.user.profile.photo ? photo_url+item.user.profile.photo: page_data.user_image) }));
-                }
-            });
-            if(item.status == 1) {
-                $(".chat-content[data-target-id='"+item.id_chat_sesi+"'] *").prop('disabled',true);
-            } else {
-                connected(item.id_chat_sesi);
-            }
-            // Bind Channel
-            bindChatChannel(item);
-        });
+
     });
-});
+    handleLoading();
+}
 </script>

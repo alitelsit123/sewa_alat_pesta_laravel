@@ -28,7 +28,7 @@ class ProductController extends Controller
                 $query->orWhere('nama_produk', 'like', '%'.$v.'%');
             }
         })
-        ->paginate(15);
+        ->paginate(15)->withQueryString();
 
         $query_new = [];
 

@@ -93,6 +93,21 @@ class User extends Authenticatable implements MustVerifyEmail
 
         $stats['total_kuantitas'] = $keranjang_total_kuantitas;
         $stats['total_harga'] = $keranjang_total_price;
+        $stats['funding_fee'] = 30*$keranjang_total_price/100;
+        if(session()->has('book')) {
+            $book_order = session('book');
+            if(array_key_exists('from', $book_order) && array_key_exists('to', $book_order)) {
+                $rate = strtotime($book_order['to']) - strtotime($book_order['from']);
+                $fee_rate = $rate/((60*60)*24);
+                if($fee_rate % 2 == 0) {
+                    $stats['funding_fee'] = $stats['funding_fee'] * ($fee_rate / 2);
+                } else {
+                    $stats['funding_fee'] = $stats['funding_fee'] * (($fee_rate + 1) / 2);
+                }
+            }
+        }
+
+        $stats['total_bayar'] = $stats['total_harga'] + $stats['funding_fee'];
 
         return [
             'keranjangs' => $keranjangs_array,
@@ -135,6 +150,13 @@ class User extends Authenticatable implements MustVerifyEmail
             return $this->order;
         }
         return $this->order;
+    }
+    
+
+    public function scopeAdmins($query) {
+        return $query->whereHas('roles', function($query) {
+            $query->where('tipe', '<>', 1);
+        });
     }
 
     public function isAdmin() {

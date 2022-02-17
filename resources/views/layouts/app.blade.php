@@ -140,6 +140,43 @@
       <i class="tx-16 typcn typcn-headphones"></i> Bantuan
       <!-- <img src="https://www.clipartmax.com/png/middle/258-2587133_superior-customer-service-phone-service-icon.png" alt="" srcset="" width="40px" height="40px"> -->
     </button>
+
+    <div class="modal fade" id="modal-help-funding-fee">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Apakah Funding Fee ?</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Funding fee atau biaya inap adalah biaya untuk menyewa berdasarkan hari. 
+              contoh funding fee sebesar 30% per 2 hari,
+              total bayar sebelum dikenakan biaya inap sebesar 200000.
+              costumer meminjam selama 6 hari
+              <br />
+              (30/100) * 200.000 = 60.000
+              <br />
+              60.000 * 3 = 180.000
+              <br />
+              200.000 + 180.000 = 380.000
+              <br />
+              Total biaya inap adalah<strong> Rp. 380.000</strong>
+              <br />
+              <strong>Funding fee dihitung saat Checkout.</strong>
+            </p>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+
+
   </body>
   <script src="{{ asset('/assets/plugins/jquery/jquery.min.js') }}"></script>
   <script src="{{ asset('/assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -148,16 +185,16 @@
     var page_data = null;
     var current_user = {};
 
-    // var pusher = new Pusher('{{config("pusher.APP_KEY")}}', {
-    //     authEndpoint: '/auth/channels/authorize',
-    //     cluster: '{{config("pusher.APP_CLUSTER")}}',
-    //     encrypted: true,
-    //     auth: {
-    //         headers: {
-    //             'X-CSRF-Token': '{{ csrf_token() }}'
-    //         }
-    //     }
-    // });
+    var pusher = new Pusher('{{config("pusher.APP_KEY")}}', {
+        authEndpoint: '/auth/channels/authorize',
+        cluster: '{{config("pusher.APP_CLUSTER")}}',
+        encrypted: true,
+        auth: {
+            headers: {
+                'X-CSRF-Token': '{{ csrf_token() }}'
+            }
+        }
+    });
     var polling = {
       'order': {
         'activate': true,
@@ -185,8 +222,8 @@
 
     }).done(function() {
       if(Object.keys(current_user).length > 0) {
-        // activateChatUserSession();
-        // activateNotificationUserSession();
+        activateChatUserSession();
+        activateNotificationUserSession();
       }
       btn_cs_chat.disabled = false;
     }); 

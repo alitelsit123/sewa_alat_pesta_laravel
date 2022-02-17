@@ -12,8 +12,6 @@
 <!-- Summernote -->
 <script src="{{ asset('/assets/plugins/summernote/summernote-bs4.min.js') }}"></script>
 
-@include('admin-pages.live-chat.script-chat')
-
 <script>
     // Summernote
     $('.summernote').summernote({
@@ -70,6 +68,11 @@
         pill_pane.addClass('show active')
         pill_pane_active = $(this).data('target');
         selected_sesi_id = target_sesi_id;
+        
+        $.post('{{ route('admin.livechat.mark-as-read-chat') }}', {
+            '_token': '{{ csrf_token() }}',
+            'id_chat_sesi': target_sesi_id
+        });
     });
     
     // channel.bind('App\\Events\\Chat', function(data) {
@@ -168,11 +171,12 @@
                     <ul class="list-group chat-list-request">
                         @forelse($sesi as $row)
                         <li class="nav-pills user-chat-request" data-target-id="{{ $row->id_chat_sesi }}" style="border-bottom: 0;">
-                            <a data-target="#chat-{{ $row->id_chat_sesi }}" data-target-id="{{ $row->id_chat_sesi }}" class="list-group-item" style="cursor: pointer;" id="btn-open-chat-{{ $row->id_chat_sesi }}">
+                            <a data-target="#chat-{{ $row->id_chat_sesi }}" data-target-id="{{ $row->id_chat_sesi }}" class="list-group-item" style="cursor: pointer;" 
+                            id="btn-open-chat-{{ $row->id_chat_sesi }}">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div class="d-flex flex-grow-1 align-items-center">
                                         <img src="{{ $row->user->getPhoto() }}" alt="" srcset="" style="width: 20px; height: 20px;" class="mr-1" />
-                                        <div>{{ $row->user->profile->nama ?? $row->user->profile->email }}</div>
+                                        <div>{{ $row->user->profile->nama ?? $row->user->email }}</div>
                                     </div>
                                 </div>
                             </a>

@@ -14,37 +14,28 @@
 <script src="{{ asset('/assets/dist-base/js/azia.js') }}"></script>
 
 <script>
-    $(function(){
-    'use strict'
-
-    $('#order-listing').DataTable({
-    "aLengthMenu": [
-    [5, 10, 15, -1],
-    [5, 10, 15, "All"]
-    ],
-    "iDisplayLength": 10,
-    "language": {
-    search: ""
-    },
-    "bInfo": false,
-    "bLengthChange": false,
-    "bFilter": false,
-    "bPaginate": false,
-});
-$('#order-listing').each(function() {
-    var datatable = $(this);
-    // SEARCH - Add the placeholder for Search and Turn this into in-line form control
-    var search_input = datatable.closest('.dataTables_wrapper').find('div[id$=_filter] input');
-    search_input.attr('placeholder', 'Search');
-    search_input.removeClass('form-control-sm');
-    // LENGTH - Inline-Form control
-    var length_sel = datatable.closest('.dataTables_wrapper').find('div[id$=_length] select');
-    length_sel.removeClass('form-control-sm');
-});
-
-    // Select2
-    $('.dataTables_length select').select2({ minimumResultsForSearch: Infinity });
-
+    function changeDuration() {
+        $.post("{{ route('order.book.duration.change') }}", {
+            _token: '{{ csrf_token() }}',
+            from: $('input[name="tanggal_mulai"]').val(),
+            to: $('input[name="tanggal_selesai"]').val(),
+        }, function(data, status) {
+            console.log(data);
+        }).done(function() {
+            document.location.href="{{ route('order.proses.checkout.view') }}";
+        });
+    }
+    $('input[name="tanggal_mulai"]').change(function(e) {
+        var tanggal_selesai = $('input[name="tanggal_selesai"]').val();
+        if(tanggal_selesai.length > 0) { 
+           changeDuration(); 
+        }
+    });
+    $('input[name="tanggal_selesai"]').change(function(e) {
+        var tanggal_mulai = $('input[name="tanggal_mulai"]').val();
+        if(tanggal_mulai.length > 0) { 
+           changeDuration(); 
+        }
     });
     // Create our number formatter.
     var formatter = new Intl.NumberFormat('en-US');
@@ -85,7 +76,7 @@ $('#order-listing').each(function() {
 @csrf
 <div class="mt-5 mb-5" style="min-height:600px;">
     <div class="container d-flex">
-        <div class="flex-grow-1">
+        <div class="flex-grow-1 pd-x-20 bd">
             <h6 class="tx-inverse tx-semibold mg-b-30 mg-t-8 tx-24">Checkout</h6>
             <div class="mg-b-20 alert alert-info">
                 <strong>Catatan: </strong> 
@@ -135,6 +126,14 @@ $('#order-listing').each(function() {
                 </div>
             </div><!-- alert -->
             @enderror
+            <div class="d-flex w-100 justify-content-between align-items-center pd-b-10 mg-b-10 bd-b bd-gray-200">
+                <h6 class="tx-inverse tx-medium mg-t-8 tx-16">Funding fee (per 2 hari)</h6>
+                <div class="d-flex align-items-center">
+                    <div class="tx-medium">
+                        <span>30%</span>
+                    </div>
+                </div>
+            </div>
             <div class="d-flex w-100 justify-content-between align-items-center pd-b-10 mg-b-10 bd-b bd-gray-200">
                 <h6 class="tx-inverse tx-medium mg-t-8 tx-16">Durasi</h6>
                 <div class="d-flex align-items-center">
@@ -256,18 +255,33 @@ $('#order-listing').each(function() {
                 </div>
             </li>
             <li class="list-group-item d-flex flex-column">
-                <div id="final-price" class="w-100">
+                <div id="sub-price" class="w-100">
                     <div class="d-flex justify-content-between align-items-center w-100">
-                        <span class="tx-14 tx-inverse tx-semibold mg-b-10 mg-t-8">Bayar FULL</span>
+                        <span class="tx-14 tx-inverse tx-semibold mg-b-10 mg-t-8">Sub Total</span>
                         <span class="tx-semibold">Rp. {{ number_format($stat['total_harga']) }}</span>
+                    </div>
+                </div>
+                <div id="funding-fee" class="w-100">
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                        <a href="#modal-help-funding-fee" data-toggle="modal" style="text-decoration: underline;" class="tx-indigo tx-14 tx-inverse tx-semibold mg-b-10 mg-t-8">Funding fee</a>
+                        <span class="tx-semibold">Rp. {{ number_format($stat['funding_fee']) }}</span>
                     </div>
                 </div>
                 <div class="d-flex justify-content-between align-items-center w-100">
                     <h6 class="tx-18 tx-inverse tx-semibold mg-b-10 mg-t-8">Total</h6>
-                    <span class="tx-semibold">Rp. {{ number_format($stat['total_harga']) }}</span>
+                    <span class="tx-semibold">Rp. {{ number_format($stat['total_harga'] + $stat['funding_fee']) }}</span>
+                </div>
+            </li>
+            <li class="list-group-item d-flex flex-column">
+                <h6 class="tx-18 tx-inverse tx-semibold mg-b-10 mg-t-8">Pembayaran</h6>
+                <div id="final-price" class="w-100">
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                        <span class="tx-14 tx-inverse tx-semibold mg-b-10 mg-t-8">Bayar FULL</span>
+                        <span class="tx-semibold">Rp. {{ number_format($stat['total_bayar']) }}</span>
+                    </div>
                 </div>
                 @auth
-                <button class="btn btn-indigo btn-block w-100" id="btn_submit" type="submit">Pembayaran</button>
+                <button class="btn btn-indigo btn-block w-100" @if(session()->has('book')) type="submit" id="btn_submit" @else type="button" disabled="true" @endif>Pembayaran</button>
                 @endauth
                 @guest
                 <div class="w-100 d-flex justify-content-center align-items-center">

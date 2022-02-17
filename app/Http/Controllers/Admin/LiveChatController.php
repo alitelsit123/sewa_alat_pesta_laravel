@@ -189,9 +189,12 @@ class LiveChatController extends Controller
 
         $chat['sesi'] = $sesi;
         $chat['type'] = 'connected';
-        $this->pusher->trigger('private-chat.'.$sesi->id_chat_sesi, 'App\\Events\\Chat', ['msg' => 'Connected.', 'event' => 'chat', 'data' => $chat]);
+        $this->pusher->trigger('private-chat.'.$sesi->id_chat_sesi, 'App\\Events\\Chat', [
+            'msg' => 'Connected.', 'event' => 'chat', 
+            'data' => $chat
+        ]);
 
-        return response()->json(['msg' => 'connected', 'status' => 1]);
+        return response()->json(['msg' => 'connected', 'status' => 1, 'data' => $chat]);
     }
     public function disconnectToUser(Request $request) {
         $validator = \Validator::make($request->all(), [
@@ -248,7 +251,12 @@ class LiveChatController extends Controller
             'receiver' => $sesi->id_user
         ];
 
-        $this->pusher->trigger('private-chat.'.$sesi->id_chat_sesi, 'App\\Events\\Chat', ['msg' => $input['chat'], 'event' => 'chat', 'data' => $chat]);
+        $this->pusher->trigger('private-chat.'.$sesi->id_chat_sesi, 'App\\Events\\Chat', [
+            'msg' => $input['chat'],
+            'timestamp' => date("Y-m-d H:i:s"), 
+            'event' => 'chat', 
+            'data' => $chat
+        ]);
 
         return response()->json(['msg' => '']);
     }
@@ -285,9 +293,24 @@ class LiveChatController extends Controller
             'receiver' => $sesi->id_admin
         ];
 
-        $this->pusher->trigger('private-chat.'.$sesi->id_chat_sesi, 'App\\Events\\Chat', ['msg' => $input['chat'], 'event' => 'chat', 'data' => $chat]);
+        $this->pusher->trigger('private-chat.'.$sesi->id_chat_sesi, 'App\\Events\\Chat', [
+            'msg' => $input['chat'], 
+            'timestamp' => now(), 
+            'event' => 'chat', 
+            'data' => $chat
+        ]);
 
         return response()->json(['msg' => 'msg sent']);
+    }
+    public function markAsReadChat(Request $request) {
+        $validated_input = $request->only(['id_chat_sesi']);
+        $sesi = ChatSesi::where('id_chat_sesi', $validated_input['id_chat_sesi'])->first();
+        if($sesi) {
+            $sesi->chats()->where('pengirim', $sesi->id_user)->update([
+                'read_at' => now()
+            ]);
+        }
+        return response()->json(['msg' => '']);
     }
     public function testBroadcast($id) {
         $this->pusher->trigger('private-chat.'.$id, 'App\\Events\\Chat', ['msg' => 'success dong']);

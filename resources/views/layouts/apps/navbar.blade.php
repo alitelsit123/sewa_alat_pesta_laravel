@@ -29,7 +29,7 @@
       </form>
       
       <div class="az-header-message">
-        <a id="links" href="{{ url('/cart') }}" @auth class="{{ auth()->user()->unreadNotifications()->count() > 0 ? 'new': '' }}" @endauth><i class="typcn typcn-shopping-cart"></i></a>
+        <a id="links" href="{{ url('/cart') }}" @auth class="{{ auth()->user()->carts()->count() > 0 ? 'new': '' }}" @endauth><i class="typcn typcn-shopping-cart"></i></a>
       </div>
       @auth
       <div class="dropdown az-header-notification">

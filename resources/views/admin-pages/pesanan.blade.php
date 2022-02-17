@@ -47,7 +47,7 @@
         <div class="col-md-12">
         <div class="card" style="min-height: 500px;">
               <div class="card-header">
-                    <h5>Transaksi</h5>
+                    <h5>Pesanan  {{ ucfirst(isset(request()->query()['f']) ? 'baru': '') }}</h5>
                     
               </div>
               <!-- /.card-header -->

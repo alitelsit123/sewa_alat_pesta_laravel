@@ -239,7 +239,17 @@ $('#order-listing').each(function() {
             <div class="flex-grow-1">
                 <ul class="list-group">
                     <li class="list-group-item" style="min-height: 500px;">
-                        <h6 class="tx-inverse tx-semibold mg-b-30 mg-t-8 tx-24">Keranjang ({{ sizeof($keranjangs) }})</h6>
+                        <div class="d-flex align-items-center justify-content-between mg-b-30">
+                            <h6 class="tx-inverse tx-semibold flex-grow-1 mg-t-8 tx-24">Keranjang ({{ sizeof($keranjangs) }})</h6>
+                            <div class="d-flex align-items-center">
+                                <button 
+                                type="button"
+                                data-toggle="modal"
+                                data-target="#modal-help-funding-fee"
+                                class="btn tx-semibold tx-indigo" style="text-decoration: underline;" >Funding Fee rate</button>
+                                <span class="tx-semibold">30%</span>
+                            </div>
+                        </div>
                         <div class="mg-b-20 alert alert-info">
                             <strong>Catatan: </strong> 
                             <br />
@@ -310,7 +320,7 @@ $('#order-listing').each(function() {
                     </li>
                 </ul>
             </div>
-            <div class="pd-l-10" style="width: 250px;">
+            <div class="pd-l-10" style="width: 300px;">
                 <ul class="list-group">
                     <li class="list-group-item d-flex align-items-center">
                         <div class="w-100">

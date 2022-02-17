@@ -11,8 +11,14 @@ use App\Models\Pesanan as Order;
 
 class OrderController extends Controller
 {
-    public function index() {
-        $orders = Order::latest()->paginate(15);
+    public function index(Request $request) {
+        $url_query = $request->query();
+        $user = auth()->user();
+        $orders = Order::when(array_key_exists('f', $url_query), function($query) use($user) {
+            $order_ids = array_column(array_column($user->unreadNotifications()->where('type', 'App\\Notifications\\Admin\\NewOrderCreatedNotification')->get()->toArray(), 'data'), 'kode_pesanan');            
+            $user->notifications()->where('type', 'App\\Notifications\\Admin\\NewOrderCreatedNotification')->get()->markAsRead();
+            $query->whereIn('kode_pesanan', $order_ids);
+        })->latest()->paginate(15);
         $data = [
             'orders' => $orders
         ];

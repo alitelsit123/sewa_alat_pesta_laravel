@@ -26,6 +26,6 @@ class ChatListener
      */
     public function handle(Chat $event)
     {
-        //
+        
     }
 }

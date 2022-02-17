@@ -20,85 +20,95 @@
 @section('content-body')
 
 <div class="az-content az-content-profile bd-b mg-t-10 pd-b-10 pd-t-0">
-  <div class="container">
-    @if(session()->has('book'))
-      @if(session('book')['from'] && session('book')['to'])
-      <div class="content-wrapper w-100">
-        <div class="t">
-          <h5>Durasi</h5>
-        </div>
-        <div class="d-flex align-items-center">
-          <div class="tx-medium tx-gray-500">
-            <span>Dari {{ session('book.from') }}</span>
+  <div class="d-flex mx-auto" style="width: 85%;">
+    <div class="flex-grow-1">
+      @if(session()->has('book'))
+        @if(session('book')['from'] && session('book')['to'])
+        <div class="content-wrapper w-100">
+          <div class="t">
+            <h5>Durasi</h5>
           </div>
-          <span class="mg-x-20">|</span>
-          <div class="tx-medium tx-gray-500">
-            <span>Sampai {{ session('book.to') }}</span>
-          </div>
-          <span class="mg-x-20">|</span>
           <div class="d-flex align-items-center">
-            <button type="button" class="btn btn-indigo modal-effect" data-toggle="modal" data-target="#change-duration">Ubah</button>
+            <div class="tx-medium tx-gray-500">
+              <span>Dari {{ session('book.from') }}</span>
+            </div>
+            <span class="mg-x-20">|</span>
+            <div class="tx-medium tx-gray-500">
+              <span>Sampai {{ session('book.to') }}</span>
+            </div>
+            <span class="mg-x-20">|</span>
+            <div class="d-flex align-items-center">
+              <button type="button" class="btn btn-indigo modal-effect" data-toggle="modal" data-target="#change-duration">Ubah</button>
+            </div>
           </div>
         </div>
+        @endif
+        <div id="change-duration" class="modal">
+          <div class="modal-dialog" role="document">
+            <form action="{{ route('set.duration') }}" method="post">
+              <div class="modal-content modal-content-demo">
+                <div class="modal-header">
+                  <h6 class="modal-title">Ubah Durasi</h6>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    @csrf
+                    <div class="t">
+                      <h5>Pilih Durasi</h5>
+                    </div>
+                    <div class="">
+                      <div class="mg-b-10">
+                        <p class="mg-b-5 mg-r-10 tx-semibold">Dari</p>
+                        <input type="date" name="from" value="{{session('book.from')}}" class="form-control" placeholder="MM/DD/YYYY">
+                      </div>
+                      <div class="mg-b-10 ">
+                        <p class="mg-b-5 mg-r-10 tx-semibold">Sampai</p>
+                        <input type="date" name="to" value="{{session('book.to')}}" class="form-control" placeholder="MM/DD/YYYY">
+                      </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-indigo">Cari Produk</button>
+                </div>
+              </div>
+            </form>  
+          </div>
+        </div>
+      @else
+      <div class="content-wrapper w-100">
+        <form action="{{ route('set.duration') }}" method="post">
+          @csrf
+          <div class="t">
+            <h5>Pilih Durasi</h5>
+          </div>
+          <div class="d-flex align-items-end">
+            <div class="mg-r-10 d-flex align-items-center">
+              <p class="mg-b-5 mg-r-10 tx-semibold">Dari</p>
+              <input type="date" name="from" class="form-control" placeholder="MM/DD/YYYY">
+            </div>
+            <div class="mg-r-10 d-flex align-items-center">
+              <p class="mg-b-5 mg-r-10 tx-semibold">Sampai</p>
+              <input type="date" name="to" class="form-control" placeholder="MM/DD/YYYY">
+            </div>
+            <div class="d-flex align-items-center">
+              <button type="submit" class="btn btn-indigo">Cari</button>
+            </div>
+          </div>
+        </form>
       </div>
       @endif
-      <div id="change-duration" class="modal">
-        <div class="modal-dialog" role="document">
-          <form action="{{ route('set.duration') }}" method="post">
-            <div class="modal-content modal-content-demo">
-              <div class="modal-header">
-                <h6 class="modal-title">Ubah Durasi</h6>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                  @csrf
-                  <div class="t">
-                    <h5>Pilih Durasi</h5>
-                  </div>
-                  <div class="">
-                    <div class="mg-b-10">
-                      <p class="mg-b-5 mg-r-10 tx-semibold">Dari</p>
-                      <input type="date" name="from" value="{{session('book.from')}}" class="form-control" placeholder="MM/DD/YYYY">
-                    </div>
-                    <div class="mg-b-10 ">
-                      <p class="mg-b-5 mg-r-10 tx-semibold">Sampai</p>
-                      <input type="date" name="to" value="{{session('book.to')}}" class="form-control" placeholder="MM/DD/YYYY">
-                    </div>
-                  </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-indigo">Cari Produk</button>
-              </div>
-            </div>
-          </form>  
-        </div>
-      </div>
-    @else
-    <div class="content-wrapper w-100">
-      <form action="{{ route('set.duration') }}" method="post">
-        @csrf
-        <div class="t">
-          <h5>Pilih Durasi</h5>
-        </div>
-        <div class="d-flex align-items-end">
-          <div class="mg-r-10 d-flex align-items-center">
-            <p class="mg-b-5 mg-r-10 tx-semibold">Dari</p>
-            <input type="date" name="from" class="form-control" placeholder="MM/DD/YYYY">
-          </div>
-          <div class="mg-r-10 d-flex align-items-center">
-            <p class="mg-b-5 mg-r-10 tx-semibold">Sampai</p>
-            <input type="date" name="to" class="form-control" placeholder="MM/DD/YYYY">
-          </div>
-          <div class="d-flex align-items-center">
-            <button type="submit" class="btn btn-indigo">Cari</button>
-          </div>
-        </div>
-      </form>
     </div>
-    @endif
+    <div class="d-flex align-items-center">
+      <button 
+      type="button"
+      data-toggle="modal"
+      data-target="#modal-help-funding-fee"
+      class="btn tx-semibold tx-indigo" style="text-decoration: underline;" >Funding Fee rate</button>
+      <span class="tx-semibold">30% (per 2 hari)</span>
+    </div>
   </div>
 </div>
 
