@@ -49,7 +49,7 @@ $(document).ready(function() {
 });
 </script>
 @endsection
-
+<!-- test -->
 @section('content-body')
 <div class="pd-20" style="min-height:600px;">
     <div class="container">
