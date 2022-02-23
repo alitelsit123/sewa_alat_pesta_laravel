@@ -44,6 +44,8 @@ class ProductController extends Controller
 
         return view('public-pages.products', $data);
     }
+
+    // set filter durasi tanggal
     public function setDuration(Request $request) {
         $validator = \Validator::make($request->all(), [
             'from' => ['required', 'date'],
@@ -73,6 +75,7 @@ class ProductController extends Controller
 
         return redirect('/products');
     }
+
     public function showProductsItemPage(Request $request, $kategori, $slug, $id) {
         $produk = Produk::withOrdered()->whereId_produk($id)->first();
         $data = [
@@ -82,7 +85,7 @@ class ProductController extends Controller
         return view('public-pages.produk-single', $data);
     }
 
-
+    // ini buat validasi url querynya
     private function filterValidator($query) {
         $validated_query = [];
         // kategori

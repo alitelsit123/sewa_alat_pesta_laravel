@@ -48,6 +48,12 @@ class Produk extends Model
         });
     }
 
+    // buat cari produk berdasarkan stok di tanggal sekian
+
+    // untuk yg tanpa filter tanggal ambil semua kuantitas produk dari orderan trus dikurangi stok produk jika hasilnya minus atau nol menampilkan stok habis
+    // kok bisa minus ? misal total stok produk A = 2, tgl 24-25 dipinjam 2, tgl 27-28 dipinjam 2 jadi 2-4 = -2, 
+    // berati produk A habis
+
     public function scopeWithOrdered($query) {
         $sql = \Str::replaceArray('?', $this->ordered()->getBindings(), $this->ordered()->toSql());
         if(session()->has('book')) {

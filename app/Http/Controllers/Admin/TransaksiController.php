@@ -12,6 +12,9 @@ class TransaksiController extends Controller
     public function index(Request $request) {
         $url_query = $request->query();
         $user = auth()->user();
+
+        // kalau buka transaksi dari notifikasi masuk didalam when, f = filter 
+        // chain query
         $trans = Payment::when(array_key_exists('f', $url_query), function($query) use($user) {
             $order_ids = array_column(array_column($user->unreadNotifications()->where('type', 'App\\Notifications\\Admin\\UserPaymentSuccessNotification')->get()->toArray(), 'data'), 'kode_pembayaran');            
             $user->notifications()->where('type', 'App\\Notifications\\Admin\\UserPaymentSuccessNotification')->get()->markAsRead();

@@ -18,6 +18,7 @@ use App\Models\Pembayaran as OrderPayment;
 
 class OrderController extends Controller
 {
+    // check dulu kalau mau checkout
     public function checkData(Request $request) {
         $validator = \Validator::make($request->all(), [
             'produk' => ['required'],
@@ -55,6 +56,8 @@ class OrderController extends Controller
 
         return redirect(route('order.proses.checkout.view'));
     }
+
+    // api ganti tipe pembayaran dp / full
     public function changePaymentType($type) {
         $total_bayar = session('cart')['stat']['total_bayar'];
         if($type == 1) {
@@ -66,6 +69,8 @@ class OrderController extends Controller
         }
         return response()->json(['dp' => $dp, 'other'=> $full]);
     }
+
+    // kalau ganti tanggal pinjam pas proses checkout, ini untuk yg tidak nge set tanggal durasi di produk
     public function changeBookDuration(Request $request) {
         $validator = \Validator::make($request->all(), [
             'to' => ['required', 'string'],
@@ -91,6 +96,8 @@ class OrderController extends Controller
         
         return response()->json(['msg' => '']);
     }
+
+    // tampilan checkout
     public function checkoutView() {
         if(!session()->has('cart')) {
             return redirect('/cart');
@@ -107,6 +114,8 @@ class OrderController extends Controller
 
         return view('public-pages.checkout', $data);
     }
+
+    // sedikit validasi dan tambah beberapa data
     public function processPayment(Request $request) {
         $validator = \Validator::make($request->all(), [
             'tanggal_mulai' => ['required', 'string'],
@@ -135,6 +144,15 @@ class OrderController extends Controller
         ]]);
         return view('public-pages.proses-pembayaran');
     }
+
+    // mulai pembayaran midtrans
+    // jadi sistem nya lngsung buat 2 pembayaran
+    // misal pilih pembayaran full, pembayaran yg buat dp atau pembayaran pertama total bayar diset rp 0
+
+    // misal pilih pembayaran dp:
+    // pembayaran pertama 40% dari total
+    // pembayaran kedua sisanya
+
     public function makePayment(Request $request) {
         if(!session()->has('cart') || !session()->has('additional_data_order')) {
             return redirect('/cart');
@@ -171,6 +189,7 @@ class OrderController extends Controller
 
             $pay_total = $additional_data_order['tipe_pembayaran'] == 1 ? (40*(int)$stats['total_bayar']/100): (int)$stats['total_bayar'];
 
+            
             if($additional_data_order['tipe_pembayaran'] == 2) {
                 $order->payment()->create([
                     'kode_pembayaran' => 'PAY-'.\Str::upper(uniqid()).'-'.(string)$user->profile->telepon.'-'.(string)$dt,
@@ -223,6 +242,8 @@ class OrderController extends Controller
 
         return response()->json(['msg' => '', 'snap_token' => $filled['snap_token']]);
     }
+
+    // buat nerima notifikasi status pembayaran dari midtrans
     public function paymentNotification(Request $request) {
         $payment_data = \json_decode($request->getContent(), true);
         $type = $payment_data['payment_type'];
@@ -302,10 +323,14 @@ class OrderController extends Controller
 
         return response()->json(['msg' => '']);
     }
+
+    // selesai pembayaran ke url yg diset di dashboard midtrans
     public function finishPayment() {
         return redirect(route('profile.show', auth()->user()->email));
     }
-    public function paymentCheckStatus(Request $request) {
-        return $response->json($request->getContent());
-    }
+
+
+    // public function paymentCheckStatus(Request $request) {
+    //     return $response->json($request->getContent());
+    // }
 }

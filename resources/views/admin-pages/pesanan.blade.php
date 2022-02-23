@@ -85,7 +85,7 @@
                     </tr>
                     @empty
                     <tr>
-                      <td colspan="2">Tidak Ada Transaksi!!!</td>
+                      <td colspan="2">Tidak Ada Pesanan!!!</td>
                     </tr>
                     @endforelse
                   </tbody>

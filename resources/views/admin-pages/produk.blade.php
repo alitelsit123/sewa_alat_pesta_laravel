@@ -68,6 +68,7 @@
                       <th style="width: 15%">Kode</th>
                       <th>Nama</th>
                       <th style="width: 10%" class="text-center">Stok</th>
+                      <th style="width: 10%" class="text-center">Harga</th>
                       <th style="width: 20%" class="text-center">#</th>
                     </tr>
                   </thead>
@@ -77,10 +78,10 @@
                       <td>{{ $row->kode_produk }}</td>
                       <td>{{ $row->nama_produk }}</td>
                       <td class="text-center">{{ $row->stok }}</td>
+                      <td class="text-center">{{ $row->harga }}</td>
                       <td class="text-center">
                           <a href="{{ route('admin.produk.edit', $row->id_produk) }}" class="btn btn-sm btn-warning">Edit</a>
                           <button class="btn btn-sm btn-danger" onclick="openModal({{ $row->id_produk }})" >Hapus</button>
-                          <a href="{{ route('admin.produk.edit', $row->id_produk) }}" class="btn btn-sm btn-default disabled">Lihat</a>
                       </td>
                     </tr>
                     @empty

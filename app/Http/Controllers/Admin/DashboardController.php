@@ -16,12 +16,6 @@ use App\Notifications\Order\PaymentVerifiedNotification as OrderPaymentNotificat
 class DashboardController extends Controller
 {
     public function index() {
-        // $order = Order::first();
-        // $user = $order->user;
-        // $notification = new OrderPaymentNotification($order->fullPayment());
-        // $user->notify($notification);
-        // return dd($user->notifications);
-
         $new_order = Order::whereStatus(1)->count();
         $sewa = Sewa::where('status', '<', 4)->count();
         $pendapatan = Payment::where('status', 2)->get()->sum('total_bayar');
