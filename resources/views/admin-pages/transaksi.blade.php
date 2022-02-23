@@ -84,7 +84,7 @@
                           <td>Rp. {{ $row->total_bayar }}</td>
                       </tr>
                       @empty
-                      <td>Tidak ada uang masuk</td>
+                      <td>Tidak ada Transaksi</td>
                       @endforelse
                   </tbody>
                 </table>

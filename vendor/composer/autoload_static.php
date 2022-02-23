@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit3dde75d3b61ee5015306ddf305d366d2
+class ComposerStaticInit6b6758e58775aace273bb5caab6aee0f
 {
     public static $files = array (
         'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
@@ -583,7 +583,6 @@ class ComposerStaticInit3dde75d3b61ee5015306ddf305d366d2
         'App\\Models\\Sewa' => __DIR__ . '/../..' . '/app/Models/Sewa.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Models\\UserRole' => __DIR__ . '/../..' . '/app/Models/UserRole.php',
-        'App\\Notifications\\Admin\\NewOrderCreatedNotification' => __DIR__ . '/../..' . '/app/Notifications/Admin/NewOrderCreatedNotification.php',
         'App\\Notifications\\Order' => __DIR__ . '/../..' . '/app/Notifications/Order.php',
         'App\\Notifications\\Order\\PaymentVerifiedNotification' => __DIR__ . '/../..' . '/app/Notifications/Order/PaymentVerifiedNotification.php',
         'App\\Notifications\\Order\\ShipmentNotification' => __DIR__ . '/../..' . '/app/Notifications/Order/ShipmentNotification.php',
@@ -1398,7 +1397,6 @@ class ComposerStaticInit3dde75d3b61ee5015306ddf305d366d2
         'Faker\\Provider\\nl_BE\\Payment' => __DIR__ . '/..' . '/fakerphp/faker/src/Faker/Provider/nl_BE/Payment.php',
         'Faker\\Provider\\nl_BE\\Person' => __DIR__ . '/..' . '/fakerphp/faker/src/Faker/Provider/nl_BE/Person.php',
         'Faker\\Provider\\nl_BE\\PhoneNumber' => __DIR__ . '/..' . '/fakerphp/faker/src/Faker/Provider/nl_BE/PhoneNumber.php',
-        'Faker\\Provider\\nl_BE\\Text' => __DIR__ . '/..' . '/fakerphp/faker/src/Faker/Provider/nl_BE/Text.php',
         'Faker\\Provider\\nl_NL\\Address' => __DIR__ . '/..' . '/fakerphp/faker/src/Faker/Provider/nl_NL/Address.php',
         'Faker\\Provider\\nl_NL\\Color' => __DIR__ . '/..' . '/fakerphp/faker/src/Faker/Provider/nl_NL/Color.php',
         'Faker\\Provider\\nl_NL\\Company' => __DIR__ . '/..' . '/fakerphp/faker/src/Faker/Provider/nl_NL/Company.php',
@@ -5610,10 +5608,10 @@ class ComposerStaticInit3dde75d3b61ee5015306ddf305d366d2
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit3dde75d3b61ee5015306ddf305d366d2::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit3dde75d3b61ee5015306ddf305d366d2::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit3dde75d3b61ee5015306ddf305d366d2::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit3dde75d3b61ee5015306ddf305d366d2::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit6b6758e58775aace273bb5caab6aee0f::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit6b6758e58775aace273bb5caab6aee0f::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit6b6758e58775aace273bb5caab6aee0f::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit6b6758e58775aace273bb5caab6aee0f::$classMap;
 
         }, null, ClassLoader::class);
     }

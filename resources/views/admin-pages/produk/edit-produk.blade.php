@@ -103,7 +103,7 @@
                                         <input type="file" name="gambar" class="custom-file-input" id="inputFile" accept="image/*">
                                         <label class="custom-file-label" for="customFile" id="inputFileLabel">Pilih Gambar</label>
                                     </div>
-                                    <img src="{{ asset('assets/uploads/produk/'.$produk->gambar) }}" id="preview-gambar" alt="" srcset="" class="w-100" />
+                                    <img src="{{ asset('assets/uploads/produk/'.$produk->gambar) }}" id="preview-gambar" alt="" srcset="" class="w-50" />
                                 </div>
                             </div>
                         </div>
