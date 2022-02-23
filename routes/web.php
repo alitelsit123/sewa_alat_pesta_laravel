@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-// Tests
+// Tests aja
 Route::get('/recached', function() {
     \Artisan::call('optimize');
 });
@@ -38,6 +38,7 @@ Route::get('send', [App\Http\Controllers\PusherTestController::class, 'notificat
 
 // End Tests
 
+// user route
 Route::get('/', [BaseViewController::class, 'showHomePage']);
 
 Route::get('/products', [App\Http\Controllers\Publics\ProductController::class, 'showProductsPage']);
@@ -57,6 +58,8 @@ Route::get('/profile/{slug}', [App\Http\Controllers\Publics\ProfileController::c
 Route::put('/profile/{slug}/update', [App\Http\Controllers\Publics\ProfileController::class, 'update'])->name('profile.update')->middleware(['auth']);
 Route::put('/profile/{slug}/update_photo', [App\Http\Controllers\Publics\ProfileController::class, 'updatePhoto'])->name('profile.update-photo')->middleware(['auth']);
 
+// user api route
+
 Route::post('/api_v1/chat_with_bot', [App\Http\Controllers\Admin\LiveChatController::class, 'chatwithBot'])->name('chat-with-bot');
 Route::post('/api_v1/searching_for_costumer_service', [App\Http\Controllers\Admin\LiveChatController::class, 'searchOnlineCs'])->name('search-online-cs');
 Route::post('/api_v1/chat', [App\Http\Controllers\Admin\LiveChatController::class, 'chat'])->name('send_chat');
@@ -65,13 +68,14 @@ Route::get('/api_v1/checkout/payment/type/{type}/change', [App\Http\Controllers\
 Route::post('/api_v1/checkout/book_duration/change', [App\Http\Controllers\Publics\OrderController::class, 'changeBookDuration'])->name('order.book.duration.change');
 Route::get('/api_v1/web_notification/read', [App\Http\Controllers\Publics\NotificationController::class, 'markAsRead'])->name('notification.markread');
 
-// Payment Notification
+// Payment Notification dari midtrans
 Route::post('/api_v1/order/payment/notification', [App\Http\Controllers\Publics\OrderController::class, 'paymentNotification'])->name('payment.notification');
 Route::post('/api_v1/payment/poll/status', [App\Http\Controllers\Publics\OrderController::class, 'paymentCheckStatus'])->name('payment.check.status');
 
-// Polling
+// Polling gakepake
 Route::post('/api_v1/polling/payment/notification', [App\Http\Controllers\PollingController::class, 'paymentStatus'])->name('polling.payment.status');
 
+// end user api route
 
 Route::name('order.')->prefix('order')->group(function() {
     Route::middleware(['auth', 'verified'])->group(function() {
@@ -83,10 +87,11 @@ Route::name('order.')->prefix('order')->group(function() {
     });
 });
 
-
+// end user route
 
 Route::prefix('auth')->group(function() {
 
+    // verifikasi email
     Route::get('/verify-email', [App\Http\Controllers\Auth\UserVerification::class, 'showVerifyEmail'])
     ->middleware('auth')
     ->name('verification.notice');
@@ -96,7 +101,9 @@ Route::prefix('auth')->group(function() {
     Route::get('/verify-email/{id}/{hash}', [App\Http\Controllers\Auth\UserVerification::class, 'verify'])
     ->middleware(['auth', 'signed'])
     ->name('verification.verify');
+    // end verifikasi email
 
+    // guest auth
     Route::middleware(['guest'])->group(function() {
         Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'index'])->name('login-form');
         Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
@@ -110,8 +117,10 @@ Route::prefix('auth')->group(function() {
     });
     Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('user.logout');
     Route::post('/admin/logout', [App\Http\Controllers\Auth\LoginAdminController::class, 'logout'])->name('admin.logout');
+    // end guest auth
 });
 
+// admin route
 Route::middleware(['auth.admin'])->name('admin.')->group(function() {
     Route::prefix('admin')->group(function() {
         Route::get('/', function () {
@@ -154,8 +163,15 @@ Route::middleware(['auth.admin'])->name('admin.')->group(function() {
     Route::resource('admin/produk', \App\Http\Controllers\Admin\ProdukController::class);
 });
 
+// end admin route
+
+// global api request data kolektor buat javascript
 Route::get('/user/collect', [App\Http\Controllers\CollectorController::class, 'collectUser'])->name('user.collect');
 Route::get('/sesi/collector', [App\Http\Controllers\CollectorController::class, 'collectSesi'])->name('sesi.collect');
 Route::get('/user_sesi/collector', [App\Http\Controllers\CollectorController::class, 'collectUserSesi'])->name('sesi.collect.user');
+// end global api
+
+// import route di channel.php
 Broadcast::routes();
+
 // Route::get('/test/broadcast/{id}', [App\Http\Controllers\Admin\LiveChatController::class, 'testBroadcast']);

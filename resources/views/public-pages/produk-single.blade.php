@@ -14,6 +14,7 @@
 
 <script>
 $(document).ready(function() {
+    // hampir sama di halaman keranjang (tambah kurangi stok bedanya ini single produk)
     var button_remove_quantity = document.querySelector('.remove-quantity');
     var button_add_quantity = document.querySelector('.add-quantity');
     button_add_quantity.addEventListener("click", function() {

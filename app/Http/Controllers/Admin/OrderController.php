@@ -24,6 +24,8 @@ class OrderController extends Controller
         ];
         return view('admin-pages.pesanan', $data);
     }
+
+    // tampil detail pesanan
     public function show($kode_pesanan) {
         $order = Order::findOrFail($kode_pesanan);
         $data = [
@@ -31,11 +33,14 @@ class OrderController extends Controller
         ];
         return view('admin-pages.pesanan.lihat-pesanan', $data);
     }
+
     public function destroy($kode_pesanan) {
         $order = Order::where('kode_pesanan', $kode_pesanan)->firstOrFail();
         $order->hapus();
         return redirect(route('admin.order.index'));
     }
+
+    // admin kirim
     public function shipmentOut($kode_pesanan, $type) {
         $order = Order::find($kode_pesanan);
         $user = $order->user;

@@ -14,6 +14,7 @@ use App\Models\User;
 
 class LiveChatController extends Controller
 {
+    // define pusher variabel
     // protected $notify;
     protected $pusher;
     public function __construct() {
@@ -41,6 +42,8 @@ class LiveChatController extends Controller
 
         return view('admin-pages.live-chat', $data);
     }
+
+    // crud chat bot admin 
     public function botStore(Request $request) {
         $validator = \Validator::make($request->all(), [
             'bot_judul' => ['nullable'],
@@ -92,6 +95,8 @@ class LiveChatController extends Controller
         $chat_bot->delete();
         return redirect(route('admin.livechat.index'))->with('notes', ['text' => 'Bot Dihapus!']);
     }
+
+    // ngechat dengan bot di halaman user
     public function chatwithBot(Request $request) {
         $validator = \Validator::make($request->all(), [
             'chat' => ['required'],
@@ -113,6 +118,8 @@ class LiveChatController extends Controller
 
         return response()->Json(['msg' => $bot ? $bot->chat: 'Maaf kak kode tidak ditemukan. mohon hubungi costumer service']);
     }
+
+    // request untuk chat dengan cs
     public function searchOnlineCs(Request $request) {
 
         $user = auth()->user();
@@ -149,6 +156,8 @@ class LiveChatController extends Controller
         
         return response()->json(['msg' => 'Silahkan login untuk kontak dengan Cs', 'found' => false, 'cs' => null]);
     }
+
+    // admin konek chat
     public function connectToUser(Request $request) {
         $validator = \Validator::make($request->all(), [
             'id_sesi' => ['required'],
@@ -196,6 +205,8 @@ class LiveChatController extends Controller
 
         return response()->json(['msg' => 'connected', 'status' => 1, 'data' => $chat]);
     }
+
+    // admin diskonek chat
     public function disconnectToUser(Request $request) {
         $validator = \Validator::make($request->all(), [
             'id_sesi' => ['required'],
@@ -223,6 +234,8 @@ class LiveChatController extends Controller
 
         return response()->json(['msg' => 'disconnected', 'status' => 1, 'data' => $chat]);
     }
+
+    // admin chat ke user
     public function chatWithUser(Request $request) {
         $validator = \Validator::make($request->all(), [
             'id_sesi' => ['required'],
@@ -260,6 +273,8 @@ class LiveChatController extends Controller
 
         return response()->json(['msg' => '']);
     }
+
+    // user chat ke admin
     public function chatWithCs(Request $request) {
         $validator = \Validator::make($request->all(), [
             'id_sesi' => ['required'],
@@ -302,6 +317,8 @@ class LiveChatController extends Controller
 
         return response()->json(['msg' => 'msg sent']);
     }
+
+    // admin buka chat
     public function markAsReadChat(Request $request) {
         $validated_input = $request->only(['id_chat_sesi']);
         $sesi = ChatSesi::where('id_chat_sesi', $validated_input['id_chat_sesi'])->first();
@@ -312,6 +329,8 @@ class LiveChatController extends Controller
         }
         return response()->json(['msg' => '']);
     }
+
+    // test
     public function testBroadcast($id) {
         $this->pusher->trigger('private-chat.'.$id, 'App\\Events\\Chat', ['msg' => 'success dong']);
     }

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Http;
 
 use App\Models\User;
 
+// gakepake
 class PollingController extends Controller
 {
     public function paymentStatus(Request $request) {

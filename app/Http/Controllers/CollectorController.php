@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\ChatSesi;
 
+// kolektor javascript lihat script chat dan notifikasi
 class CollectorController extends Controller
 {
     public function collectSesi() {

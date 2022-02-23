@@ -58,18 +58,25 @@ $('#order-listing').each(function() {
         var btn_update_keranjang = document.getElementById('btn_update_keranjang');
         var submitter = [];
         var checked_carts = {};
+
+        // tambah kuantitas
         function add_checked_cart(key){
             var el = document.getElementById('quantity-for-'+key);
             checked_carts['quantity-for-'+key] = el;
         }
+
+        // kurangi kuantitas
         function remove_checked_cart(key) {
             var el = document.getElementById('quantity-for-'+key);
             delete checked_carts['quantity-for-'+key];
         }
 
+        // masukin barang yg di centang ke variabel
         inputs_init.forEach(function(item) {
             checked_carts[item.getAttribute('id')] = item;
         });
+
+        // pilih semua barang
         all_cart_check.addEventListener("change", function() {
             if(this.checked) {
                 for(let i = 0 ; i < carts.length ; i++) {
@@ -85,6 +92,8 @@ $('#order-listing').each(function() {
                 btn_update_keranjang.disabled = true;
             }
         });
+
+        // centang satu satu
         carts.forEach(function(item) {
             item.addEventListener("change", function(e) {
                 function currentStateChange() {
@@ -128,6 +137,7 @@ $('#order-listing').each(function() {
             element.disabled = false;
         }
 
+        // validasi minimal dan maksimal stok
         function check(e, min, max, current) {
             let o = e.target.value;
             let n = e.data;
@@ -144,12 +154,15 @@ $('#order-listing').each(function() {
             return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value))
         }
 
+        // running validasi
         quantity.forEach(function(item, index) {
             item.addEventListener("input", function(e) {
                 var stok = item.dataset.stok;
                 check(e, 0, stok, item.value)
             }, false);
         });
+
+        // tombol tambah stok
         button_add_quantity.forEach(function(item, index) {
             item.addEventListener("click", function() {
                 var id_produk = this.dataset.produk;
@@ -164,6 +177,7 @@ $('#order-listing').each(function() {
                 target.value=parseInt(target.value)+1;
             });
         });
+        // tombol kurang stok
         button_remove_quantity.forEach(function(item, index) {
             item.addEventListener("click", function() {
                 var id_produk = this.dataset.produk;
@@ -179,6 +193,7 @@ $('#order-listing').each(function() {
             });
         });
         
+        tombol update keranjang
         btn_update_keranjang.addEventListener('click', function() {
             var form_keranjang = document.createElement("form");
             form_keranjang.style.display = 'none';
@@ -203,6 +218,7 @@ $('#order-listing').each(function() {
             form_keranjang.submit();
         });
 
+        // tombol submit/checkout
         btn_submit.addEventListener('click', function() {
             var form_keranjang = document.createElement("form");
             var inputs_keranjang = checked_carts;

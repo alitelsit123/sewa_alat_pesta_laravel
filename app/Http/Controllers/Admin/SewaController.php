@@ -16,6 +16,8 @@ class SewaController extends Controller
         ];
         return view('admin-pages.sewa', $data);
     }
+
+    // sewa selesai
     public function complete($id) {
         $sewa = Sewa::findOrFail($id);
         $order = $sewa->order;
