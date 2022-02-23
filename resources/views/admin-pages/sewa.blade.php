@@ -78,7 +78,7 @@
                   <tbody>
                     @forelse($sewa as $row)  
                     <tr>
-                      <td>{{ $row->user()->profile->nama }}</td>
+                      <td>{{ $row->user() ? $row->user()->profile->nama: 'Tidak ada data User / User dihapus' }}</td>
                       <td class="text-center">{!! $row->order->tanggal_mulai.' <br/>sampai<br/> '.$row->order->tanggal_selesai !!}</td>
                       <td>{{ $row->waktu_pengiriman ?? '-' }}</td>
                       <td>{{ $row->waktu_pengembalian ?? '-' }}</td>
