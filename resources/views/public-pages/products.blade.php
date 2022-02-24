@@ -165,7 +165,7 @@
                 <li><a href="#">S</a></li>
                 <li><a href="#">M</a></li>
               </ul> -->
-              <p class="product-description">{{ $row->keterangan }}</p>
+              <p class="product-description">{{ $row->keterangan_pendek ?? '' }}</p>
             </div>
             <!-- <div class="card-footer pd-5">
               <form action="{{ route('add-to-cart') }}" method="post">

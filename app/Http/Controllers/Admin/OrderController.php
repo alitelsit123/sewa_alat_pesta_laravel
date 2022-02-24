@@ -18,6 +18,12 @@ class OrderController extends Controller
             $order_ids = array_column(array_column($user->unreadNotifications()->where('type', 'App\\Notifications\\Admin\\NewOrderCreatedNotification')->get()->toArray(), 'data'), 'kode_pesanan');            
             $user->notifications()->where('type', 'App\\Notifications\\Admin\\NewOrderCreatedNotification')->get()->markAsRead();
             $query->whereIn('kode_pesanan', $order_ids);
+        })->when(request()->has('s'), function($query) {
+            $query->whereHas('user', function($query) {
+                $query->whereHas('profile', function($query2) {
+                    $query2->where('nama', 'like', '%'.request('s').'%');
+                });
+            })->orWhere('kode_pesanan', request('s'));
         })->latest()->paginate(15);
         $data = [
             'orders' => $orders

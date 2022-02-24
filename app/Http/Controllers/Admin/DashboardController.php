@@ -18,7 +18,9 @@ class DashboardController extends Controller
     public function index() {
         $new_order = Order::whereStatus(1)->count();
         $sewa = Sewa::where('status', '<', 4)->count();
-        $pendapatan = Payment::where('status', 2)->get()->sum('total_bayar');
+        $pendapatan = Payment::whereHas('order', function($query) {
+            $query->whereIn('status', ['2','3']);
+        })->where('status', 2)->sum('total_bayar');
         $user = User::whereDoesntHave('roles', function($query) {
             $query->where('tipe', 2);
         })->count();

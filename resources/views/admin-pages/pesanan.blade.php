@@ -52,9 +52,10 @@
               </div>
               <!-- /.card-header -->
               <div class="card-header">
-                    <form action="" class="form-inline w-100">
+                    <form action="{{ route('admin.order.index') }}" class="form-inline w-100">
                     <div class="form-group flex-grow-1">
-                        <input type="text" class="form-control" placeholder="Cari Transaksi" disabled>
+                        <input type="text" title="Kode Pesanan, Kode Pembayaran, Nama Pemesan" name="s" value="{{ request('s') }}" class="form-control mr-2" placeholder="Cari Kode Pesanan, Kode Pembayaran, Nama Pemesan" style="width:400px;">
+                        <a href="{{ route('admin.order.index') }}" class="btn btn-warning">Reset</a>
                     </div>
                 </form>    
               </div>

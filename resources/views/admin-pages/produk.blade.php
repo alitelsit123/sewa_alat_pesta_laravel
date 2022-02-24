@@ -52,13 +52,14 @@
               </div>
               <!-- /.card-header -->
               <div class="card-header">
-                    <form action="" class="form-inline w-100">
-                    <div class="form-group flex-grow-1">
-                        <input type="text" class="form-control" placeholder="Cari Produk" disabled>
-                    </div>
+                    <form action="{{ route('admin.produk.index') }}" class="form-inline w-100">
+                      <div class="form-group flex-grow-1">
+                          <input type="text" name="s" value="{{ request('s') }}" class="form-control" placeholder="Cari Produk">
+                          <a href="{{ route('admin.produk.index') }}" class="btn btn-warning">Reset</a>
+                      </div>
                     <!-- <a disabled class="btn btn-primary" href="{{ route('admin.kategori.create') }}">Tambah Kategori</a> -->
-                    <a class="btn btn-primary" href="{{ route('admin.produk.create') }}">Tambah Produk</a>
-                </form>    
+                        <a class="btn btn-primary" href="{{ route('admin.produk.create') }}">Tambah Produk</a>
+                    </form>    
               </div>
               <div class="card-body p-0">
                 
@@ -67,6 +68,7 @@
                     <tr>
                       <th style="width: 15%">Kode</th>
                       <th>Nama</th>
+                      <th class="text-center">Keterangan Pendek</th>
                       <th style="width: 10%" class="text-center">Stok</th>
                       <th style="width: 10%" class="text-center">Harga</th>
                       <th style="width: 20%" class="text-center">#</th>
@@ -77,6 +79,7 @@
                     <tr>
                       <td>{{ $row->kode_produk }}</td>
                       <td>{{ $row->nama_produk }}</td>
+                      <td class="text-center">{{ $row->keterangan_pendek }}</td>
                       <td class="text-center">{{ $row->stok }}</td>
                       <td class="text-center">{{ $row->harga }}</td>
                       <td class="text-center">
@@ -86,9 +89,14 @@
                     </tr>
                     @empty
                     <tr>
-                      <td colspan="2">Tidak Ada produk!!!</td>
+                      <td colspan="6">Tidak Ada produk!!!</td>
                     </tr>
                     @endforelse
+                    <tr>
+                      <td colspan="6">
+                          {{ $produk->links('vendor.pagination.bootstrap-4') }}
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>

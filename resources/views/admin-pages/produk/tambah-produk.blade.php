@@ -1,6 +1,13 @@
 @extends('layouts.app-admin')
 
+@section('css_head')
+<!-- summernote -->
+<link rel="stylesheet" href="{{ asset('/assets/plugins/summernote/summernote-bs4.min.css') }}">
+@endsection
+
 @section('script_body') 
+<!-- Summernote -->
+<script src="{{ asset('/assets/plugins/summernote/summernote-bs4.min.js') }}"></script> 
 <script>
     var inputFile = document.getElementById('inputFile')
     var inputFileLabel = document.getElementById('inputFileLabel')
@@ -12,7 +19,11 @@
             URL.revokeObjectURL(output.src)
         }
         inputFileLabel.innerHTML = imageObject.name
-    })
+    });
+    // Summernote
+    $('.summernote').summernote({
+        height: 200
+    });
 </script>
 @endsection
 
@@ -89,8 +100,23 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group flex-grow-1">
+                                    <label for="Keterangan_pendek">Keterangan Pendek</label>
+                                    <input name="keterangan_pendek" rows="1" class="form-control" placeholder="Max 100 kata" value="{{ old('keterangan_pendek') }}" />
+                                </div>
+                                @error('keterangan_pendek')
+                                <div class="validation-error">
+                                    <div class="alert alert-danger" style="width: 100%;">
+                                        {{ $message }}
+                                    </div>
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group flex-grow-1">
                                     <label for="Keterangan">Keterangan</label>
-                                    <textarea name="keterangan" id="keterangan" rows="6" class="form-control" style="min-height: 100px;"></textarea>
+                                    <textarea name="keterangan" rows="6" class="form-control summernote">
+                                    {{ old('keterangan') }}
+                                    </textarea>
                                 </div>
                             </div>
                             <div class="col-md-12">

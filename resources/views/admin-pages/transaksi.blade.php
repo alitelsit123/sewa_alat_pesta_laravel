@@ -7,6 +7,7 @@
 @section('script_body')
 <!-- Toastr -->
 <script src="{{ asset('/assets/plugins/toastr/toastr.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
 <script>
     @if (session('notes') && (!in_array('type', session('notes')) || session('notes')['type'] == 'success') )
     window.addEventListener('load', function() {
@@ -30,8 +31,20 @@
       selected_data_id = key
       $('#confirm-box').modal();
     }
-    $(document).ready(function() {
-            
+    $("#print-button").click(function() {
+        let table = document.getElementsByTagName("table");
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var yyyy = today.getFullYear();
+        today = mm + '-' + dd + '-' + yyyy;
+
+        TableToExcel.convert(table[0], {
+           name: today+` transaksi.xlsx`,
+           sheet: {
+              name: 'Sheet 1'
+           }
+        });
     });
 
 </script>
@@ -51,10 +64,13 @@
               </div>
               <!-- /.card-header -->
               <div class="card-header">
-                    <form action="" class="form-inline w-100">
+                    <form action="{{ route('admin.transaksi.index') }}" class="form-inline w-100">
                     <div class="form-group flex-grow-1">
-                        <input type="text" class="form-control" placeholder="Cari Sewa" disabled>
+                        <input type="text" name="s" value="{{ request('s') }}" class="form-control mr-2" placeholder="Cari Kode Pembayaran">
+                        <a class="btn btn-warning" href="{{ route('admin.transaksi.index') }}">Reset</a>
                     </div>
+                    <a class="btn btn-primary" href="#" id="print-button">Export</a>
+
                 </form>    
               </div>
               <div class="card-body p-0">
@@ -63,7 +79,7 @@
                       <h5><i class="fas fa-info"></i> Note:</h5>
                   </div>
                 </div> -->
-                <table class="table text-center">
+                <table class="table" id="table_data">
                   <thead>
                     <tr>
                       <th>User</th>
@@ -86,6 +102,27 @@
                       @empty
                       <td>Tidak ada Transaksi</td>
                       @endforelse
+                      <tr>
+                        <td colspan="6">
+                            {{ $trans->links('vendor.pagination.bootstrap-4') }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="2"><strong>Total Kedaluarsa, Batal</strong></td>
+                        <td colspan="4">Rp. {{ \number_format($saldo_cancel) }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="2"><strong>Total Pending</strong></td>
+                        <td colspan="4">Rp. {{ \number_format($saldo_pending) }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="2"><strong>Total Saldo Masuk</strong></td>
+                        <td colspan="4">Rp. {{ \number_format($saldo_in) }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="2"><strong>Total Semua Transaksi</strong></td>
+                        <td colspan="4">Rp. {{ \number_format($saldo_all) }}</td>
+                      </tr>
                   </tbody>
                 </table>
               </div>
@@ -95,7 +132,7 @@
         </div>
     </div>
 </div><!-- /.container-fluid -->
-
+<iframe id="txtArea1" style="display:none"></iframe>
 <!-- <form action="" method="post" id="form-delete" class="d-none">
   @csrf
   <input type="hidden" name="_method" value="DELETE" />

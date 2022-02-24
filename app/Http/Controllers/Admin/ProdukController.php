@@ -17,7 +17,11 @@ class ProdukController extends Controller
      */
     public function index()
     {
-        $produk = Produk::all();
+        $produk = Produk::latest()
+        ->when(request()->has('s'), function($query) {
+            $query->where('nama_produk', 'like', '%'.request('s').'%');
+        })
+        ->paginate(10);
 
         $data = [
             'produk' => $produk
@@ -55,6 +59,8 @@ class ProdukController extends Controller
             'harga' => ['required', 'numeric'],
             'stok' => ['required', 'numeric'],
             'gambar' => ['required','image','mimes:jpeg,png,jpg,gif,svg','max:2048'],
+            'keterangan' => ['nullable'],
+            'keterangan_pendek' => ['nullable', 'max:100'],
         ]);
 
         if($validator->fails()) {
@@ -76,7 +82,8 @@ class ProdukController extends Controller
         $produk->kode_produk = uniqid();
         $produk->nama_produk = $input['nama_produk'];
         $produk->id_kategori = $input['kategori'];
-        $produk->keterangan = in_array('keterangan', $input) ? $input['keterangan']: '';
+        $produk->keterangan = $input['keterangan'];
+        $produk->keterangan_pendek = $input['keterangan_pendek'];
         $produk->gambar = $filename;
         $produk->harga = $input['harga'];
         $produk->stok = $input['stok'];
@@ -126,10 +133,11 @@ class ProdukController extends Controller
     {
         $validator = \Validator::make($request->all(), [
             'nama_produk' => ['required'],
-            'kategori' => ['required', 'numeric'],
             'harga' => ['required', 'numeric'],
             'stok' => ['required', 'numeric'],
             'gambar' => ['nullable','image','mimes:jpeg,png,jpg,gif,svg','max:2048'],
+            'keterangan' => ['nullable'],
+            'keterangan_pendek' => ['nullable', 'max:100'],
         ]);
 
         if($validator->fails()) {
@@ -155,13 +163,13 @@ class ProdukController extends Controller
 
         $produk->kode_produk = uniqid();
         $produk->nama_produk = $input['nama_produk'];
-        $produk->id_kategori = $input['kategori'];
-        $produk->keterangan = in_array('keterangan', $input) ? $input['keterangan']: '';
+        $produk->keterangan = $input['keterangan'];
+        $produk->keterangan_pendek = $input['keterangan_pendek'];
         $produk->harga = $input['harga'];
         $produk->stok = $input['stok'];
         $produk->save();
 
-        return redirect(route('admin.produk.index'))->with('notes', ['text' => 'Tambah Produk Berhasil!']);
+        return redirect(route('admin.produk.index'))->with('notes', ['text' => 'Update Produk Berhasil!']);
     }
 
     /**

@@ -16,7 +16,11 @@ class KategoriController extends Controller
      */
     public function index()
     {
-        $categories = Kategori::all();
+        $categories = Kategori::latest()
+        ->when(request()->has('s'), function($query) {
+            $query->where('nama_kategori', 'like', '%'.request('s').'%');
+        })
+        ->paginate(10);
 
         $data = [
             'categories' => $categories
