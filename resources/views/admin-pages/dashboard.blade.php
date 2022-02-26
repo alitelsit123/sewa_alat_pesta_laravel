@@ -82,10 +82,13 @@
         <div class="card-tools">
           <ul class="nav nav-pills ml-auto">
             <li class="nav-item">
-              <a class="nav-link active" href="#revenue-chart" data-toggle="tab">Area</a>
+              <a class="nav-link active" href="#area-chart" data-toggle="tab">Area</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#sales-chart" data-toggle="tab">Donut</a>
+              <a class="nav-link" href="#revenue-chart" data-toggle="tab">Bar</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#sales-chart" data-toggle="tab">Line</a>
             </li>
           </ul>
         </div>
@@ -93,12 +96,16 @@
       <div class="card-body">
         <div class="tab-content p-0">
           <!-- Morris chart - Sales -->
-          <div class="chart tab-pane active" id="revenue-chart"
+          <div class="chart tab-pane active" id="area-chart"
                style="position: relative; height: 300px;">
-              <canvas id="revenue-chart-canvas" height="300" style="height: 300px;"></canvas>
+              <canvas id="areaChart" height="300" style="height: 300px;"></canvas>
+           </div>
+          <div class="chart tab-pane" id="revenue-chart"
+               style="position: relative; height: 300px;">
+              <canvas id="barChart" height="300" style="height: 300px;"></canvas>
            </div>
           <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;">
-            <canvas id="sales-chart-canvas" height="300" style="height: 300px;"></canvas>
+            <canvas id="lineChart" height="300" style="height: 300px;"></canvas>
           </div>
         </div>
       </div><!-- /.card-body -->

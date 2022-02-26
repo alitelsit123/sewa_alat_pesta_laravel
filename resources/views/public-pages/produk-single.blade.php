@@ -101,10 +101,10 @@ $(document).ready(function() {
                         </div>
                     </div>
                 </div>
-                <div class="col-md-12 px-0 pd-b-10">
+                <div class="col-md-12 px-0 pd-b-10 @if(!$produk->keterangan) d-none @endif">
                     <strong>Keterangan:</strong>
                 </div>
-                <div class="col-md-12 bd-b bd-gray-300 bg-gray-200">
+                <div class="col-md-12 bd-b bd-gray-300 bg-gray-200 @if(!$produk->keterangan) d-none @endif">
                     <div class="px-2 py-3" style="min-height: 200px;">{!! $produk->keterangan !!}</div>                
                 </div>
             </div>

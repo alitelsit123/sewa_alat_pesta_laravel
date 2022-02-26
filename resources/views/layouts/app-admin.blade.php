@@ -121,6 +121,117 @@
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ asset('/assets/dist/js/pages/dashboard.js') }}"></script>
 <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+@if(request()->segment(2) == 'dashboard')
+<script>
+  $(function () {
+    /* ChartJS
+     * -------
+     * Here we will create a few charts using ChartJS
+     */
+
+    //--------------
+    //- AREA CHART -
+    //--------------
+
+    // Get context with jQuery - using jQuery's .get() method.
+    var areaChartCanvas = $('#areaChart').get(0).getContext('2d')
+
+    var areaChartData = {
+      labels  : JSON.parse('{!! \json_encode($dates) !!}'),
+      datasets: [
+        {
+          label               : 'Saldo Masuk',
+          backgroundColor     : 'rgba(60,141,188,0.9)',
+          borderColor         : 'rgba(60,141,188,0.8)',
+          pointRadius          : false,
+          pointColor          : '#3b8bba',
+          pointStrokeColor    : 'rgba(60,141,188,1)',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: 'rgba(60,141,188,1)',
+          data                : JSON.parse('{!! \json_encode($chart_in) !!}')
+        },
+        {
+          label               : 'Saldo Pending',
+          backgroundColor     : 'rgba(210, 214, 222, 1)',
+          borderColor         : 'rgba(210, 214, 222, 1)',
+          pointRadius         : false,
+          pointColor          : 'rgba(210, 214, 222, 1)',
+          pointStrokeColor    : '#c1c7d1',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: 'rgba(220,220,220,1)',
+          data                : JSON.parse('{!! \json_encode($chart_pending) !!}')
+        },
+      ]
+    }
+
+    var areaChartOptions = {
+      maintainAspectRatio : false,
+      responsive : true,
+      legend: {
+        display: false
+      },
+      scales: {
+        xAxes: [{
+          gridLines : {
+            display : false,
+          }
+        }],
+        yAxes: [{
+          gridLines : {
+            display : false,
+          }
+        }]
+      }
+    }
+
+    // This will get the first returned node in the jQuery collection.
+    new Chart(areaChartCanvas, {
+      type: 'line',
+      data: areaChartData,
+      options: areaChartOptions
+    })
+
+    //-------------
+    //- BAR CHART -
+    //-------------
+    var barChartCanvas = $('#barChart').get(0).getContext('2d')
+    var barChartData = $.extend(true, {}, areaChartData)
+    var temp0 = areaChartData.datasets[0]
+    var temp1 = areaChartData.datasets[1]
+    barChartData.datasets[0] = temp1
+    barChartData.datasets[1] = temp0
+
+    var barChartOptions = {
+      responsive              : true,
+      maintainAspectRatio     : false,
+      datasetFill             : false
+    }
+
+    new Chart(barChartCanvas, {
+      type: 'bar',
+      data: barChartData,
+      options: barChartOptions
+    })
+
+    //-------------
+    //- LINE CHART -
+    //--------------
+    var lineChartCanvas = $('#lineChart').get(0).getContext('2d')
+    var lineChartOptions = $.extend(true, {}, areaChartOptions)
+    var lineChartData = $.extend(true, {}, areaChartData)
+    lineChartData.datasets[0].fill = false;
+    lineChartData.datasets[1].fill = false;
+    lineChartOptions.datasetFill = false
+
+    var lineChart = new Chart(lineChartCanvas, {
+      type: 'line',
+      data: lineChartData,
+      options: lineChartOptions
+    })
+    
+  })
+</script>
+@endif
 <script>
   var loading = 3;
   var app_url = '';
@@ -200,7 +311,6 @@ $.get('{{ route("user.collect") }}', function(data, status) {
 });
 
 </script>
-
 
 </body>
 </html>
