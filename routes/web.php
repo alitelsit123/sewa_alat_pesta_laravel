@@ -156,6 +156,9 @@ Route::middleware(['auth.admin'])->name('admin.')->group(function() {
             Route::get('/', [App\Http\Controllers\Admin\SewaController::class, 'index'])->name('index');
             Route::get('/{id}/complete', [App\Http\Controllers\Admin\SewaController::class, 'complete'])->name('complete');
         });
+        Route::name('search.')->prefix('search')->group(function() {
+            Route::get('/', [App\Http\Controllers\Admin\GeneralSearchController::class, 'index'])->name('index');
+        });
     });
 
 

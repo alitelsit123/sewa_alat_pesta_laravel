@@ -52,9 +52,10 @@
               </div>
               <!-- /.card-header -->
               <div class="card-header">
-                    <form action="" class="form-inline w-100">
+                <form action="{{ route('admin.kategori.index') }}" class="form-inline w-100">
                     <div class="form-group flex-grow-1">
-                        <input type="text" class="form-control" placeholder="Cari Kategori" disabled>
+                        <input type="text" name="s" value="{{ request('s') }}" class="form-control mr-2" placeholder="Cari Kategori">
+                        <a href="{{ route('admin.kategori.index') }}" class="btn btn-warning">Reset</a>
                     </div>
                     <a class="btn btn-primary" href="{{ route('admin.kategori.create') }}">Tambah Kategori</a>
                 </form>    

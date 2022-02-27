@@ -42,4 +42,7 @@ class AppSupport
             ) 
         ];
     }
+    public static function generalSearchFilterTypes() {
+        return ['categories', 'products', 'orders', 'users', 'payments', 'chats'];
+    }
 }

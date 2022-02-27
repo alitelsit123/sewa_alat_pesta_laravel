@@ -14,4 +14,8 @@ class Chat extends Model
     protected $fillable = [
         'chat', 'id_chat_sesi', 'pengirim'
     ];
+
+    public function sesi() {
+        return $this->belongsTo('App\Models\ChatSesi', 'id_chat_sesi');
+    }
 }

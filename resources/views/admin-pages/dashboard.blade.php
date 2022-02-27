@@ -40,14 +40,14 @@
     <!-- small box -->
     <div class="small-box bg-warning">
       <div class="inner">
-        <h3>Rp. {{ number_format($total_pendapatan) }}</h3>
+        <h3>{{ $total_user }}</h3>
 
-        <p>Pendapatan</p>
+        <p>Total User</p>
       </div>
       <div class="icon">
         <i class="ion ion-person-add"></i>
       </div>
-      <a href="{{ route('admin.transaksi.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+      <a href="{{ route('admin.user.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
     </div>
   </div>
   <!-- ./col -->
@@ -55,14 +55,14 @@
     <!-- small box -->
     <div class="small-box bg-danger">
       <div class="inner">
-        <h3>{{ $total_user }}</h3>
+        <h3>Rp. {{ number_format($total_pendapatan) }}</h3>
 
-        <p>Total User</p>
+        <p>Pendapatan</p>
       </div>
       <div class="icon">
         <i class="ion ion-pie-graph"></i>
       </div>
-      <a href="{{ route('admin.user.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+      <a href="{{ route('admin.transaksi.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
     </div>
   </div>
   <!-- ./col -->
@@ -82,10 +82,13 @@
         <div class="card-tools">
           <ul class="nav nav-pills ml-auto">
             <li class="nav-item">
-              <a class="nav-link active" href="#revenue-chart" data-toggle="tab">Area</a>
+              <a class="nav-link active" href="#area-chart" data-toggle="tab">Area</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#sales-chart" data-toggle="tab">Donut</a>
+              <a class="nav-link" href="#revenue-chart" data-toggle="tab">Bar</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#sales-chart" data-toggle="tab">Line</a>
             </li>
           </ul>
         </div>
@@ -93,12 +96,16 @@
       <div class="card-body">
         <div class="tab-content p-0">
           <!-- Morris chart - Sales -->
-          <div class="chart tab-pane active" id="revenue-chart"
+          <div class="chart tab-pane active" id="area-chart"
                style="position: relative; height: 300px;">
-              <canvas id="revenue-chart-canvas" height="300" style="height: 300px;"></canvas>
+              <canvas id="areaChart" height="300" style="height: 300px;"></canvas>
+           </div>
+          <div class="chart tab-pane" id="revenue-chart"
+               style="position: relative; height: 300px;">
+              <canvas id="barChart" height="300" style="height: 300px;"></canvas>
            </div>
           <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;">
-            <canvas id="sales-chart-canvas" height="300" style="height: 300px;"></canvas>
+            <canvas id="lineChart" height="300" style="height: 300px;"></canvas>
           </div>
         </div>
       </div><!-- /.card-body -->
