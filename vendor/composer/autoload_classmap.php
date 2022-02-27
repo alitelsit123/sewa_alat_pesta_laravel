@@ -61,6 +61,7 @@ return array(
     'App\\Models\\Produk' => $baseDir . '/app/Models/Produk.php',
     'App\\Models\\Profile' => $baseDir . '/app/Models/Profile.php',
     'App\\Models\\Sewa' => $baseDir . '/app/Models/Sewa.php',
+    'App\\Models\\Stat' => $baseDir . '/app/Models/Stat.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Models\\UserRole' => $baseDir . '/app/Models/UserRole.php',
     'App\\Notifications\\Admin\\NewOrderCreatedNotification' => $baseDir . '/app/Notifications/Admin/NewOrderCreatedNotification.php',

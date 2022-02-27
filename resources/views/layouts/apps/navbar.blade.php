@@ -80,7 +80,7 @@
       <div class="dropdown az-profile-menu">
         <a href="#" class="az-img-user rounded-circle bd bd-2 bd-indigo">
           <!-- <i class="typcn typcn-user"></i> -->
-          <img src="{{ asset('assets/'.(auth()->user()->profile->photo ? 'uploads/users/'.auth()->user()->profile->photo: 'dist-base/img/faces/face10.jpg')) }}" alt="">
+          <img src="{{ asset(auth()->user()->profile->getPhoto()) }}" alt="">
         </a>
         <div class="dropdown-menu">
           <div class="az-dropdown-header d-sm-none">
@@ -88,7 +88,7 @@
           </div>
           <div class="az-header-profile">
             <div class="az-img-user">
-              <img src="{{ asset('assets/'.(auth()->user()->profile->photo ? 'uploads/users/'.auth()->user()->profile->photo: 'dist-base/img/faces/face10.jpg')) }}" alt="">
+              <img src="{{ asset((auth()->user()->profile->getPhoto())) }}" alt="">
             </div><!-- az-img-user -->
             <h6>{{ auth()->user()->profile ? auth()->user()->profile->nama: '[Belum di Setel]' }}</h6>
             <span>{{ auth()->user()->email }}</span>

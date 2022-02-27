@@ -22,6 +22,7 @@ class RegisterController extends Controller
     public function register(Request $request) {
         $validator = Validator::make($request->all(), [
             'nama' => ['required', 'string'],
+            'nik' => ['required', 'numeric'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'confirmed', 'min:8'],
         ]);
@@ -39,8 +40,9 @@ class RegisterController extends Controller
 
         $user->profile()->create([
             'nama' => $request->nama,
+            'nik' => $request->nik,
         ]);
 
-        return redirect('/auth/login');
+        return redirect('/auth/login')->withInput();
     }
 }

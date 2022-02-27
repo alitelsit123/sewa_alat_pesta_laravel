@@ -48,13 +48,13 @@
     <div class="az-content-left az-content-left-profile pd-t-10">
       <div class="az-profile-overview">
         <div class="d-flex justify-content-between w-100 pd-b-20">
-          <img src="{{ asset('assets/'.($user->profile->photo ? 'uploads/users/'.$user->profile->photo: 'dist-base/img/faces/face10.jpg')) }}" alt="" class="rounded-10" style="max-width: 101px;max-height: 101px;" id="showed-photo">
+          <img src="{{ asset($user->profile->getPhoto()) }}" alt="" class="rounded-10" style="max-width: 101px;max-height: 101px;" id="showed-photo">
           @if(auth()->check() && $is_me)
           
           <form action="{{ url('/profile/'.$user->email.'/update_photo/') }}" class="flex-grow-1" enctype="multipart/form-data" method="post">
             @csrf
             @method('put')
-            <input type="file" class="d-none" name="photo" id="input_photo" />
+            <input type="file" class="d-none" accept="image/*" name="photo" id="input_photo" />
             <label for="input_photo">
               <button class="btn btn-with-icon btn-rounded btn-sm mx-auto" id="btn-edit-photo" type="button"><i class="typcn typcn-pencil"></i> Ubah Gambar</button>
             </label>

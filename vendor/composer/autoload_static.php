@@ -627,6 +627,7 @@ class ComposerStaticInit6b6758e58775aace273bb5caab6aee0f
         'App\\Models\\Produk' => __DIR__ . '/../..' . '/app/Models/Produk.php',
         'App\\Models\\Profile' => __DIR__ . '/../..' . '/app/Models/Profile.php',
         'App\\Models\\Sewa' => __DIR__ . '/../..' . '/app/Models/Sewa.php',
+        'App\\Models\\Stat' => __DIR__ . '/../..' . '/app/Models/Stat.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Models\\UserRole' => __DIR__ . '/../..' . '/app/Models/UserRole.php',
         'App\\Notifications\\Admin\\NewOrderCreatedNotification' => __DIR__ . '/../..' . '/app/Notifications/Admin/NewOrderCreatedNotification.php',
