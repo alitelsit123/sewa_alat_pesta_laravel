@@ -9,6 +9,7 @@ use App\Models\Produk;
 use App\Models\Kategori;
 use App\Models\Sewa;
 use App\Models\Pesanan;
+use App\Models\Stat;
 
 class ProductController extends Controller
 {
@@ -24,6 +25,14 @@ class ProductController extends Controller
         ->when(in_array('q', $validated_query), function($query) use ($querys) {
             $arr = explode(' ', $querys['q']);
             $query->where('nama_produk', 'like', '%'.$querys['q'].'%');
+            
+            $stat = Stat::create([
+                'type' => 'search',
+                'data' => \json_encode([
+                    'text' => $querys['q']
+                ], true)
+            ]);
+            
             foreach($arr as $k => $v) {
                 $query->orWhere('nama_produk', 'like', '%'.$v.'%');
             }

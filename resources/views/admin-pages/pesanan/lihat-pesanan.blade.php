@@ -39,22 +39,28 @@
                 <div class="col-12 d-flex justify-content-between align-items-center w-100">
                     <span class="font-weight-bold">Pengiriman</span>
                     @if($order->status > 1)
-                        @if($order->sewa->status == 1)
-                        <a href="{{ route('admin.order.shipment', [$order->kode_pesanan, 2]) }}" class="btn btn-success btn-sm ml-2">
-                            <i class="fas fa-truck"></i> Mulai Kirim
-                        </a>
-                        @endif
-                        @if($order->sewa->status == 2)
-                        <a href="{{ route('admin.order.shipment', [$order->kode_pesanan, 3]) }}" class="btn btn-success btn-sm ml-2">
-                            <i class="fas fa-check"></i> Sampai Tujuan
-                        </a>
+                        @if($order->sewa)
+                            @if($order->sewa->status == 1)
+                            <a href="{{ route('admin.order.shipment', [$order->kode_pesanan, 2]) }}" class="btn btn-success btn-sm ml-2">
+                                <i class="fas fa-truck"></i> Mulai Kirim
+                            </a>
+                            @endif
+                            @if($order->sewa->status == 2)
+                            <a href="{{ route('admin.order.shipment', [$order->kode_pesanan, 3]) }}" class="btn btn-success btn-sm ml-2">
+                                <i class="fas fa-check"></i> Sampai Tujuan
+                            </a>
+                            @endif
+                        @else
+                            <a href="#" class="btn btn-secondary disabled btn-sm ml-2">
+                                Pengiriman Tidak Tersedia
+                            </a>
                         @endif
                     @endif
                 </div>
                 <div class="col-6">
                     Status: 
                     <span class="badge badge-info">
-                        @if($order->status > 1) 
+                        @if($order->status > 1 && $order->sewa) 
                             {{ $order->sewa->getShipmentStatusText() }} 
                         @else 
                             Belum Dikirim

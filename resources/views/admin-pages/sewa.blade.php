@@ -50,13 +50,13 @@
                     <h5>Sewa</h5>
               </div>
               <!-- /.card-header -->
-              <div class="card-header">
+              <!-- <div class="card-header">
                     <form action="" class="form-inline w-100">
                     <div class="form-group flex-grow-1">
                         <input type="text" class="form-control" placeholder="Cari Sewa" disabled>
                     </div>
                 </form>    
-              </div>
+              </div> -->
               <div class="card-body p-0">
                 <!-- <div class="container">
                   <div class="callout callout-info">

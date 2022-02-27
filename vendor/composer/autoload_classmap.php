@@ -13,6 +13,7 @@ return array(
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Helpers\\AppSupport' => $baseDir . '/app/Helpers/AppSupport.php',
     'App\\Http\\Controllers\\Admin\\DashboardController' => $baseDir . '/app/Http/Controllers/Admin/DashboardController.php',
+    'App\\Http\\Controllers\\Admin\\GeneralSearchController' => $baseDir . '/app/Http/Controllers/Admin/GeneralSearchController.php',
     'App\\Http\\Controllers\\Admin\\KategoriController' => $baseDir . '/app/Http/Controllers/Admin/KategoriController.php',
     'App\\Http\\Controllers\\Admin\\LiveChatController' => $baseDir . '/app/Http/Controllers/Admin/LiveChatController.php',
     'App\\Http\\Controllers\\Admin\\OrderController' => $baseDir . '/app/Http/Controllers/Admin/OrderController.php',
