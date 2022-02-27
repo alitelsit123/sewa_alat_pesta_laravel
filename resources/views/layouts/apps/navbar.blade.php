@@ -1,7 +1,7 @@
 <div class="az-header">
   <div class="container">
     <div class="az-header-left">
-      <a href="{{ url('/') }}" class="az-logo" style="text-decoration: none;text-transform: capitalize!important;"><span></span> Mita</a>
+      <a href="{{ url('/') }}" class="az-logo" style="text-decoration: none;text-transform: capitalize!important; color:#133863;"><span></span> Mita</a>
       <a href="#" id="azMenuShow" class="az-header-menu-icon d-lg-none"><span></span></a>
     </div><!-- az-header-left -->
 

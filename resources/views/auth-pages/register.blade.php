@@ -25,21 +25,11 @@
 @endsection
 
 @section('content-body')
-<div class="az-signup-wrapper">
-  <div class="az-column-signup-left">
-    <div>
-      <i class="typcn typcn-chart-bar-outline"></i>
-      <h1 class="az-logo text-uppercase">{{ env('APP_NAME') }}</h1>
-      <h5>Sewa Alat Pesta</h5>
-      <p>We are excited to launch our new company and product Azia. After being featured in too many magazines to mention and having created an online stir, we know that BootstrapDash is going to be big. We also hope to win Startup Fictional Business of the Year this year.</p>
-      <p>Browse our site and see for yourself why you need Azia.</p>
-      <a class="btn btn-outline-indigo">Learn More</a>
-    </div>
-  </div><!-- az-column-signup-left -->
-  <div class="az-column-signup">
-    <h1 class="az-logo text-uppercase">{{ env('APP_NAME') }}</h1>
+<div class="az-signin-wrapper">
+<div class="az-card-signin">
+    <h1 class="az-logo text-uppercase" style="color: #0D2F73;">{{ env('APP_NAME') }}</h1>
     <div class="az-signup-header">
-      <h2>Memulai Dengan Mudah</h2>
+      <h2 style="color: #0D2F73;">Memulai Dengan Mudah</h2>
       <h4>Daftar gratis.</h4>
 
       <form action="{{ url('/auth/register') }}" method="post">

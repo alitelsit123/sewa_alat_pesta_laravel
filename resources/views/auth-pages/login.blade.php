@@ -27,10 +27,10 @@
 @section('content-body')
 <div class="az-signin-wrapper">
   <div class="az-card-signin">
-    <h1 class="az-logo text-uppercase">{{ env('APP_NAME') }}</h1>
+    <h1 class="az-logo text-uppercase" style="color: #0D2F73;">{{ env('APP_NAME') }}</h1>
     <div class="az-signin-header">
-      <h2>Selamat Datang Kembali!</h2>
-      <h4>Masuk untuk melanjutkan</h4>
+      <h2 style="color: #0D2F73;">Selamat Datang Kembali!</h2>
+      <h4 >Masuk untuk melanjutkan</h4>
 
       <form action="{{ url('/auth/login') }}" method="post">
         @csrf
