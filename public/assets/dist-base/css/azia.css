@@ -5859,13 +5859,8 @@ textarea.form-check-input.parsley-error {
 
 .p-1 {
   padding: 0.25rem !important;
-  background-color: #e5e5f7; opacity: 0.8;
-  background-image:  radial-gradient(#444cf7 0.5px, transparent 0.5px), radial-gradient(#444cf7 0.5px, #e5e5f7 0.5px);
-  background-size: 20px 20px;
-  background-position: 0 0,10px 10px;
-  background-size: 10px 10px;
   text-align: center;
-  color: #071833;
+  color: #031b4e;
 }
 
 .p-2 {
@@ -16533,10 +16528,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #e5e5f7;
-  opacity: 0.8;
-  background-image: radial-gradient(#5b63ec 0.5px, #e5e5f7 0.5px);
-  background-size: 10px 10px;}
+  opacity: 0.9
+}
 
 .az-card-signin {
   height: 550px;
@@ -46112,3 +46105,5 @@ ul.list-ckeck-soft {
 
 .wd-100v {
   width: 100vw; }
+
+  
