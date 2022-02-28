@@ -30,6 +30,7 @@ class ProfileController extends Controller
         $user->profile()->update([
             'nama' => $validated_input['profile_nama'],
             'telepon' => $validated_input['profile_telepon'],
+            'nik' => $validated_input['profile_nik'],
             'tanggal_lahir' => $validated_input['profile_tanggal_lahir'],
             'alamat' => $validated_input['profile_alamat'],
             'kodepos' => $validated_input['profile_kodepos'],

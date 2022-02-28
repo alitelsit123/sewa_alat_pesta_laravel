@@ -94,7 +94,7 @@ $(document).ready(function() {
                                 </div>
                                 @enderror
                                 <div class="d-flex">
-                                    <button class="btn btn-with-icon bd bd-2 bd-gray-700 mg-r-10 disabled"><i class="typcn icon typcn-heart-outline"></i> Favoritkan</button>
+                                    <!-- <button class="btn btn-with-icon bd bd-2 bd-gray-700 mg-r-10 disabled"><i class="typcn icon typcn-heart-outline"></i> Favoritkan</button> -->
                                     <button class="btn btn-with-icon btn-indigo bd bd-2 bd-primary @if($produk->stok - $produk->ordered_sum_kuantitas < 1) disabled @endif" @if($produk->stok - $produk->ordered_sum_kuantitas < 1) @else type="submit" @endif><i class="typcn icon typcn-shopping-cart"></i> Masukkan ke Keranjang</button>
                                 </div>
                             </form>

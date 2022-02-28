@@ -41,7 +41,7 @@ function toggleOpenNotification() {
     notification_is_open = !notification_is_open
 }
 
-btn_notification.addEventListener('click', function() {
+btn_notification?.addEventListener('click', function() {
     toggleOpenNotification();
     if(notification_is_open) {
         $.ajax({
