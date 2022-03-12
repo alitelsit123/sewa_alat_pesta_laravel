@@ -20,6 +20,7 @@ class Profile extends Model
         'pekerjaan',
         'photo',
         'id_user',
+        'nik'
     ];
     public function getPhoto() {
         if($this->photo == '' || $this->photo == null) {

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Produk;
 use App\Models\DetailPesanan;
 use App\Models\Kategori;
+use App\Models\Stat;
 
 class BaseViewController extends Controller
 {
@@ -24,10 +25,17 @@ class BaseViewController extends Controller
         } else {
             $rekomendasi = Produk::inRandomOrder()->limit(4)->get();
         }
+        $stats = Stat::whereType('search')->get();
+        $stats = $stats->map(function($item) {
+            $text = $item->data;
+            return \json_decode($text)->text;
+        });
+        $stats_text = $stats->countBy()->sortDesc()->keys()->take(12);
         $data = [
             'produk_new' => $produks,
             'kategoris' => $kategoris,
-            'rekomendasi' => $rekomendasi
+            'rekomendasi' => $rekomendasi,
+            'popular_search' => $stats_text
         ];
 
         return view('public-pages.home', $data);

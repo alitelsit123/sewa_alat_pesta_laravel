@@ -136,8 +136,11 @@
                         <div class="az-content-label tx-22">Pencarian Populer</div>
                     </div>
                     <div class="d-flex">
-                        <button class="btn btn-outline-dark btn-rounded">#Meja</button>
-                        <button class="btn btn-outline-dark btn-rounded mg-l-5">#Tenda</button>
+                        @forelse($popular_search as $row)
+                        <a href="{{ url('/products') }}?q={{ $row }}" class="btn btn-outline-dark btn-rounded mg-r-10">#{{ $row }}</a>
+                        @empty
+                        <div>Tidak ada pencarian</div>
+                        @endforelse
                     </div>
                 </div>
 

@@ -22,7 +22,7 @@
       <div class="navbar-search-block">
         <form action="{{ route('admin.search.index') }}" method="get" class="form-inline">
           <div class="input-group input-group-sm">
-            <input id="search-general-input" name="s" class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+            <input id="search-general-input" name="s" class="form-control form-control-navbar" type="search" placeholder="kategori, produk, order, transaksi, pengguna, chat" aria-label="Search">
             <div class="input-group-append">
               <button class="btn btn-navbar" type="submit">
                 <i class="fas fa-search"></i>

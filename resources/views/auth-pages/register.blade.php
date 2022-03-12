@@ -40,6 +40,10 @@
           <input type="text" name="nama" class="form-control" placeholder="Masukkan Nama" value="{{ old('nama') }}" required>
         </div><!-- form-group -->
         <div class="form-group mb-2">
+          <label>Nik</label>
+          <input type="text" name="nik" class="form-control" placeholder="Masukkan Nik" value="{{ old('nik') }}" required>
+        </div><!-- form-group -->
+        <div class="form-group mb-2">
           <label>Email</label>
           <input type="email" name="email" class="form-control" placeholder="Masukkan email" value="{{ old('email') }}" required>
         </div><!-- form-group -->

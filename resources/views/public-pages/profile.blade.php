@@ -48,13 +48,13 @@
     <div class="az-content-left az-content-left-profile pd-t-10">
       <div class="az-profile-overview">
         <div class="d-flex justify-content-between w-100 pd-b-20">
-          <img src="{{ asset('assets/'.($user->profile->photo ? 'uploads/users/'.$user->profile->photo: 'dist-base/img/faces/face10.jpg')) }}" alt="" class="rounded-10" style="max-width: 101px;max-height: 101px;" id="showed-photo">
+          <img src="{{ asset($user->profile->getPhoto()) }}" alt="" class="rounded-10" style="max-width: 101px;max-height: 101px;" id="showed-photo">
           @if(auth()->check() && $is_me)
           
           <form action="{{ url('/profile/'.$user->email.'/update_photo/') }}" class="flex-grow-1" enctype="multipart/form-data" method="post">
             @csrf
             @method('put')
-            <input type="file" class="d-none" name="photo" id="input_photo" />
+            <input type="file" class="d-none" accept="image/*" name="photo" id="input_photo" />
             <label for="input_photo">
               <button class="btn btn-with-icon btn-rounded btn-sm mx-auto" id="btn-edit-photo" type="button"><i class="typcn typcn-pencil"></i> Ubah Gambar</button>
             </label>
@@ -132,6 +132,10 @@
               <div class="flex-grow-1">{{ $user->profile->nama ?? '[Belum disetel]' }}</div>
             </div>
             <div class="d-flex mg-b-10 pd-b-10 bd-b bd-gray-200">
+              <div style="width: 100px;">Nik</div>
+              <div class="flex-grow-1">{{ $user->profile->nik ?? '[Belum disetel]' }}</div>
+            </div>
+            <div class="d-flex mg-b-10 pd-b-10 bd-b bd-gray-200">
               <div style="width: 100px;">Tanggal Lahir</div>
               <div class="flex-grow-1">{{ $user->profile->tanggal_lahir ?? '[Belum disetel]' }}</div>
             </div>
@@ -168,6 +172,12 @@
                 <div class="az-form-group w-100">
                   <label class="form-label">Nama</label>
                   <input type="text" name="profile_nama" class="form-control" placeholder="" value="{{ $user->profile->nama }}">
+                </div>
+              </div>
+              <div class="d-flex mg-b-10 pd-b-10 bd-b bd-gray-200">
+                <div class="az-form-group w-100">
+                  <label class="form-label">Nik</label>
+                  <input type="text" name="profile_nik" class="form-control" placeholder="" value="{{ $user->profile->nik }}">
                 </div>
               </div>
               <div class="d-flex mg-b-10 pd-b-10 bd-b bd-gray-200">
@@ -211,7 +221,7 @@
         <!-- az-profile-body -->
         <div class="az-profile-body tab-pane  {{ request()->input('o') == 'history' ? 'active': 'fade' }}" id="profile-history-tab">
           <div class="bd-b bd-2 bd-gray-200 mg-b-20 pd-b-10">
-            <div class="d-flex align-items-center mg-b-20">
+            <!-- <div class="d-flex align-items-center mg-b-20">
               <span class="mg-r-10 tx-24"><i class="typcn typcn-filter"></i></span>
               <input type="text" class="form-control bd-indigo px-4 flex-grow-1 mg-l-10" placeholder="Cari pesananmu disini" disabled="true" />
               <select class="form-control select2-no-search flex-grow-1 mg-l-10" disabled="true">
@@ -222,8 +232,8 @@
                 <option value="Opera">Opera</option>
                 <option value="Internet Explorer">Internet Explorer</option>
               </select>
-            </div>
-            <div class="d-flex align-items-center">
+            </div> -->
+            <div class="d-flex align-items-center mg-b-20">
               <span class="tx-medium mg-r-10">Status</span>
               <a href="{{ url('/profile/'.auth()->user()->email) }}?o=history" class="btn {{
                 (request()->input('t') == '0') ? 
@@ -254,7 +264,7 @@
             </div><!-- card-header -->
             
             <div class="card-body">
-              @if($row->status > 1)
+              @if($row->status > 1 && $row->sewa)
               <!-- Wizard -->
               <div class="d-flex w-80 justify-content-center mg-b-10 pd-b-10 bd-b">
                 @if($row->sewa->status == 1) 

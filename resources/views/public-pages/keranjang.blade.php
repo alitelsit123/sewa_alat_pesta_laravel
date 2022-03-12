@@ -193,7 +193,7 @@ $('#order-listing').each(function() {
             });
         });
         
-        tombol update keranjang
+        // tombol update keranjang
         btn_update_keranjang.addEventListener('click', function() {
             var form_keranjang = document.createElement("form");
             form_keranjang.style.display = 'none';
@@ -219,7 +219,7 @@ $('#order-listing').each(function() {
         });
 
         // tombol submit/checkout
-        btn_submit.addEventListener('click', function() {
+        btn_submit?.addEventListener('click', function() {
             var form_keranjang = document.createElement("form");
             var inputs_keranjang = checked_carts;
             var input_token = document.createElement("input");
