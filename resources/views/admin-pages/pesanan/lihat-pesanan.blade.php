@@ -31,8 +31,9 @@
                     <!-- <span class="badge badge-info">
                         
                     </span> -->
-                    Email: {{ $order->user->email }}<br/>  
-                    Telepon: {{ $order->user->profile->telepon }}<br/>  
+                    Email: {{ $order->user->email }}<br/>
+                    NIK: {{ $order->user->profile->nik }}<br/>  
+                    Telepon: {{ $order->user->profile->telepon }}<br/>
                 </div>
             </div>
             <div class="row mb-4">

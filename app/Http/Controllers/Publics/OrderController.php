@@ -275,14 +275,6 @@ class OrderController extends Controller
                     }
                 }
                 
-                // if($order->status) {
-                //     foreach($details as $row) {
-                //         $produk = $row->produk;
-                //         $produk->stok = (int)$produk->stok - (int)$row->kuantitas;
-                //         $produk->save();
-                //     }
-                // }
-
                 if($payment->tipe_pembayaran == 1) {
                     $rest_payment = $order->fullPayment();
                     $midtrans = new CreateSnapTokenService($rest_payment);
