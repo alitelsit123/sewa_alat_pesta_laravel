@@ -29,6 +29,9 @@ class SewaController extends Controller
         // }
 
         $sewa->status = 4;
+        if($sewa->waktu_pengiriman == null){
+            $sewa->waktu_pengiriman = now();
+        }
         $sewa->waktu_pengembalian = now();
         $sewa->save();
 

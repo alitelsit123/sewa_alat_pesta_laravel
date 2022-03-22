@@ -151,6 +151,12 @@ class User extends Authenticatable implements MustVerifyEmail
         }
         return $this->order;
     }
+
+    public function orderWithPaymentPending(){
+        return $this->order()->with('payment')->whereHas('payment', function($query) {
+            $query->whereIn('status', [1]);
+        })->get();
+    }
     
 
     public function scopeAdmins($query) {

@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'chatbot' => \App\Http\Middleware\ChatHandler::class,
         'ShouldAddDuration' => \App\Http\Middleware\ShouldAddDuration::class,
         'CartGuess' => \App\Http\Middleware\CartGuess::class,
+        'PreventOrder' => \App\Http\Middleware\HasPaymentPending::class,
     ];
 }

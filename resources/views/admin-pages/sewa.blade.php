@@ -98,10 +98,17 @@
                       <td>
                         <div class="d-flex justify-content-center align-items-center">
                           <a href="{{ route('admin.order.show', $row->order->kode_pesanan) }}" class="btn mr-1 btn-xs btn-secondary">Lihat Detail</a>
+                            @php
+                            $payments = $row->order->payment()->whereStatus(1)->count();
+                            @endphp
                             @if($row->status == 4)
 
                             @else
-                            <a href="{{ route('admin.sewa.complete', $row->id_sewa) }}" class="btn btn-xs btn-success">Selesai Sewa</a>
+                              @if($payments > 0)
+                              <a href="{{ route('admin.sewa.complete', $row->id_sewa) }}" class="btn btn-xs btn-warning">Selesai Sewa</a>  
+                              @else
+                              <a href="{{ route('admin.sewa.complete', $row->id_sewa) }}" class="btn btn-xs btn-success">Selesai Sewa</a>                              
+                              @endif
                             @endif
                             <!-- <button class="btn btn-sm btn-danger" onclick="openModal({{ $row->id_kategori }})" >Hapus</button> -->  
                         </div>

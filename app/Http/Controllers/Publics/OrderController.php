@@ -20,6 +20,7 @@ class OrderController extends Controller
 {
     // check dulu kalau mau checkout
     public function checkData(Request $request) {
+        $user = auth()->user();
         $validator = \Validator::make($request->all(), [
             'produk' => ['required'],
         ]);
@@ -29,7 +30,6 @@ class OrderController extends Controller
         endif;
 
         $validated_input = $validator->validated();
-        $user = auth()->user();
         $validators = ['nama' => $user->profile->nama, 'telepon' => $user->profile->telepon, 'alamat' => $user->profile->alamat];
         foreach($validators as $item) {
             if(!$item) {
@@ -103,14 +103,13 @@ class OrderController extends Controller
             return redirect('/cart');
         };
 
+        $user = auth()->user();
+        $payment_pending = $user->orderWithPaymentPending();
+
         $data = [
             'keranjangs' => session('cart')['maintains'],
             'stat' => auth()->user()->cartWithStat(array_column(session('cart')['maintains'], 'id_produk'))['stat'],
         ];
-
-        // session()->forget('book');
-        // session()->save();
-        // return dd($data);
 
         return view('public-pages.checkout', $data);
     }

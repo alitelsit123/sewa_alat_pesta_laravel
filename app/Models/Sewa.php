@@ -41,6 +41,12 @@ class Sewa extends Model
         } else if($this->status == 3) {
             return 'Disewa';
         }
+
+        $has_pending_payment = $this->order->paymentPending()->count();
+        if($has_pending_payment) {
+            return 'Selesai, Belum Lunas';
+        }
+        
         return 'Selesai';
     }
 }

@@ -312,14 +312,14 @@
                   <div class="tx-gray-700">Sewa</div>
                 </div>
                 @endif
-                @if($row->dpPayment()->total_bayar > 0 == 'dp' && $row->status == 2) 
+                @if($row->dpPayment()->total_bayar > 0 && $row->status == 2) 
                 <div class="tx-indigo d-flex flex-column justify-content-center align-items-center flex-grow-1">
                   <div class="text-center mg-b-5">
                     <i class="fas fa-money-bill-wave" style="font-size: 30px;"></i>
                   </div>
                   <div class="tx-semibold">Lunasi Pembayaran</div>
                 </div>
-                @elseif($row->dpPayment()->total_bayar > 0 == 'dp' && $row->status == 1)
+                @elseif($row->dpPayment()->total_bayar > 0 && $row->status == 1)
                 <div class="d-flex flex-column justify-content-center align-items-center flex-grow-1" style="opacity: 0.4;">
                   <div class="text-center mg-b-5">
                     <i class="fas fa-money-bill-wave" style="font-size: 30px;"></i>
@@ -327,7 +327,14 @@
                   <div class="tx-gray-700">Lunasi Pembayaran</div>
                 </div>
                 @endif
-                @if($row->sewa->status == 4 && $row->status == 3) 
+                @if($row->dpPayment()->total_bayar > 0 && $row->status == 1)
+                <div class="d-flex flex-column justify-content-center align-items-center flex-grow-1" style="opacity: 0.4;">
+                  <div class="text-center mg-b-5">
+                    <i class="fas fa-check" style="font-size: 30px;"></i>
+                  </div>
+                  <div class="tx-gray-700">Selesai</div>
+                </div>
+                @elseif($row->sewa->status == 4 && $row->status == 3) 
                 <div class="tx-indigo d-flex flex-column justify-content-center align-items-center flex-grow-1">
                   <div class="text-center mg-b-5">
                     <i class="fas fa-check" style="font-size: 30px;"></i>
@@ -411,7 +418,7 @@
                       @if($p_row->total_bayar > 0)
                         <div class="d-flex justify-content-between">
                           <div>
-                            {{ $p_row->getTipe() }} 
+                            {{ $p_row->getTipes() }} 
                             @if($p_row->total_bayar == 0) 
                               <span class="badge badge-info">Skip</span>
                             @else

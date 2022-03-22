@@ -31,6 +31,19 @@ class Pembayaran extends Model
     public function getTipe() {
         return $this->tipe_pembayaran == 1 ? 'Dp': 'Full';
     }
+    public function getTipes() {
+        if($this->tipe_pembayaran == 1){
+            return 'Dp';
+        } else {
+            $selected = $this->order->selectedPayment();
+            if($selected == 'dp') {
+                return 'Pelunasan';
+            } else {
+                return 'Full';
+            }
+        }
+        return 'Full';
+    }
     public function getStatusText() {
         return $this->status == 1 ? 'belum membayar': 'sudah bayar';
     }

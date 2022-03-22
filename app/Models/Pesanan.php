@@ -39,6 +39,9 @@ class Pesanan extends Model
     public function fullPayment() {
         return $this->payment()->where('tipe_pembayaran', 2)->first();
     }
+    public function paymentPending() {
+        return $this->payment()->whereStatus(1)->get();
+    }
 
     public function user() {
         return $this->belongsTo('App\Models\User', 'id_user');

@@ -79,9 +79,9 @@ Route::post('/api_v1/polling/payment/notification', [App\Http\Controllers\Pollin
 
 Route::name('order.')->prefix('order')->group(function() {
     Route::middleware(['auth', 'verified'])->group(function() {
-        Route::post('/checkout', [App\Http\Controllers\Publics\OrderController::class, 'checkData'])->name('proses.checkdata');
-        Route::get('/checkout', [App\Http\Controllers\Publics\OrderController::class, 'checkoutView'])->name('proses.checkout.view');
-        Route::post('/process_payment', [App\Http\Controllers\Publics\OrderController::class, 'processPayment'])->name('proses.init_payment');
+        Route::post('/checkout', [App\Http\Controllers\Publics\OrderController::class, 'checkData'])->middleware(['PreventOrder'])->name('proses.checkdata');
+        Route::get('/checkout', [App\Http\Controllers\Publics\OrderController::class, 'checkoutView'])->middleware(['PreventOrder'])->name('proses.checkout.view');
+        Route::post('/process_payment', [App\Http\Controllers\Publics\OrderController::class, 'processPayment'])->middleware(['PreventOrder'])->name('proses.init_payment');
         Route::get('/payment', [App\Http\Controllers\Publics\OrderController::class, 'makePayment'])->name('proses.payment');    
         Route::get('/payment/finish', [App\Http\Controllers\Publics\OrderController::class, 'finishPayment'])->name('payment.finish');    
     });
