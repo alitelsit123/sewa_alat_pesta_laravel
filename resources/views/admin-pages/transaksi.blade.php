@@ -107,6 +107,7 @@
                             {{ $trans->links('vendor.pagination.bootstrap-4') }}
                         </td>
                       </tr>
+                      @if(!request()->f && request()->f != 'new')
                       <tr>
                         <td colspan="2"><strong>Total Kedaluarsa, Batal</strong></td>
                         <td colspan="4">Rp. {{ \number_format($saldo_cancel) }}</td>
@@ -119,10 +120,13 @@
                         <td colspan="2"><strong>Total Saldo Masuk</strong></td>
                         <td colspan="4">Rp. {{ \number_format($saldo_in) }}</td>
                       </tr>
+                      {{--
                       <tr>
                         <td colspan="2"><strong>Total Semua Transaksi</strong></td>
                         <td colspan="4">Rp. {{ \number_format($saldo_all) }}</td>
                       </tr>
+                      --}}
+                      @endif
                   </tbody>
                 </table>
               </div>

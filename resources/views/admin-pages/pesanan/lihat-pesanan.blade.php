@@ -1,6 +1,54 @@
 @extends('layouts.app-admin')
 
+@section('script_body')
+<script src="{{ asset('/assets/plugins/jquery/jquery.min.js') }}"></script>
+
+<!-- Toastr -->
+<script src="{{ asset('/assets/plugins/toastr/toastr.min.js') }}"></script>
+<script>
+    @if (session('notes') && (!in_array('type', session('notes')) || session('notes')['type'] == 'success') )
+    window.addEventListener('load', function() {
+        toastr.success('{{ session("notes")["text"] ?? "success" }}');
+    });
+    @elseif (session('notes') && (session('notes')['type'] == 'error'))
+    window.addEventListener('load', function() {
+        toastr.error('{{ session("notes")["text"] ?? "success" }}');
+    });
+    @else
+
+    @endif
+</script>
+
+
 @section('content-body')
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    var default_lat = -7.993957436359008;
+    var default_lng = 112.6318359375;
+    if($('#map').data('lat') != '' && $('#map').data('lng') != '') {
+        default_lat = $('#map').data('lat');
+        default_lng = $('#map').data('lng');
+    }
+    var map = L.map(document.getElementById('map')).setView([default_lat, default_lng], 6);
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWl0YXBlc3RhMTIzIiwiYSI6ImNsMTU1M2VnbjBkMmozanRleW02eHplODMifQ.5TxVEfhUO75qwJ6YSW-0Ug', {
+      attribution: 'Mita',
+      maxZoom: 18,
+      id: 'mapbox/streets-v11',
+      tileSize: 512,
+      zoomOffset: -1,
+      accessToken: 'pk.eyJ1IjoibWl0YXBlc3RhMTIzIiwiYSI6ImNsMTU1M2VnbjBkMmozanRleW02eHplODMifQ.5TxVEfhUO75qwJ6YSW-0Ug'
+    }).addTo(map);
+    @if($order->address && $order->address->lat && $order->address->lng)    
+        var marker = L.marker([default_lat, default_lng]).addTo(map);
+    @endif
+});
+</script>
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -73,22 +121,40 @@
                     <div>
                         <strong>{{ $order->user->profile->nama }}.</strong><br>
                         {{ $order->user->profile->telepon }}<br>
-                        {{ $order->user->profile->alamat }}
+                        {{ $order->address ? $order->address->alamat: '' }} <br>
+                        {{--
+                        @if($order->address && !$order->address->lat && !$order->address->lng)
+                        <strong>User Tidak menggunakan Lokasi Map</strong>
+                        @endif
+                        --}}
                     </div>
+                </div>
+
+                <div class="col-12 mt-3" style="position: relative;">
+                    @if($order->address)
+                    <div id="map" class="map" data-id="{{ $order->address->id_address }}" data-lat="{{ $order->address->lat }}" data-lng="{{ $order->address->lng }}" style="width: 100%;height: 305px;"></div>
+                        @if(!$order->address->lat && !$order->address->lng)
+                        <div class="map_warn d-flex justify-content-center align-items-center" style="background: black;height: 305px;z-index: 99999;position: absolute;top: 0;left: 0;width: 100%;opacity: .4;">
+                            <div class="font-weight-bold" style="font-size: 36px;color: yellow;">USER TIDAK MENGGUNAKAN MAP</div>
+                        </div>
+                        @endif
+                    @endif
                 </div>
             </div>
             <!-- info row -->
             <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center w-100">
                     <span class="font-weight-bold">Pembayaran</span>
-                    @if($order->dpPayment()->status == 1)
-                    <button type="button" class="btn btn-success btn-sm">
+                    @if($order->dpPayment()->status == 1 && $order->dpPayment()->total_bayar > 0)
+                    <a href="{{ route('admin.order.confirm.payment', [$order->kode_pesanan, 2, 'dp']) }}" class="btn btn-success btn-sm">
                         <i class="fas fa-truck-loading"></i> Konfirmasi DP Manual
-                    </button>
+                    </a>
                     @elseif($order->fullPayment()->status == 1)
-                    <button type="button" class="btn btn-success btn-sm">
+                    <a href="{{ route('admin.order.confirm.payment', [$order->kode_pesanan, 3, 'full']) }}" class="btn btn-success btn-sm">
                         <i class="fas fa-truck-loading"></i> Konfirmasi Pelunasan Manual
-                    </button>
+                    </a>
+                    @else 
+                    
                     @endif
                 </div>
                 <!-- /.col -->

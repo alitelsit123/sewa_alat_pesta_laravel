@@ -71,6 +71,7 @@
     </div>
     <!-- /.content-header -->
 
+
     <!-- Main content -->
     <section class="content">
       @yield('content-body')
@@ -121,6 +122,7 @@
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ asset('/assets/dist/js/pages/dashboard.js') }}"></script>
 <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+
 @if(request()->segment(2) == 'dashboard')
 <script>
   $(function () {

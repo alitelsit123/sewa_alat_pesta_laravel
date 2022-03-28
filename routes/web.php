@@ -54,7 +54,11 @@ Route::middleware(['ShouldAddDuration', 'CartGuess'])->group(function() {
     Route::delete('/cart/delete/{id}', [App\Http\Controllers\Publics\KeranjangController::class, 'deleteCart'])->name('delete-singleton-cart');
 });
 
-Route::get('/profile/{slug}', [App\Http\Controllers\Publics\ProfileController::class, 'showProfilePage'])->name('profile.show');
+Route::get('/profile/{slug}', [App\Http\Controllers\Publics\ProfileController::class, 'showProfilePage'])->name('profile.show')->middleware(['auth']);
+
+Route::get('/profile/{slug}/add_address', [App\Http\Controllers\Publics\ProfileController::class, 'addNewAddress'])->name('profile.add_address')->middleware(['auth']);
+Route::get('/profile/{slug}/remove_address/{id}', [App\Http\Controllers\Publics\ProfileController::class, 'removeAddress'])->name('profile.remove_address')->middleware(['auth']);
+
 Route::put('/profile/{slug}/update', [App\Http\Controllers\Publics\ProfileController::class, 'update'])->name('profile.update')->middleware(['auth']);
 Route::put('/profile/{slug}/update_photo', [App\Http\Controllers\Publics\ProfileController::class, 'updatePhoto'])->name('profile.update-photo')->middleware(['auth']);
 
@@ -150,6 +154,7 @@ Route::middleware(['auth.admin'])->name('admin.')->group(function() {
             Route::get('/', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('index');
             Route::get('/{kode_pesanan}/destroy', [App\Http\Controllers\Admin\OrderController::class, 'destroy'])->name('destroy');
             Route::get('/{kode_pesanan}/{type}/ship', [App\Http\Controllers\Admin\OrderController::class, 'shipmentOut'])->name('shipment');
+            Route::get('/{kode_pesanan}/{type}/{type_payment}/payment', [App\Http\Controllers\Admin\OrderController::class, 'confirmPayment'])->name('confirm.payment');
             Route::get('/v/{kode_pesanan}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('show');
         });
         Route::name('sewa.')->prefix('sewa')->group(function() {

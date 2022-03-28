@@ -211,20 +211,27 @@
               <div class="w-100">
                   @auth
                   <div class="d-flex justify-content-between align-items-center w-100 mg-b-10">
-                      <h6 class="tx-inverse tx-semibold mg-b-10 mg-t-8">Alamat Pengiriman</h6>
-                      <a href="{{ url('/profile/'.auth()->user()->email) }}?o=setting" class="btn icon p-0">
+                      <h6 class="tx-inverse tx-semibold mg-t-8">Billing</h6>
+                      <!-- <a href="{{ url('/profile/'.auth()->user()->profile->id_profile) }}?o=setting" class="btn icon p-0">
                           <i class="typcn icon typcn-pencil"></i> Edit
-                      </a>
+                      </a> -->
                   </div>
                   @endauth
-                  <div>
-                      @if(auth()->user()->profile->alamat && auth()->user()->profile->nama && auth()->user()->profile->telepon)
+                  <div>                    
                       <p class="tx-medium tx-15 m-0" id="alamat-nama">{{ auth()->user()->profile->nama }}</p>
                       <p class="tx-13">{{ auth()->user()->profile->telepon }}</p>
-                      <p>
-                          
-                          {{ auth()->user()->profile->alamat }}
-                      </p>
+                      @if(auth()->user()->profile->addresses()->count() > 0 && auth()->user()->profile->nama && auth()->user()->profile->telepon)
+                      <h6 class="tx-inverse tx-semibold mg-t-8">Alamat Pengiriman</h6>
+                      @forelse(auth()->user()->profile->addresses as $row)
+                      <div class="d-flex align-items-center">
+                          <input type="radio" name="address" value="{{ $row->id_address }}" class="mg-r-5" @if(auth()->user()->profile->addresses->first()->id_address == $row->id_address) checked="checked" @endif> {{ $row->alamat }}
+                          @if(!$row->lat || !$row->lng)
+                          (Lokasi map belum diset)
+                          @endif
+                      </div>
+                      @empty
+
+                      @endforelse
                       @else
                       <div class="alert alert-danger">
                           <strong>Mohon <a href="{{ url('/profile/'.auth()->user()->email) }}?o=setting">lengkapi biodata</a> anda!</strong> Dibutuhkan nama, telepon dan alamat.

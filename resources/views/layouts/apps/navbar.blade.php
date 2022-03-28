@@ -94,9 +94,9 @@
             <span>{{ auth()->user()->email }}</span>
           </div><!-- az-header-profile -->
 
-          <a href="{{ route('profile.show', auth()->user()->email) }}" class="dropdown-item"><i class="typcn typcn-user-outline"></i> Profilku</a>
-          <a href="{{ route('profile.show', auth()->user()->email) }}?o=setting" class="dropdown-item"><i class="typcn typcn-edit"></i> Edit Profile</a>
-          <a href="{{ route('profile.show', auth()->user()->email) }}?o=history" class="dropdown-item"><i class="typcn typcn-document-text"></i> Pesananku</a>
+          <a href="{{ route('profile.show', auth()->user()->profile->id_profile) }}" class="dropdown-item"><i class="typcn typcn-user-outline"></i> Profilku</a>
+          <a href="{{ route('profile.show', auth()->user()->profile->id_profile) }}?o=setting" class="dropdown-item"><i class="typcn typcn-edit"></i> Edit Profile</a>
+          <a href="{{ route('profile.show', auth()->user()->profile->id_profile) }}?o=history" class="dropdown-item"><i class="typcn typcn-document-text"></i> Pesananku</a>
           <form action="{{ route('user.logout') }}" method="post" id="logout" class="w-100 d-flex justify-content-center my-2">
             @csrf
             <button type="submit" class="btn btn-danger rounded-pill flex-grow-1">Keluar</button>

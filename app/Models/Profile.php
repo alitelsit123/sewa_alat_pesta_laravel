@@ -30,5 +30,8 @@ class Profile extends Model
         }
         return url('/assets/uploads/users').'/'.$this->photo;
     }
+    public function addresses() {
+        return $this->hasMany('App\Models\Address', 'id_profile');
+    }
     
 }

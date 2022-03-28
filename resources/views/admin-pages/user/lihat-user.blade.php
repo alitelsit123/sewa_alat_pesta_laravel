@@ -60,7 +60,15 @@
                     </tr>
                     <tr>
                       <td>Alamat</td>
-                      <td class="text-center">{{ $user->profile->alamat ?? '(Belum disetel)' }}</td>
+                      <td class="text-center">
+                        <ul style="list-style: none;">
+                        @forelse($user->profile->addresses as $row)
+                        <li class="mb-2" style="border: 1px solid rgba(0,0,0,.125)">{{ $row->alamat }}</li>
+                        @empty
+                        <li>(Belum Disetel)</li>
+                        @endif
+                        </ul>
+                      </td>
                     </tr>
                     <tr>
                       <td>Kodepos</td>

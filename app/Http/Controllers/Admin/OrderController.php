@@ -4,10 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Services\Midtrans\CreateSnapTokenService;
 
 use App\Notifications\Order\ShipmentNotification;
+use App\Notifications\Admin\UserPaymentSuccessNotification;
+use App\Notifications\Order\PaymentVerifiedNotification as OrderPaymentNotification;
 
 use App\Models\Pesanan as Order;
+use App\Models\User;
 
 class OrderController extends Controller
 {
@@ -61,5 +65,40 @@ class OrderController extends Controller
         $sewa->save();
         
         return redirect(route('admin.order.show', $kode_pesanan));
+    }
+
+    // admin kirim
+    public function confirmPayment($kode_pesanan, $type, $type_payment) {
+        $order = Order::find($kode_pesanan);
+        $payment = $order->{$type_payment.'Payment'}();
+        $user = $order->user;
+        if($payment->status == 1) {
+
+            if($payment->tipe_pembayaran == 1) {
+                $rest_payment = $order->fullPayment();
+                $midtrans = new CreateSnapTokenService($rest_payment);
+                $snapToken = $midtrans->getSnapToken();
+
+                $rest_payment->snap_token = $snapToken;
+                $rest_payment->save();
+                $order->status = 2;
+            } else {
+                $payment->status = 2;
+                $order->status = 3;
+            }
+
+            $order->save();
+            $payment->save();
+
+            $user_admins = User::admins()->get();
+            foreach($user_admins as $row) {
+                $notification_admin = new UserPaymentSuccessNotification($payment);
+                $row->notify($notification_admin);        
+            }
+            $notification = new OrderPaymentNotification($payment);
+            $user->notify($notification);
+        }
+        
+        return redirect(route('admin.order.show', $kode_pesanan))->with('notes', ['text' => 'Pembayaran diverifikasi!']);
     }
 }

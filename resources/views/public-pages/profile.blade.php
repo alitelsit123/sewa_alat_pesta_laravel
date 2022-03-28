@@ -7,14 +7,18 @@
 
 <!-- azia CSS -->
 <link href="{{ asset('/assets/dist-base/css/azia.css') }}" rel="stylesheet"/>
+
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
 @endsection
 
 @section('js_body')
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
 
 <script src="{{ asset('/assets/dist-base/js/azia.js') }}"></script>
-<script>
-  
-</script>
 <script>
   $(document).ready(function() {
     var btn_ubah_info = document.getElementById('btn-ubah-info');
@@ -28,6 +32,10 @@
       profile_info_box.style.display = 'none';
       profile_info_edit_box.style.display = 'block';
     });
+    @if(session()->has('address_added')) 
+    console.log('{{ session("address_added") }}');
+    btn_ubah_info.click();
+    @endif
     btn_edit_photo.addEventListener('click', function() {
       input_photo.click();
     });
@@ -38,7 +46,61 @@
           blah.src = URL.createObjectURL(file)
         }
     });
+
+    $.each($('.map'), function(index, item) {
+      var default_lat = -7.993957436359008;
+      var default_lng = 112.6318359375;
+      if($(item).data('lat') != '' && $(item).data('lng') != '') {
+        var default_lat = $(item).data('lat');
+        var default_lng = $(item).data('lng');
+      }
+      var map = L.map(item).setView([default_lat, default_lng], 6);
+      L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWl0YXBlc3RhMTIzIiwiYSI6ImNsMTU1M2VnbjBkMmozanRleW02eHplODMifQ.5TxVEfhUO75qwJ6YSW-0Ug', {
+          attribution: 'Mita',
+          maxZoom: 18,
+          id: 'mapbox/streets-v11',
+          tileSize: 512,
+          zoomOffset: -1,
+          accessToken: 'pk.eyJ1IjoibWl0YXBlc3RhMTIzIiwiYSI6ImNsMTU1M2VnbjBkMmozanRleW02eHplODMifQ.5TxVEfhUO75qwJ6YSW-0Ug'
+      }).addTo(map);
+
+      if($(item).data('lat') != '' && $(item).data('lng') != '') {
+        var marker = L.marker([$(item).data('lat'), $(item).data('lng')], {
+          draggable:true
+        }).addTo(map);
+      } else {
+        var marker = L.marker([default_lat, default_lng], {
+          draggable:true
+        }).addTo(map);
+      }
+      marker.on('move', function(e) {
+        $('input[name="map_lat_'+$(item).data('id')+'"]').val(e.latlng.lat);
+        $('input[name="map_lng_'+$(item).data('id')+'"]').val(e.latlng.lng);
+      });
+
+    });
+
+
+    $('.btn-map-toggle').click(function() {
+
+    });
+
+    $('.az-toggle').on('click', function(){
+      $(this).toggleClass('on');
+      if($(this).hasClass('on')) {
+        $("#container_map_"+$(this).data('id')+"").css('display', 'block');
+        $('input[name="map_latlng_'+$(this).data('id')+'"]').val('on');
+      } else {        
+        $("#container_map_"+$(this).data('id')+"").css('display', 'none');
+        $('input[name="map_latlng_'+$(this).data('id')+'"]').val('off');
+      }
+    })
   });
+</script>
+
+
+<script>
+
 </script>
 @endsection
 
@@ -51,7 +113,7 @@
           <img src="{{ asset($user->profile->getPhoto()) }}" alt="" class="rounded-10" style="max-width: 101px;max-height: 101px;" id="showed-photo">
           @if(auth()->check() && $is_me)
           
-          <form action="{{ url('/profile/'.$user->email.'/update_photo/') }}" class="flex-grow-1" enctype="multipart/form-data" method="post">
+          <form action="{{ url('/profile/'.$user->profile->id_profile.'/update_photo/') }}" class="flex-grow-1" enctype="multipart/form-data" method="post">
             @csrf
             @method('put')
             <input type="file" class="d-none" accept="image/*" name="photo" id="input_photo" />
@@ -143,9 +205,22 @@
               <div style="width: 100px;">Nomor Hp.</div>
               <div class="flex-grow-1">{{ $user->profile->telepon ?? '[Belum disetel]' }}</div>
             </div>
+            
             <div class="d-flex mg-b-10 pd-b-10 bd-b bd-gray-200">
               <div style="width: 100px;">Alamat</div>
-              <div class="flex-grow-1">{{ $user->profile->alamat ?? '[Belum disetel]' }}</div>
+              <div class="flex-grow-1">
+                <ul>
+                @forelse($user->profile->addresses as $row)
+                  @if($row->alamat)
+                  <li>
+                    {{ $row->alamat  }}
+                  </li>
+                  @endif
+                @empty
+                [Belum disetel]
+                @endforelse
+                </ul>
+              </div>
             </div>
             <div class="d-flex mg-b-10 pd-b-10 bd-b bd-gray-200">
               <div style="width: 100px;">Pekerjaan</div>
@@ -161,7 +236,7 @@
             @endif
           </div>
           @if(auth()->check() && $is_me)
-          <form action="{{ url('/profile/'.$user->email.'/update/') }}" method="post">
+          <form action="{{ url('/profile/'.$user->profile->id_profile.'/update/') }}" method="post">
             @csrf
             @method('put')
             <div id="profil-info-edit" style="display: none;">
@@ -206,8 +281,36 @@
               </div>
               <div class="d-flex mg-b-10 pd-b-10 bd-b bd-gray-200">
                 <div class="az-form-group w-100">
-                  <label class="form-label">Alamat</label>
-                  <textarea type="text" name="profile_alamat" class="form-control" placeholder="Alamat lengkap" style="height: 200px;">{{ $user->profile->alamat }}</textarea>
+                  <label class="form-label d-flex justify-content-between" id="add-address" style="cursor: pointer;">
+                    <span>Alamat</span>
+                    <a href="{{ route('profile.add_address', [$user->profile->id_profile]) }}"><i class="fas fa-plus mg-r-5"></i>Tambah Alamat</a>
+                  </label>
+                  @php
+                  $n = 1;
+                  @endphp
+                  @foreach($user->profile->addresses as $row)
+                  <div class="pd-b-10">
+                    <a href="{{ route('profile.remove_address', ['slug' => $user->profile->id_profile, 'id' => $row->id_address]) }}" class="btn"><i class="fas fa-trash-alt"></i></a>
+                    <span>Alamat {{ $n++ }}</span> 
+                  </div>
+                  <div class="d-flex" style="align-items: center;padding-left: 57px;padding-right: 57px;">
+                    <textarea type="text" name="alamat_{{ $row->id_address }}" required style="height: 100px;" class="form-control" placeholder="Alamat lengkap">{{ $row->alamat }}</textarea>
+                  </div>
+                  <div>
+                    <div class="az-toggle-group-demo mg-t-10" style="align-items: center;">
+                      <span type="button" class="btn btn-map-toggle" data-id="{{ $row->id_address }}" data-target="#map_{{ $row->id_address }}"><i class="fas fa-map-marked-alt"></i></span>
+                      <div class="az-toggle on" data-id="{{ $row->id_address }}"><span></span></div>
+                    </div>
+                  </div>
+                  <div id="container_map_{{ $row->id_address }}" class="pd-b-20 mg-b-10 bd-b bd-gray-200">
+                    <div class="mg-t-10 mg-b-20" style="display: flex;" id="map_latlng_{{ $row->id_address }}">
+                      <input type="hidden" name="map_latlng_{{ $row->id_address }}" readonly="true"  value="on" />
+                      <input type="text" name="map_lat_{{ $row->id_address }}" readonly="true" placeholder="Latitude" class="form-control bd-b bd-gray-200 pd-x-10 pd-y-5" value="{{ $row->lat }}" />
+                      <input type="text" name="map_lng_{{ $row->id_address }}" readonly="true" placeholder="Longitude" class="form-control bd-b bd-gray-200 pd-x-10 pd-y-5" value="{{ $row->lng }}" />
+                    </div>
+                    <div id="map_{{ $row->id_address }}" class="map" data-id="{{ $row->id_address }}" data-lat="{{ $row->lat }}" data-lng="{{ $row->lng }}" style="width: 100%;height: 305px;"></div>
+                  </div>
+                  @endforeach
                 </div>
               </div>
               <div class="d-flex justify-content-end pd-b-10">
@@ -446,7 +549,7 @@
                     </div>
                     <div class="d-flex justify-content-between">
                       <div>Alamat</div>
-                      <div>{{ $row->user->profile->alamat }}</div>
+                      <div>{{ $row->address ? $row->address->alamat: '' }}</div>
                     </div>
                   </div>
                   <div>

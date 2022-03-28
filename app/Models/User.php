@@ -58,6 +58,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function profile() {
         return $this->hasOne('App\Models\Profile', 'id_user');
     }
+
+    public function alamat() {
+        return $this->profile()->alamat();
+    }
     public function getPhoto() {
         if($this->profile->photo == '' || $this->profile->photo == null) {
             return 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png';

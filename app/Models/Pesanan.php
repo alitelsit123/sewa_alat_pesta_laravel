@@ -20,6 +20,7 @@ class Pesanan extends Model
         'tanggal_selesai',
         'status',
         'total_bayar',
+        'id_address',
         'id_user',
     ];
 
@@ -49,6 +50,10 @@ class Pesanan extends Model
 
     public function sewa() {
         return $this->hasOne('App\Models\Sewa', 'kode_pesanan');
+    }
+
+    public function address() {
+        return $this->belongsTo('App\Models\Address', 'id_address');
     }
     
     public function hapus() {

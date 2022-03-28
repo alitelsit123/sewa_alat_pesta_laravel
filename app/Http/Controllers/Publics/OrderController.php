@@ -30,7 +30,7 @@ class OrderController extends Controller
         endif;
 
         $validated_input = $validator->validated();
-        $validators = ['nama' => $user->profile->nama, 'telepon' => $user->profile->telepon, 'alamat' => $user->profile->alamat];
+        $validators = ['nama' => $user->profile->nama, 'telepon' => $user->profile->telepon, 'alamat' => $user->profile->addresses()->count() == 0 ? null: 'filled'];
         foreach($validators as $item) {
             if(!$item) {
                 return back()->with(['msg_error' => 'Mohon lengkapi (nama, nomor hp, alamat) biodata Anda!']);
@@ -140,6 +140,7 @@ class OrderController extends Controller
             'tanggal_mulai' => session('book')['from'],
             'tanggal_selesai' => session('book')['to'],
             'tipe_pembayaran' => $validated_input['tipe_pembayaran'],
+            'address' => $request->address
         ]]);
         return view('public-pages.proses-pembayaran');
     }
@@ -182,6 +183,7 @@ class OrderController extends Controller
             $order->status = 1;
             $order->total_bayar = $stats['total_bayar'];
             $order->id_user = $user->id_user;
+            $order->id_address = $additional_data_order['address'];
             $order->tanggal_mulai = $additional_data_order['tanggal_mulai'];
             $order->tanggal_selesai = $additional_data_order['tanggal_selesai'];
             $order->save();
