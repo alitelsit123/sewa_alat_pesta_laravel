@@ -122,15 +122,15 @@ $(document).ready(function() {
                         <strong>{{ $order->user->profile->nama }}.</strong><br>
                         {{ $order->user->profile->telepon }}<br>
                         {{ $order->address ? $order->address->alamat: '' }} <br>
-                        {{--
+                        <!--{{--
                         @if($order->address && !$order->address->lat && !$order->address->lng)
                         <strong>User Tidak menggunakan Lokasi Map</strong>
                         @endif
-                        --}}
+                        --}} -->
                     </div>
                 </div>
 
-                <div class="col-12 mt-3" style="position: relative;">
+               <!-- <div class="col-12 mt-3" style="position: relative;">
                     @if($order->address)
                     <div id="map" class="map" data-id="{{ $order->address->id_address }}" data-lat="{{ $order->address->lat }}" data-lng="{{ $order->address->lng }}" style="width: 100%;height: 305px;"></div>
                         @if(!$order->address->lat && !$order->address->lng)
@@ -139,7 +139,7 @@ $(document).ready(function() {
                         </div>
                         @endif
                     @endif
-                </div>
+                </div> -->
             </div>
             <!-- info row -->
             <div class="row mb-4">

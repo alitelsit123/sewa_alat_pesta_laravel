@@ -10,7 +10,7 @@ use App\Models\Produk;
 use App\Models\Pesanan as Order;
 use App\Models\Pembayaran;
 use App\Models\User;
-use App\Models\Chat;
+//use App\Models\Chat;
 
 class GeneralSearchController extends Controller
 {
@@ -72,13 +72,13 @@ class GeneralSearchController extends Controller
             $users = collect([]);
         }
 
-        if(in_array('chats', $checked_filter_types)) {
-            $chats = Chat::when(request()->s, function($query) {
-                $query->where('chat', 'like', '%'.request()->s.'%');
-            })->latest()->get();
-        } else {
-            $chats = collect([]);
-        }
+    //    if(in_array('chats', $checked_filter_types)) {
+    //        $chats = Chat::when(request()->s, function($query) {
+    //            $query->where('chat', 'like', '%'.request()->s.'%');
+    //        })->latest()->get();
+    //    } else {
+    //        $chats = collect([]);
+    //    }
         
 
         return view('admin-pages.general-search', [
@@ -86,9 +86,8 @@ class GeneralSearchController extends Controller
             'products' => $products, 
             'orders' => $orders, 
             'payments' => $payments,
-            'users' => $users, 
-            'chats' => $chats,
-            'total' => $categories->count()+$products->count()+$orders->count()+$payments->count()+$chats->count()+$users->count(),
+            'users' => $users,
+            'total' => $categories->count()+$products->count()+$orders->count()+$payments->count()+$users->count(),
             'checked_filter_types' => $checked_filter_types
         ]);
     }

@@ -225,9 +225,9 @@
                       @forelse(auth()->user()->profile->addresses as $row)
                       <div class="d-flex align-items-center">
                           <input type="radio" name="address" value="{{ $row->id_address }}" class="mg-r-5" @if(auth()->user()->profile->addresses->first()->id_address == $row->id_address) checked="checked" @endif> {{ $row->alamat }}
-                          @if(!$row->lat || !$row->lng)
+                         <!-- @if(!$row->lat || !$row->lng)
                           (Lokasi map belum diset)
-                          @endif
+                          @endif -->
                       </div>
                       @empty
 

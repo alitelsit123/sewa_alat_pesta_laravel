@@ -369,6 +369,7 @@ function handleRequestedChatMini() {
     setMiniChatBadge();
 }
 
+//koneksi event ke pusher 'keep'
 function subscribeRequestedChatSocket() {
     channels['channel_chat_request'] = pusher.subscribe('private-chat-request.'+current_user.id_user);
     channels['channel_chat_request'].bind('App\\Events\\Chat', function(datasesi) {

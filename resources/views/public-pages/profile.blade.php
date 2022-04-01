@@ -296,7 +296,7 @@
                   <div class="d-flex" style="align-items: center;padding-left: 57px;padding-right: 57px;">
                     <textarea type="text" name="alamat_{{ $row->id_address }}" required style="height: 100px;" class="form-control" placeholder="Alamat lengkap">{{ $row->alamat }}</textarea>
                   </div>
-                  <div>
+                  <!-- <div>
                     <div class="az-toggle-group-demo mg-t-10" style="align-items: center;">
                       <span type="button" class="btn btn-map-toggle" data-id="{{ $row->id_address }}" data-target="#map_{{ $row->id_address }}"><i class="fas fa-map-marked-alt"></i></span>
                       <div class="az-toggle on" data-id="{{ $row->id_address }}"><span></span></div>
@@ -309,7 +309,7 @@
                       <input type="text" name="map_lng_{{ $row->id_address }}" readonly="true" placeholder="Longitude" class="form-control bd-b bd-gray-200 pd-x-10 pd-y-5" value="{{ $row->lng }}" />
                     </div>
                     <div id="map_{{ $row->id_address }}" class="map" data-id="{{ $row->id_address }}" data-lat="{{ $row->lat }}" data-lng="{{ $row->lng }}" style="width: 100%;height: 305px;"></div>
-                  </div>
+                  </div> -->
                   @endforeach
                 </div>
               </div>
@@ -324,18 +324,6 @@
         <!-- az-profile-body -->
         <div class="az-profile-body tab-pane  {{ request()->input('o') == 'history' ? 'active': 'fade' }}" id="profile-history-tab">
           <div class="bd-b bd-2 bd-gray-200 mg-b-20 pd-b-10">
-            <!-- <div class="d-flex align-items-center mg-b-20">
-              <span class="mg-r-10 tx-24"><i class="typcn typcn-filter"></i></span>
-              <input type="text" class="form-control bd-indigo px-4 flex-grow-1 mg-l-10" placeholder="Cari pesananmu disini" disabled="true" />
-              <select class="form-control select2-no-search flex-grow-1 mg-l-10" disabled="true">
-                <option label="Kategori"></option>
-                <option value="Firefox">Firefox</option>
-                <option value="Chrome">Chrome</option>
-                <option value="Safari">Safari</option>
-                <option value="Opera">Opera</option>
-                <option value="Internet Explorer">Internet Explorer</option>
-              </select>
-            </div> -->
             <div class="d-flex align-items-center mg-b-20">
               <span class="tx-medium mg-r-10">Status</span>
               <a href="{{ url('/profile/'.auth()->user()->email) }}?o=history" class="btn {{

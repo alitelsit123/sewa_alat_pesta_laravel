@@ -25,7 +25,7 @@
 @endsection
 
 @section('content-body')
-<div class="az-signin-wrapper" style="background: url('http://127.0.0.1:8000/assets/img/imglogin.jpg');
+<div class="az-signin-wrapper" style="background: url('/assets/img/imglogin.jpg');
                 background-position: center; background-repeat: no-repeat; background-size: cover; position: relative">
   <div class="az-card-signin" style="height: 480px; width: 460px;">
     <h1 class="az-logo text-uppercase" style="color: #0D2F73;">{{ env('APP_NAME') }}</h1>

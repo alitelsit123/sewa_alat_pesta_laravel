@@ -28,7 +28,7 @@
 
 @section('content-body')
 <div class="p-0">
-    <div style="background: url('http://127.0.0.1:8000/assets/img/imghome.jpg');
+    <div style="background: url('assets/img/imghome.jpg');
                 background-position: center; background-repeat: no-repeat; background-size: cover; position: relative">
         <div class="p-1">
             <b style="font-size: 65px; font-family: 'Ruda', sans-serif; ">Mita Alat Pesta</b>

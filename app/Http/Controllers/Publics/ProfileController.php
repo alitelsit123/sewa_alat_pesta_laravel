@@ -36,13 +36,13 @@ class ProfileController extends Controller
 
         $alamats->map(function($item, $index) use ($profile, $validated_input) {
             $id_address = \str_replace('alamat_', '', $index);
-            $map_lat = $validated_input['map_lat_'.$id_address];
-            $map_lng = $validated_input['map_lng_'.$id_address];
+            //$map_lat = $validated_input['map_lat_'.$id_address];
+            //$map_lng = $validated_input['map_lng_'.$id_address];
             // echo 'lat: '.$map_lat.' lng: '.$map_lng.'<br />';
             $profile->first()->addresses()->whereId_address((int)$id_address)->update([
                 'alamat' => $item,
-                'lat' => $map_lat,
-                'lng' => $map_lng,
+                //'lat' => $map_lat,
+                //'lng' => $map_lng,
             ]);    
         });
         // return;

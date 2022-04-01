@@ -71,9 +71,6 @@
               	<!-- SidebarSearch Form -->
 			    <form action="{{ route('admin.search.index') }}" method="get" class="form-inline">
 			    	<input type="hidden" name="s" value="{{ request()->s }}">
-			        <!-- <div class="input-group">
-			          <input id="search-general-input" name="s" class="form-control form-control-sidebar border-none" type="search" placeholder="Search" aria-label="Search">
-			        </div> -->
 			      	<div class="input-group">
 			      		<div class="form-check form-check-inline">
 						  <input class="form-check-input" name="filter_types[]" type="checkbox" id="inlineCheckbox1" value="categories" @if(in_array('categories', $checked_filter_types)) checked="true" @endif>
@@ -94,10 +91,6 @@
 						<div class="form-check form-check-inline">
 						  <input class="form-check-input" name="filter_types[]" type="checkbox" id="inlineCheckbox2" value="users" @if(in_array('users', $checked_filter_types)) checked="true" @endif>
 						  <label class="form-check-label" for="inlineCheckbox2">Pengguna</label>
-						</div>
-						<div class="form-check form-check-inline">
-						  <input class="form-check-input" name="filter_types[]" type="checkbox" id="inlineCheckbox2" value="chats" @if(in_array('chats', $checked_filter_types)) checked="true" @endif>
-						  <label class="form-check-label" for="inlineCheckbox2">Chats</label>
 						</div>
 			      	</div>
 			      	<button type="submit" class="btn btn-sm btn-primary">Filter</button>
@@ -122,7 +115,10 @@
 							<img class="mr-1" src="{{ asset('/assets/uploads/produk').'/'.$row->gambar }}" height="40px" width="40px">
 				  			<span class="mr-1">{{ $row->nama_produk }} {{ $row->keterangan_pendek }}</span>
 						</div>
-				  		<span class="badge badge-secondary mr-1">Produk</span>
+				  		<span class="mr-1">
+						  <a href="{{ route('admin.produk.edit', $row->id_produk) }}" class="btn btn-sm btn-warning">Edit</a>
+						  <badge class="badge badge-secondary">Produk</badge>
+						</span>
 				  	</li>
 				  	@endforeach
 				  	@foreach($payments as $row)
@@ -131,22 +127,24 @@
 			  			<span class="badge badge-secondary mr-1">Transaksi</span>
 				  	</li>
 				  	@endforeach
-				  	@foreach($chats as $row)
-				  	<li class="list-group-item d-flex align-items-center justify-content-between" data-created="{{ $row->created_at }}">
-				  		<span class="mr-1">{{ $row->sesi->user->profile->nama }}</span>
-				  		<span class="mr-1">
-				  			Chat <strong>{{ $row->chat }}</strong> ke Admin <strong>{{ $row->sesi->cs->profile->nama }}</strong>
-				  		</span>
-				  		<span class="badge badge-secondary mr-1">Chat</span>
-				  	</li>
-				  	@endforeach
 				  	@foreach($users as $row)
 				  	<li class="list-group-item d-flex align-items-center justify-content-between" data-created="{{ $row->created_at }}">
-				  		<span class="mr-1">{{ $row->profile->nama }}</span>
-				  		<span class="badge badge-secondary mr-1">Pengguna</span>
+				  		<span class="mr-1">{{ $row->profile->nama }} </span>
+				  		<span class="mr-2">
+						  <a href="{{ route('admin.user.show', $row->id_user) }}" class="btn btn-xs btn-info">Lihat Profil</a>
+						  <badge class="badge badge-secondary">Pengguna</badge>
+						</span>
 				  	</li>
 				  	@endforeach
-
+					@foreach($orders as $row)
+				  	<li class="list-group-item d-flex align-items-center justify-content-between" data-created="{{ $row->created_at }}">
+				  		<span class="mr-1">Pesanan {{ $row->kode_pesanan }}</span>
+						<span class="mr-2">
+						   <a href="{{ route('admin.order.show', $row->kode_pesanan) }}" class="btn btn-xs btn-info">Lihat Detail</a>
+				  		   <badge class="badge badge-secondary">Pesanan</badge>
+						</span>
+				  	</li>
+				  	@endforeach
 				</ul>
               </div>
               <!-- /.card-body -->
@@ -164,12 +162,6 @@
 <div class="modal fade" id="confirm-box">
   <div class="modal-dialog">
     <div class="modal-content">
-      <!-- <div class="modal-header">
-        <h4 class="modal-title">Default Modal</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div> -->
       <div class="modal-body">
         <p>Yakin ingin menghapus ?</p>
       </div>

@@ -25,12 +25,11 @@
 @endsection
 
 @section('content-body')
-<div class="az-signin-wrapper" style="background: url('http://127.0.0.1:8000/assets/img/imglogin.jpg');
+<div class="az-signin-wrapper" style="background: url('/assets/img/imglogin.jpg');
                 background-position: center; background-repeat: no-repeat; background-size: cover; position: relative">
 <div class="az-card-signin">
     <h1 class="az-logo text-uppercase" style="color: #0D2F73;">{{ env('APP_NAME') }}</h1>
     <div class="az-signup-header">
-      <h2 style="color: #0D2F73;">Memulai Dengan Mudah</h2>
       <h4>Daftar gratis.</h4>
 
       <form action="{{ url('/auth/register') }}" method="post">
