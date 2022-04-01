@@ -322,6 +322,11 @@ class OrderController extends Controller
         return redirect(route('profile.show', auth()->user()->email));
     }
 
+    public function cancelPayment($id) {
+        
+        return back()->with(['msg_success' => 'Order Dibatalkan.']);
+    }
+
 
     // public function paymentCheckStatus(Request $request) {
     //     return $response->json($request->getContent());
