@@ -87,7 +87,7 @@
                             <div class="card bd-0 position-relative">
                                 <img class="img-fluid" src="{{ asset('/assets/uploads/produk/'.$produk->gambar) }}" alt="Produk Images">
                                 <div class="card-img-overlay bg-black-4 d-flex flex-column justify-content-end">
-                                    <a class="btn pd-0 tx-white tx-semibold tx-18 mg-b-15" href="{{ route('product-view', ['kategori' => $produk->kategori->nama_kategori,'slug' => $produk->nama_produk, 'id' => $produk->id_produk]) }}">{{ $produk->nama_produk }}</a>
+                                    <a class="btn pd-0 tx-white tx-semibold tx-18 mg-b-15" href="{{ route('product-view', ['kategori' => $produk->kategori->nama_kategori ?? uniqid(),'slug' => $produk->nama_produk, 'id' => $produk->id_produk]) }}">{{ $produk->nama_produk }}</a>
 
                                 </div><!-- card-img-overlay -->
                             </div><!-- card -->
@@ -113,9 +113,9 @@
                             <div class="card bd-0 position-relative">
                                 <img class="img-fluid" src="{{ asset('/assets/uploads/produk/'.$produk->gambar) }}" alt="Produk Images">
                                 <div class="card-img-overlay bg-black-4 d-flex flex-column justify-content-end align-items-center">
-                                    <a class="pd-0 tx-white" style="text-decoration: none;" href="{{ route('product-view', ['kategori' => $produk->kategori->nama_kategori,'slug' => $produk->nama_produk, 'id' => $produk->id_produk]) }}">
+                                    <a class="pd-0 tx-white" style="text-decoration: none;" href="{{ route('product-view', ['kategori' => $produk->kategori->nama_kategori ?? uniqid(),'slug' => $produk->nama_produk, 'id' => $produk->id_produk]) }}">
                                         <div class="tx-semibold tx-14">{{ ucfirst($produk->nama_produk) }}</div>
-                                        <div class="position-absolute bg-indigo px-2 py-1 tx-9" style="top: 0;right: 0;">{{ ucfirst($produk->kategori->nama_kategori) }}</div>
+                                        <div class="position-absolute bg-indigo px-2 py-1 tx-9" style="top: 0;right: 0;">{{ ucfirst($produk->kategori->nama_kategori ?? uniqid()) }}</div>
                                     </a>
 
                                 </div><!-- card-img-overlay -->

@@ -101,14 +101,14 @@
 <div class="modal fade" id="confirm-box">
   <div class="modal-dialog">
     <div class="modal-content">
-      <!-- <div class="modal-header">
-        <h4 class="modal-title">Default Modal</h4>
+      <div class="modal-header">
+        <h4 class="modal-title">Yakin ingin menghapus ?</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-      </div> -->
+      </div>
       <div class="modal-body">
-        <p>Yakin ingin menghapus ?</p>
+        <p>Dengan menghapus kategori, produk terkait tidak memiliki kategori ?</p>
       </div>
       <div class="modal-footer justify-content-end">
         <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>

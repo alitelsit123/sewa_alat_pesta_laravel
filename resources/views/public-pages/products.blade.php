@@ -156,7 +156,7 @@
               <div class="product-img-outer w-100">
                 <img class="product_image mg-b-5" src="{{ asset('/assets/uploads/produk/'.$row->gambar) }}" alt="prduct image" class="img-fluid" width="100%">
               </div>
-              <a href="{{ route('product-view', ['kategori' => $row->kategori->nama_kategori,'slug' => $row->nama_produk, 'id' => $row->id_produk]) }}" class="btn pd-0">
+              <a href="{{ route('product-view', ['kategori' => $row->kategori->nama_kategori ?? uniqid(),'slug' => $row->nama_produk, 'id' => $row->id_produk]) }}" class="btn pd-0">
                 <div class="product-title tx-18">{{ $row->nama_produk }}</div>
               </a>
               <p class="product-price"><span class="tx-bold">Rp. {{ number_format($row->harga) }}</span> /unit</p>

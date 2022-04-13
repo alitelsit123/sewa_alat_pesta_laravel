@@ -66,8 +66,9 @@
               {{ auth()->user()->unreadNotifications()->whereType('App\\Notifications\\Admin\\NewOrderCreatedNotification')->count() }}
             </span> Pesanan Baru
             <span class="float-right text-muted text-sm" id="notification-neworder-time">
-            @if(auth()->user()->unreadNotifications()->count() > 0)
-              {{ \App\Helpers\AppSupport::timeConverter(auth()->user()->unreadNotifications()->whereType('App\\Notifications\\Admin\\NewOrderCreatedNotification')->first()->created_at)['conversion_text'] }}
+            @if(auth()->user()->unreadNotifications()->count() > 0 && auth()->user()->unreadNotifications()->whereType('App\\Notifications\\Admin\\NewOrderCreatedNotification')->first())
+
+              {{-- \App\Helpers\AppSupport::timeConverter(auth()->user()->unreadNotifications()->whereType('App\\Notifications\\Admin\\NewOrderCreatedNotification')->first()->created_at)['conversion_text'] --}}
             @endif
             </span>
         </a>
