@@ -73,6 +73,12 @@ class OrderController extends Controller
         $payment = $order->{$type_payment.'Payment'}();
         $user = $order->user;
         if($payment->status == 1) {
+            $sewa = $order->sewa;
+            if(!$sewa) {
+                $sewa = $order->sewa()->create([
+                    'status' => 1,
+                ]);
+            }
 
             if($payment->tipe_pembayaran == 1) {
                 $rest_payment = $order->fullPayment();
