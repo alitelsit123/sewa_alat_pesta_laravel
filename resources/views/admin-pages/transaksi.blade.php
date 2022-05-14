@@ -64,7 +64,7 @@
               </div>
               <!-- /.card-header -->
               <div class="card-header">
-                    <form action="{{ route('admin.transaksi.index') }}" class="form-inline w-100">
+                  <form action="{{ route('admin.transaksi.index') }}" class="form-inline w-100">
                     <div class="form-group flex-grow-1">
                         <input type="text" name="s" value="{{ request('s') }}" class="form-control mr-2" placeholder="Cari Kode Pembayaran">
                         <a class="btn btn-warning" href="{{ route('admin.transaksi.index') }}">Reset</a>
@@ -74,11 +74,6 @@
                 </form>    
               </div>
               <div class="card-body p-0">
-                <!-- <div class="container">
-                  <div class="callout callout-info">
-                      <h5><i class="fas fa-info"></i> Note:</h5>
-                  </div>
-                </div> -->
                 <table class="table" id="table_data">
                   <thead>
                     <tr>
@@ -137,22 +132,4 @@
     </div>
 </div><!-- /.container-fluid -->
 <iframe id="txtArea1" style="display:none"></iframe>
-<!-- <form action="" method="post" id="form-delete" class="d-none">
-  @csrf
-  <input type="hidden" name="_method" value="DELETE" />
-</form> -->
-
-<!-- <div class="modal fade" id="confirm-box">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-body">
-        <p>Yakin ingin menghapus ?</p>
-      </div>
-      <div class="modal-footer justify-content-end">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
-        <button type="button" class="btn btn-danger" onclick="hapusData()">Hapus</button>
-      </div>
-    </div>
-  </div>
-</div> -->
 @endsection

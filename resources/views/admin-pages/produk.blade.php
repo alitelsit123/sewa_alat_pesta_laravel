@@ -35,10 +35,6 @@
     });
 
 </script>
-
-<!-- <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default">
-                  Launch Default Modal
-                </button> -->
 @endsection
 @section('content-body')
 <div class="container-fluid">
@@ -67,8 +63,8 @@
                   <thead>
                     <tr>
                       <th style="width: 15%">Kode</th>
-                      <th>Nama</th>
-                      <th class="text-center">Keterangan Pendek</th>
+                      <th>Kategori</th>
+                      <th>Nama Produk</th>
                       <th style="width: 10%" class="text-center">Stok</th>
                       <th style="width: 10%" class="text-center">Harga</th>
                       <th style="width: 20%" class="text-center">#</th>
@@ -78,8 +74,8 @@
                     @forelse($produk as $row)  
                     <tr>
                       <td>{{ $row->kode_produk }}</td>
+                      <td>{{ $row->kategori->nama_kategori }}</td>
                       <td>{{ $row->nama_produk }}</td>
-                      <td class="text-center">{{ $row->keterangan_pendek }}</td>
                       <td class="text-center">{{ $row->stok }}</td>
                       <td class="text-center">{{ $row->harga }}</td>
                       <td class="text-center">

@@ -23,9 +23,6 @@ class Produk extends Model
         'id_kategori',
     ];
 
-    // protected $hidden = [
-    //     'final_stok',
-    // ];
 
     public function kategori() {
         return $this->belongsTo('App\Models\Kategori', 'id_kategori');

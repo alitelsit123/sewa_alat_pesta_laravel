@@ -79,7 +79,6 @@ class GeneralSearchController extends Controller
     //    } else {
     //        $chats = collect([]);
     //    }
-        
 
         return view('admin-pages.general-search', [
             'categories' => $categories, 

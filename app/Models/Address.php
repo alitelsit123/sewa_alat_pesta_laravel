@@ -11,7 +11,8 @@ class Address extends Model
     protected $table = 'addresses';
     protected $primaryKey = 'id_address';
     protected $fillable = [
-        'alamat', 'lat', 'lng', 'default', 'id_profile'
+        //'alamat', 'lat', 'lng', 'default', 'id_profile'
+        'alamat', 'id_profile'
     ];
 
     public function profile() {
