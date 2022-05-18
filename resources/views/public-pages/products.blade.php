@@ -74,7 +74,7 @@
                   <button type="submit" class="btn btn-indigo">Cari Produk</button>
                 </div>
               </div>
-            </form>  
+            </form>
           </div>
         </div>
       @else
@@ -102,7 +102,7 @@
       @endif
     </div>
     <div class="d-flex align-items-center">
-      <button 
+      <button
       type="button"
       data-toggle="modal"
       data-target="#modal-help-funding-fee"
@@ -113,12 +113,12 @@
 </div>
 
 <div class="az-content pd-0">
-  <div class="container">  
+  <div class="container">
     <div class="az-content-left az-content-left-components pd-y-20">
-      <div class="component-item mg-b-10"> 
+      <div class="component-item mg-b-10">
         <span class="tx-20 tx-medium">Filter</span>
       </div><!-- component-item -->
-      <div class="component-item py-2"> 
+      <div class="component-item py-2">
         <label class="d-flex justify-content-between align-items-center pd-b-10">
           <span>Kategori</span>
           @if(request()->get('k'))
@@ -150,9 +150,31 @@
         <div class="col-lg-4 col-md-6 col-sm-6 col-12 product-item mb-2 ">
           <div class="card w-100 position-relative">
             <div class="card-body">
+                @php
+                $stoks = $filteredPesanan->whereDoesntHave('details', function($query) use($row){
+                    $query->whereId_produk($row->id_produk);
+                })->first();
+                // return dd($stoks->details->first());
+                if($stoks) {
+                    $stoks = $stoks->details()->selectRaw('id_produk, sum(kuantitas) as ordered_sum_kuantitas')->groupBy('id_produk')->first();
+                    // dd($stoks);
+                }
+                // $stoks = \App\Models\DetailPesanan::whereId_produk($row->id_produk)->whereHas('order', function($query) {
+                //     $query->where([['tanggal_mulai', '>', session('book')['from']], ['tanggal_mulai', '<', session('book')['to']]])
+                //     ->orWhere([['tanggal_selesai', '>', session('book')['from']], ['tanggal_selesai', '<', session('book')['to']]])
+                //     ->orWhere([['tanggal_mulai', '<', session('book')['from']], ['tanggal_selesai', '>', session('book')['to']]])
+                //     ->has('sewa')->get();
+                // });
+                // dd($stoks);
+                @endphp
               <div class="position-absolute {{ $row->stok - $row->ordered_sum_kuantitas < 1 ? 'bg-danger':'bg-indigo'  }} px-2 py-1 tx-9 tx-white" style="top: 0;right: 0;">
-                {{ $row->stok - $row->ordered_sum_kuantitas < 1 ? 'Stok Habis':($row->stok - $row->ordered_sum_kuantitas).' Stok tersisa'  }}
-              </div>
+                {{-- {{ $row->stok - $row->ordered_sum_kuantitas < 1 ? 'Stok Habis':($row->stok - $row->ordered_sum_kuantitas).' Stok tersisa'  }} --}}
+                @if($stoks)
+                {{ $row->stok - $stoks->ordered_sum_kuantitas < 1 ? 'Stok Habis':($row->stok - $stoks->ordered_sum_kuantitas).' Stok tersisa' }}
+                @else
+                {{ $row->stok.' Stok tersisas' }}
+                @endif
+            </div>
               <div class="product-img-outer w-100">
                 <img class="product_image mg-b-5" src="{{ asset('/assets/uploads/produk/'.$row->gambar) }}" alt="prduct image" class="img-fluid" width="100%">
               </div>
