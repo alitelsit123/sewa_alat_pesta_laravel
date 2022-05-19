@@ -10,6 +10,8 @@ use App\Models\Kategori;
 use App\Models\Sewa;
 use App\Models\Pesanan;
 use App\Models\Stat;
+use App\Models\DetailPesanan;
+
 
 class ProductController extends Controller
 {
@@ -25,14 +27,14 @@ class ProductController extends Controller
         ->when(in_array('q', $validated_query), function($query) use ($querys) {
             $arr = explode(' ', $querys['q']);
             $query->where('nama_produk', 'like', '%'.$querys['q'].'%');
-            
+
             $stat = Stat::create([
                 'type' => 'search',
                 'data' => \json_encode([
                     'text' => $querys['q']
                 ], true)
             ]);
-            
+
             foreach($arr as $k => $v) {
                 $query->orWhere('nama_produk', 'like', '%'.$v.'%');
             }
@@ -45,11 +47,33 @@ class ProductController extends Controller
             $query_new[$row] = $querys[$row];
         }
 
+        // return dd(session('book')['to']);
+
+        // $new_ordered_kuantitas = DetailPesanan::selectRaw('id_produk,sum(kuantitas) as ordered_sum_kuantitas')->whereHas('order', function($query) {
+        //     $query
+        //     ->where('tanggal_mulai', '>', session('book')['from']);
+        //     // ->where([['tanggal_mulai', '>', session('book')['from']], ['tanggal_mulai', '<', session('book')['to']]])
+        //     // ->orWhere([['tanggal_selesai', '>', session('book')['from']], ['tanggal_selesai', '<', session('book')['to']]])
+        //     // ->orWhere([['tanggal_mulai', '<', session('book')['from']], ['tanggal_selesai', '>', session('book')['to']]])
+        //     // ->has('sewa');
+        // })->groupBy('id_produk')->get();
+        $new_ordered_kuantitas = Pesanan::
+            // ->where('tanggal_mulai', '>', session('book')['from']);
+            where([['tanggal_mulai', '>', session('book')['from']], ['tanggal_mulai', '<', session('book')['to']]])
+            ->orWhere([['tanggal_selesai', '>', session('book')['from']], ['tanggal_selesai', '<', session('book')['to']]])
+            ->orWhere([['tanggal_mulai', '<', session('book')['from']], ['tanggal_selesai', '>', session('book')['to']]])
+            ->has('sewa');
+        // return dd(array_column($new_ordered_kuantitas, 'details'));
+        $filteredPesanan = $new_ordered_kuantitas;
         $data = [
             'produk_new' => $produks,
             'kategoris' => $kategori,
-            'query_new' => $query_new
+            'query_new' => $query_new,
+            'filteredPesanan' => $filteredPesanan,
+            // 'new_ordered_sum' => $new_ordered_kuantitas
         ];
+
+        // return dd($new_ordered_kuantitas->where('id_produk', 20)->first());
 
         return view('public-pages.products', $data);
     }
@@ -103,7 +127,7 @@ class ProductController extends Controller
             if($validated_kategori) {
                 array_push($validated_query, 'k');
             }
-        } 
+        }
         // search
         if(array_key_exists('q', $query)) {
             array_push($validated_query, 'q');
