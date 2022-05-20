@@ -36,9 +36,6 @@
 
 </script>
 
-<!-- <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default">
-                  Launch Default Modal
-                </button> -->
 @endsection
 @section('content-body')
 <div class="container-fluid">
@@ -49,25 +46,15 @@
               <div class="card-header">
                     <h5>Sewa</h5>
               </div>
-              <!-- /.card-header -->
-              <!-- <div class="card-header">
-                    <form action="" class="form-inline w-100">
-                    <div class="form-group flex-grow-1">
-                        <input type="text" class="form-control" placeholder="Cari Sewa" disabled>
-                    </div>
-                </form>    
-              </div> -->
+            
               <div class="card-body p-0">
-                <!-- <div class="container">
-                  <div class="callout callout-info">
-                      <h5><i class="fas fa-info"></i> Note:</h5>
-                  </div>
-                </div> -->
+                
                 <table class="table text-center">
                   <thead>
                     <tr>
                       <th>Nama</th>
-                      <th>Waktu Sewa</th>
+                      <th>Tanggal Mulai</th>
+                      <th>Tanggal Selesai</th>
                       <th>Dikirim</th>
                       <th>Dikembalikan</th>
                       <th>Status Pembayaran</th>
@@ -79,7 +66,8 @@
                     @forelse($sewa as $row)  
                     <tr>
                       <td>{{ $row->user() ? $row->user()->profile->nama: 'Tidak ada data User / User dihapus' }}</td>
-                      <td class="text-center">{!! $row->order->tanggal_mulai.' <br/>sampai<br/> '.$row->order->tanggal_selesai !!}</td>
+                      <td class="text-center">{{$row->order->tanggal_mulai}}</td>
+                      <td class="text-center">{{$row->order->tanggal_selesai}}</td>
                       <td>{{ $row->waktu_pengiriman ?? '-' }}</td>
                       <td>{{ $row->waktu_pengembalian ?? '-' }}</td>
                       <!-- <td>{{ $row->order->fullPayment()->status == 1 ? 'Belum Lunas': 'Lunas' }}</td> -->

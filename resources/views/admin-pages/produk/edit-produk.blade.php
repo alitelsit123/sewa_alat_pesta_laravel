@@ -56,6 +56,24 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group flex-grow-1">
+                                    <label for="Nama">Kategori Produk</label>
+                                    <select name="kategori" id="pilih-kategori" class="form-control" required>
+                                        <option value="0">-- Pilih Kategori --</option>
+                                        @foreach($kategori as $row)
+                                        <option value="{{$row->id_kategori}}">{{ $row->nama_kategori }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                @error('kategori')
+                                <div class="validation-error">
+                                    <div class="alert alert-danger" style="width: 100%;">
+                                        {{ $message }}
+                                    </div>
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group flex-grow-1">
                                     <label for="Harga">Harga</label>
                                     <input type="number" name="harga" value="{{ $produk->harga }}" class="form-control" placeholder="Harga" required>
                                 </div>

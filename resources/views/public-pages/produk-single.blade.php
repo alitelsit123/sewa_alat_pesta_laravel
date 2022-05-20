@@ -98,14 +98,14 @@ $(document).ready(function() {
                                     <button class="btn btn-with-icon btn-indigo bd bd-2 bd-primary @if($produk->stok - $produk->ordered_sum_kuantitas < 1) disabled @endif" @if($produk->stok - $produk->ordered_sum_kuantitas < 1) @else type="submit" @endif><i class="typcn icon typcn-shopping-cart"></i> Masukkan ke Keranjang</button>
                                 </div>
                             </form>
+                            <div class="col-md-12 px-0 pd-b-10 @if(!$produk->keterangan) d-none @endif" style="margin-top: 10px">
+                                <strong>Keterangan:</strong>
+                            </div>
+                            <div class="col-md-12 bd-b bd-gray-300 bg-gray-200 @if(!$produk->keterangan) d-none @endif">
+                                <div class="px-2 py-3" style="min-height: 200px;">{!! $produk->keterangan !!}</div>                
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12 px-0 pd-b-10 @if(!$produk->keterangan) d-none @endif">
-                    <strong>Keterangan:</strong>
-                </div>
-                <div class="col-md-12 bd-b bd-gray-300 bg-gray-200 @if(!$produk->keterangan) d-none @endif">
-                    <div class="px-2 py-3" style="min-height: 200px;">{!! $produk->keterangan !!}</div>                
                 </div>
             </div>
         </div>

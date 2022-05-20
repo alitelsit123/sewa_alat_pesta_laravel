@@ -44,12 +44,15 @@
                             <div class="tx-16 tx-medium">Ingin Menyewa Kapan ?</div>
                         </div>
                         <div class="col-md-4">
+                            Mulai Sewa :
                             <input type="date" name="from" class="form-control" placeholder="" value="" required>
                         </div>
                         <div class="col-md-4">
+                            Sampai :
                             <input type="date" name="to" class="form-control" placeholder="" value="" required>
                         </div>
                         <div class="col-md-4">
+                            <br>
                             <button class="btn btn-indigo w-100" type="submit">Lihat Katalog</button>
                         </div>
                     </div>
