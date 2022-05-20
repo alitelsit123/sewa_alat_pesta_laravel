@@ -58,7 +58,7 @@
       </form>
     </div><!-- az-signin-header -->
     <div class="az-signin-footer">
-      <p><a href="#">Lupa Password?</a></p>
+      <!--<p><a href="#">Lupa Password?</a></p> -->
       <p>Belum Punya Akun? <a href="{{ url('/auth/register') }}">Daftar</a></p>
     </div><!-- az-signin-footer -->
   </div><!-- az-card-signin -->

@@ -149,15 +149,15 @@
     <div class="az-content-body az-content-body-profile">
       <nav class="nav az-nav-line">
         @if(auth()->check() && $is_me)
-        <a href="#aktifitas-tab" class="nav-link {{ 
+        <!-- <a href="#aktifitas-tab" class="nav-link {{ 
           (request()->input('o') == 'activity') ? 
           'active': (!request()->input('o') ? 
           'active': ((request()->input('o') != 'setting' && request()->input('o') != 'history') ? 
           'active': '')) 
-        }}" data-toggle="tab" id="activity"><i class="typcn typcn-chart-pie"></i> Aktifitas</a>
+        }}" data-toggle="tab" id="activity"><i class="typcn typcn-chart-pie"></i> Aktifitas</a> -->
         <a href="#profile-setting-tab" class="nav-link {{ request()->input('o') == 'setting' ? 'active': '' }}" data-toggle="tab" id="setting"><i class="typcn typcn-user"></i> Biodata</a>
         <a href="#profile-history-tab" class="nav-link {{ request()->input('o') == 'history' ? 'active': '' }}" data-toggle="tab" id="history"><i class="typcn typcn-document-text"></i> Riwayat</a>
-        <a href="#" class="nav-link disabled"><i class="typcn typcn-cog"></i> Pengaturan</a>
+        <!-- <a href="#" class="nav-link disabled"><i class="typcn typcn-cog"></i> Pengaturan</a> -->
         @else
         <a href="#profile-setting-tab" class="nav-link {{ request()->input('o') == 'setting' ? 'active': '' }}" data-toggle="tab" id="setting"><i class="typcn typcn-user"></i> Biodata</a>
         @endif
@@ -174,7 +174,7 @@
           <div class="bd-b bd-2 bd-gray-200 pd-b-10 mg-b-10">
             <!-- <div class="tx-medium tx-18">Transaksi</div> -->
             <div class="d-flex">
-              <div>No data</div>
+              <div> </div>
             </div>
           </div>
           <!-- <div class="bd-b bd-2 bd-gray-200 pd-b-10 mg-b-10">
