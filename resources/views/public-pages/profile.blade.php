@@ -500,7 +500,15 @@
                     </div>
                     <div class="d-flex justify-content-between pd-b-20">
                       <div>Tanggal Order</div>
-                      <div>{{ $row->created_at }}</div>
+                      <div>{{ $row->tanggal_selesai }}</div>
+                    </div>
+                    <div class="d-flex justify-content-between pd-b-20">
+                      <div>Digunakan dari</div>
+                      <div>{{ $row->tanggal_mulai }}</div>
+                    </div>
+                    <div class="d-flex justify-content-between pd-b-20">
+                      <div>Digunakan sampai</div>
+                      <div>{{ $row->tanggal_selesai }}</div>
                     </div>
                     <h6 class="d-flex w-100 justify-content-between pd-b-0 mg-b-5">
                       <span>Pembayaran</span>
