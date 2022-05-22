@@ -31,7 +31,7 @@
       $('#confirm-box').modal();
     }
     $(document).ready(function() {
-            
+
     });
 
 </script>
@@ -46,9 +46,9 @@
               <div class="card-header">
                     <h5>Sewa</h5>
               </div>
-            
+
               <div class="card-body p-0">
-                
+
                 <table class="table text-center">
                   <thead>
                     <tr>
@@ -63,7 +63,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @forelse($sewa as $row)  
+                    @forelse($sewa as $row)
                     <tr>
                       <td>{{ $row->user() ? $row->user()->profile->nama: 'Tidak ada data User / User dihapus' }}</td>
                       <td class="text-center">{{$row->order->tanggal_mulai}}</td>
@@ -73,9 +73,7 @@
                       <!-- <td>{{ $row->order->fullPayment()->status == 1 ? 'Belum Lunas': 'Lunas' }}</td> -->
                       <td>
                         <div class="">
-                          @if($row->order->dpPayment()->status == 1) 
-                            <span class="badge badge-warning mr-1">Belum Bayar DP</span>
-                          @elseif($row->order->fullPayment()->status == 1)
+                          @if($row->order->fullPayment()->status == 1)
                             <span class="badge badge-warning mr-1">Belum bayar pelunasan</span>
                           @else
                           <span class="badge badge-success">Lunas</span>
@@ -93,12 +91,12 @@
 
                             @else
                               @if($payments > 0)
-                              <a href="{{ route('admin.sewa.complete', $row->id_sewa) }}" class="btn btn-xs btn-warning">Selesai Sewa</a>  
+                              <a href="{{ route('admin.sewa.complete', $row->id_sewa) }}" class="btn btn-xs btn-warning">Selesai Sewa</a>
                               @else
-                              <a href="{{ route('admin.sewa.complete', $row->id_sewa) }}" class="btn btn-xs btn-success">Selesai Sewa</a>                              
+                              <a href="{{ route('admin.sewa.complete', $row->id_sewa) }}" class="btn btn-xs btn-success">Selesai Sewa</a>
                               @endif
                             @endif
-                            <!-- <button class="btn btn-sm btn-danger" onclick="openModal({{ $row->id_kategori }})" >Hapus</button> -->  
+                            <!-- <button class="btn btn-sm btn-danger" onclick="openModal({{ $row->id_kategori }})" >Hapus</button> -->
                         </div>
                       </td>
                     </tr>
