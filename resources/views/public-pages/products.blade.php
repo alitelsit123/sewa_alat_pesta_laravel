@@ -151,12 +151,24 @@
           <div class="card w-100 position-relative">
             <div class="card-body">
                 @php
-                $stoks = $filteredPesanan->whereDoesntHave('details', function($query) use($row){
+                $stoks = \App\Models\Pesanan::when((session()->has('book')),function($query) {
+                    $query->where([['tanggal_mulai', '>', session('book')['from']], ['tanggal_mulai', '<', session('book')['to']]])
+                    ->orWhere([['tanggal_selesai', '>', session('book')['from']], ['tanggal_selesai', '<', session('book')['to']]])
+                    ->orWhere([['tanggal_mulai', '<', session('book')['from']], ['tanggal_selesai', '>', session('book')['to']]])
+                    ->has('sewa');
+                })->whereDoesntHave('details', function($query) use($row){
                     $query->whereId_produk($row->id_produk);
-                })->first();
-                // return dd($stoks->details->first());
+                })->with(['details' => function($query) {
+                    $query->with('produk');
+                }])->first();
+                // dd($stoks);
                 if($stoks) {
                     $stoks = $stoks->details()->selectRaw('id_produk, sum(kuantitas) as ordered_sum_kuantitas')->groupBy('id_produk')->first();
+                } else {
+                    $newClass = new StdClass();
+                    $newClass->id_produk = $row->id_produk;
+                    $newClass->ordered_sum_kuantitas = 0;
+                    $stoks = $newClass;
                     // dd($stoks);
                 }
                 // $stoks = \App\Models\DetailPesanan::whereId_produk($row->id_produk)->whereHas('order', function($query) {
@@ -168,12 +180,12 @@
                 // dd($stoks);
                 @endphp
               <div class="position-absolute {{ $row->stok - $row->ordered_sum_kuantitas < 1 ? 'bg-danger':'bg-indigo'  }} px-2 py-1 tx-9 tx-white" style="top: 0;right: 0;">
-                {{-- {{ $row->stok - $row->ordered_sum_kuantitas < 1 ? 'Stok Habis':($row->stok - $row->ordered_sum_kuantitas).' Stok tersisa'  }} --}}
-                @if($stoks)
+                {{ $row->stok - $row->ordered_sum_kuantitas < 1 ? 'Stok Habis':($row->stok - $row->ordered_sum_kuantitas).' Stok tersisa'  }}
+                {{-- @if($stoks)
                 {{ $row->stok - $stoks->ordered_sum_kuantitas < 1 ? 'Stok Habis':($row->stok - $stoks->ordered_sum_kuantitas).' Stok tersisa' }}
                 @else
-                {{ $row->stok.' Stok tersisas' }}
-                @endif
+                {{ $row->stok.' Stok tersisa' }}
+                @endif --}}
             </div>
               <div class="product-img-outer w-100">
                 <img class="product_image mg-b-5" src="{{ asset('/assets/uploads/produk/'.$row->gambar) }}" alt="prduct image" class="img-fluid" width="100%">

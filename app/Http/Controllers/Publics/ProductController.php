@@ -47,7 +47,7 @@ class ProductController extends Controller
             $query_new[$row] = $querys[$row];
         }
 
-        // return dd(session('book')['to']);
+        // return dd(Produk::withOrdered()->get()->where('id_produk', 11));
 
         // $new_ordered_kuantitas = DetailPesanan::selectRaw('id_produk,sum(kuantitas) as ordered_sum_kuantitas')->whereHas('order', function($query) {
         //     $query
@@ -57,19 +57,21 @@ class ProductController extends Controller
         //     // ->orWhere([['tanggal_mulai', '<', session('book')['from']], ['tanggal_selesai', '>', session('book')['to']]])
         //     // ->has('sewa');
         // })->groupBy('id_produk')->get();
-        $new_ordered_kuantitas = Pesanan::
+        // $new_ordered_kuantitas = Pesanan::when((session()->has('book')),function($query) {
+        //     $query->where([['tanggal_mulai', '>', session('book')['from']], ['tanggal_mulai', '<', session('book')['to']]])
+        //     ->orWhere([['tanggal_selesai', '>', session('book')['from']], ['tanggal_selesai', '<', session('book')['to']]])
+        //     ->orWhere([['tanggal_mulai', '<', session('book')['from']], ['tanggal_selesai', '>', session('book')['to']]])
+        //     ->has('sewa');
+        // });
             // ->where('tanggal_mulai', '>', session('book')['from']);
-            where([['tanggal_mulai', '>', session('book')['from']], ['tanggal_mulai', '<', session('book')['to']]])
-            ->orWhere([['tanggal_selesai', '>', session('book')['from']], ['tanggal_selesai', '<', session('book')['to']]])
-            ->orWhere([['tanggal_mulai', '<', session('book')['from']], ['tanggal_selesai', '>', session('book')['to']]])
-            ->has('sewa');
+
         // return dd(array_column($new_ordered_kuantitas, 'details'));
-        $filteredPesanan = $new_ordered_kuantitas;
+        // $filteredPesanan = $new_ordered_kuantitas;
         $data = [
             'produk_new' => $produks,
             'kategoris' => $kategori,
             'query_new' => $query_new,
-            'filteredPesanan' => $filteredPesanan,
+            // 'filteredPesanan' => $filteredPesanan,
             // 'new_ordered_sum' => $new_ordered_kuantitas
         ];
 
