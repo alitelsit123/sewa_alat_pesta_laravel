@@ -71,7 +71,7 @@
                     </div>
                     <!-- <a class="btn btn-primary" href="#" id="print-button">Export</a> -->
 
-                </form>    
+                </form>
               </div>
               <div class="card-body p-0">
                 <table class="table" id="table_data">
@@ -88,7 +88,11 @@
                   <tbody>
                       @forelse($trans as $row)
                       <tr>
+                          @if($row->order && $row->order->user && $row->order->user->profile)
                           <td>{{ \ucwords($row->order->user->profile->nama) }}</td>
+                          @else
+                          <td></td>
+                          @endif
                           <td><a href="{{ route('admin.order.show', $row->order->kode_pesanan) }}">{{ $row->order->kode_pesanan }}</a></td>
                           <td>{{ $row->getTipe() }}</td>
                           <td>{{ $row->jenis_pembayaran }}</td>

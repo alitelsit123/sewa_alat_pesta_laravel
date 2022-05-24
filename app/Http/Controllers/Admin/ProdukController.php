@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\Kategori;
+use App\Models\Produk;
 
 class ProdukController extends Controller
 {
@@ -16,7 +17,7 @@ class ProdukController extends Controller
      */
     public function index()
     {
-        $produk = Produk::latest()
+        $produk = Produk::whereHas('kategori')->latest()
         ->when(request()->has('s'), function($query) {
             $query->where('nama_produk', 'like', '%'.request('s').'%');
         })
@@ -75,7 +76,7 @@ class ProdukController extends Controller
         $file = request()->file('gambar');
         $extension = $file->getClientOriginalExtension();
         $filename = 'mita_img_'.time().uniqid().'.'.$extension;
-        
+
         if(!$file->storeAs('produk', $filename, 'upload')) {
             return redirect(route('admin.produk.index'))->with('notes', ['text' => 'An Error Occured!', 'type' => 'error']);
         }
@@ -154,7 +155,7 @@ class ProdukController extends Controller
             $file = request()->file('gambar');
             $extension = $file->getClientOriginalExtension();
             $filename = 'mita_img_'.time().uniqid().'.'.$extension;
-            
+
             if(!$file->storeAs('produk', $filename, 'upload')) {
                 return redirect(route('admin.produk.index'))->with('notes', ['text' => 'An Error Occured!', 'type' => 'error']);
             }
@@ -182,10 +183,10 @@ class ProdukController extends Controller
     public function destroy($id)
     {
        $produk = Produk::find($id);
-       
+
        if(!$produk) {
             return redirect(route('admin.produk.index'))->with('notes', ['text' => 'An Error Occured']);
-       } 
+       }
 
        $produk->delete();
         return redirect(route('admin.produk.index'))->with('notes', ['text' => 'Hapus Produk Berhasil!']);

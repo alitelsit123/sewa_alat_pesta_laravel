@@ -19,7 +19,7 @@ class OrderController extends Controller
         $url_query = $request->query();
         $user = auth()->user();
         $orders = Order::when(array_key_exists('f', $url_query), function($query) use($user) {
-            $order_ids = array_column(array_column($user->unreadNotifications()->where('type', 'App\\Notifications\\Admin\\NewOrderCreatedNotification')->get()->toArray(), 'data'), 'kode_pesanan');            
+            $order_ids = array_column(array_column($user->unreadNotifications()->where('type', 'App\\Notifications\\Admin\\NewOrderCreatedNotification')->get()->toArray(), 'data'), 'kode_pesanan');
             $user->notifications()->where('type', 'App\\Notifications\\Admin\\NewOrderCreatedNotification')->get()->markAsRead();
             $query->whereIn('kode_pesanan', $order_ids);
         })->when(request()->has('s'), function($query) {
@@ -58,12 +58,12 @@ class OrderController extends Controller
         $sewa->status = $type;
         if($type == 2) {
             $sewa->waktu_pengiriman = now();
-            
+
             $notification = new ShipmentNotification($sewa);
             $user->notify($notification);
         }
         $sewa->save();
-        
+
         return redirect(route('admin.order.show', $kode_pesanan));
     }
 
@@ -89,9 +89,10 @@ class OrderController extends Controller
                 $rest_payment->save();
                 $order->status = 2;
             } else {
-                $payment->status = 2;
                 $order->status = 3;
             }
+
+            $payment->status = 2;
 
             $order->save();
             $payment->save();
@@ -99,12 +100,12 @@ class OrderController extends Controller
             $user_admins = User::admins()->get();
             foreach($user_admins as $row) {
                 $notification_admin = new UserPaymentSuccessNotification($payment);
-                $row->notify($notification_admin);        
+                $row->notify($notification_admin);
             }
             $notification = new OrderPaymentNotification($payment);
             $user->notify($notification);
         }
-        
+
         return redirect(route('admin.order.show', $kode_pesanan))->with('notes', ['text' => 'Pembayaran diverifikasi!']);
     }
 }

@@ -44,7 +44,7 @@ $(document).ready(function() {
       zoomOffset: -1,
       accessToken: 'pk.eyJ1IjoibWl0YXBlc3RhMTIzIiwiYSI6ImNsMTU1M2VnbjBkMmozanRleW02eHplODMifQ.5TxVEfhUO75qwJ6YSW-0Ug'
     }).addTo(map);
-    @if($order->address && $order->address->lat && $order->address->lng)    
+    @if($order->address && $order->address->lat && $order->address->lng)
         var marker = L.marker([default_lat, default_lng]).addTo(map);
     @endif
 });
@@ -65,7 +65,7 @@ $(document).ready(function() {
                     <h6>
                         <strong>Pesanan #{{ $order->kode_pesanan }}</strong><br/>
                     </h6>
-                    <small class="">Date: {{ $order->created_at }}</small>                    
+                    <small class="">Date: {{ $order->created_at }}</small>
                 </div>
                 <!-- /.col -->
             </div>
@@ -75,12 +75,12 @@ $(document).ready(function() {
                     <span class="font-weight-bold">User Detail</span>
                 </div>
                 <div class="col-6">
-                    Nama: {{ $order->user->profile->nama }}<br/> 
+                    Nama: {{ $order->user->profile->nama }}<br/>
                     <!-- <span class="badge badge-info">
-                        
+
                     </span> -->
                     Email: {{ $order->user->email }}<br/>
-                    NIK: {{ $order->user->profile->nik }}<br/>  
+                    NIK: {{ $order->user->profile->nik }}<br/>
                     Telepon: {{ $order->user->profile->telepon }}<br/>
                 </div>
             </div>
@@ -107,11 +107,11 @@ $(document).ready(function() {
                     @endif
                 </div>
                 <div class="col-6">
-                    Status: 
+                    Status:
                     <span class="badge badge-info">
-                        @if($order->status > 1 && $order->sewa) 
-                            {{ $order->sewa->getShipmentStatusText() }} 
-                        @else 
+                        @if($order->status > 1 && $order->sewa)
+                            {{ $order->sewa->getShipmentStatusText() }}
+                        @else
                             Belum Dikirim
                         @endif
                     </span>
@@ -146,15 +146,15 @@ $(document).ready(function() {
                 <div class="col-12 d-flex justify-content-between align-items-center w-100">
                     <span class="font-weight-bold">Pembayaran</span>
                     @if($order->dpPayment()->status == 1 && $order->dpPayment()->total_bayar > 0)
-                    <!-- <a href="{{ route('admin.order.confirm.payment', [$order->kode_pesanan, 2, 'dp']) }}" class="btn btn-success btn-sm">
+                    <a href="{{ route('admin.order.confirm.payment', [$order->kode_pesanan, 2, 'dp']) }}" class="btn btn-success btn-sm">
                         <i class="fas fa-truck-loading"></i> Konfirmasi DP Manual
-                    </a> -->
+                    </a>
                     @elseif($order->fullPayment()->status == 1)
                     <a href="{{ route('admin.order.confirm.payment', [$order->kode_pesanan, 3, 'full']) }}" class="btn btn-success btn-sm">
                         <i class="fas fa-truck-loading"></i> Konfirmasi Pelunasan Manual
                     </a>
-                    @else 
-                    
+                    @else
+
                     @endif
                 </div>
                 <!-- /.col -->
@@ -206,7 +206,7 @@ $(document).ready(function() {
                         </tbody>
                     </table>
                 </div>
-                
+
             </div>
             <!-- /.row -->
 

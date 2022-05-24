@@ -13,17 +13,17 @@ class TransaksiController extends Controller
         $url_query = $request->query();
         $user = auth()->user();
 
-        // kalau buka transaksi dari notifikasi masuk didalam when, f = filter 
+        // kalau buka transaksi dari notifikasi masuk didalam when, f = filter
         // chain query
         $trans = Payment::when(array_key_exists('f', $url_query), function($query) use($user) {
-            $order_ids = array_column(array_column($user->unreadNotifications()->where('type', 'App\\Notifications\\Admin\\UserPaymentSuccessNotification')->get()->toArray(), 'data'), 'kode_pembayaran');            
+            $order_ids = array_column(array_column($user->unreadNotifications()->where('type', 'App\\Notifications\\Admin\\UserPaymentSuccessNotification')->get()->toArray(), 'data'), 'kode_pembayaran');
             $user->notifications()->where('type', 'App\\Notifications\\Admin\\UserPaymentSuccessNotification')->get()->markAsRead();
             $query->whereIn('kode_pembayaran', $order_ids);
         })
         ->when(request()->has('s'), function($query) {
             $query->where('kode_pembayaran', 'like', '%'.request('s').'%');
         })
-        ->where('total_bayar', '>', 0)->where('status', 2)->latest()->paginate(15);
+        ->where('total_bayar', '>', 0)->where('status', 2)->whereHas('order')->latest()->paginate(15);
 
         $trans_in = Payment::whereHas('order', function($query) {
             $query->whereIn('status', ['2','3']);
