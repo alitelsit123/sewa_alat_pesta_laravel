@@ -186,7 +186,7 @@
         </div>
         <!-- az-profile-body -->
         @endif
-        <div class="az-profile-body tab-pane @if(auth()->check() && $is_me) {{ request()->input('o') == 'setting' ? 'active': (auth()->check() ? 'fade':'active' ) }} @else active @endif" id="profile-setting-tab">
+        <div class="az-profile-body fade tab-pane {{ request()->input('o') == 'setting' || !request()->has('o') ? 'active': (auth()->check() ? 'fade':'active' ) }}" id="profile-setting-tab">
           
           <div id="profil-info">
             <div class="d-flex mg-b-10 pd-b-10 bd-b bd-gray-200">

@@ -9,16 +9,22 @@ use App\Models\Sewa;
 
 class SewaController extends Controller
 {
-    public function index() {
-        $sewa = Sewa::OrderByDesc('id_sewa')->paginate(15);
+    public function index()
+    {
+        $sewa = Sewa::with('order')
+            ->OrderByDesc('id_sewa')
+            ->paginate(15);
         $data = [
-            'sewa' => $sewa
+            'sewa' => $sewa,
         ];
+        //return dd($sewa);
+
         return view('admin-pages.sewa', $data);
     }
 
     // sewa selesai
-    public function complete($id) {
+    public function complete($id)
+    {
         $sewa = Sewa::findOrFail($id);
         $order = $sewa->order;
         $details = $order->details;
@@ -29,12 +35,12 @@ class SewaController extends Controller
         // }
 
         $sewa->status = 4;
-        if($sewa->waktu_pengiriman == null){
+        if ($sewa->waktu_pengiriman == null) {
             $sewa->waktu_pengiriman = now();
         }
         $sewa->waktu_pengembalian = now();
         $sewa->save();
 
-        return back()->with('notes', ['text' => 'Yeay Sewa selesai!']);;
+        return back()->with('notes', ['text' => 'Yeay Sewa selesai!']);
     }
 }

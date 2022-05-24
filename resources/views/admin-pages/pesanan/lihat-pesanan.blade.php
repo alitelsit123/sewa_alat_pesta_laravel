@@ -146,9 +146,9 @@ $(document).ready(function() {
                 <div class="col-12 d-flex justify-content-between align-items-center w-100">
                     <span class="font-weight-bold">Pembayaran</span>
                     @if($order->dpPayment()->status == 1 && $order->dpPayment()->total_bayar > 0)
-                    <a href="{{ route('admin.order.confirm.payment', [$order->kode_pesanan, 2, 'dp']) }}" class="btn btn-success btn-sm">
+                    <!-- <a href="{{ route('admin.order.confirm.payment', [$order->kode_pesanan, 2, 'dp']) }}" class="btn btn-success btn-sm">
                         <i class="fas fa-truck-loading"></i> Konfirmasi DP Manual
-                    </a>
+                    </a> -->
                     @elseif($order->fullPayment()->status == 1)
                     <a href="{{ route('admin.order.confirm.payment', [$order->kode_pesanan, 3, 'full']) }}" class="btn btn-success btn-sm">
                         <i class="fas fa-truck-loading"></i> Konfirmasi Pelunasan Manual
