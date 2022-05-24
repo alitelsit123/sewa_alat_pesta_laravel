@@ -14,7 +14,7 @@ class LoginController extends Controller
         $this->pusher = new Pusher(
 			config('pusher.APP_KEY'),
 			config('pusher.APP_SECRET'),
-			config('pusher.APP_ID'), 
+			config('pusher.APP_ID'),
 			[
                 'cluster' => config('pusher.APP_CLUSTER'),
                 'encrypted' => config('pusher.encrypted')
@@ -30,7 +30,7 @@ class LoginController extends Controller
             return response('Forbidden', 403);
         }
         echo $this->pusher->socket_auth(
-            $request->input('channel_name'), 
+            $request->input('channel_name'),
             $request->input('socket_id')
         );
         // return true;
@@ -50,17 +50,19 @@ class LoginController extends Controller
 
         if (auth()->attempt($credentials)) {
             $request->session()->regenerate();
-            $user = auth()->user(); 
+            $user = auth()->user();
             $user->online = 1;
             $user->save();
 
             if(session()->has('cart') && sizeof(session('cart')) > 0) {
                 $carts = session('cart');
+                return dd($carts);
                 foreach($carts as $row):
-                    $user->carts()->syncWithoutDetaching([$row->id_produk => ['kuantitas' => $row->pivot->kuantitas]]);
+                    $user->carts()->syncWithoutDetaching([$row['produk']->id_produk => ['kuantitas' => $row->pivot->kuantitas]]);
                 endforeach;
             }
 
+            session()->forget('cart');
             return redirect()->intended('/');
         }
 

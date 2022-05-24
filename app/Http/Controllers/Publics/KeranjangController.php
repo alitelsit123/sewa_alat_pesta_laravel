@@ -19,6 +19,7 @@ class KeranjangController extends Controller
         } else {
             $keranjangs_array = session('cart') ?? [];
         }
+        // return dd($keranjangs_array);
         $keranjangs_array = array_map(function($item){
             $item['total'] = $item['harga'] * $item['pivot']['kuantitas'];
             return $item;
@@ -28,7 +29,7 @@ class KeranjangController extends Controller
         },$keranjangs_array);
 
         $keranjang_total_kuantitas = array_sum(array_column($keranjangs_pivot, 'kuantitas'));
-        
+
         $keranjang_total_price = array_sum(array_column($keranjangs_array, 'total'));
 
         $stats['total_kuantitas'] = $keranjang_total_kuantitas;
@@ -48,6 +49,9 @@ class KeranjangController extends Controller
         // session()->save();
         // return dd(session('cart'));
         $produk = Produk::withOrdered()->whereId_produk($request->all()['produk_id'])->first();
+        if(!$produk):
+            return back()->withErrors(['errors' => ['produk_id' => ['produk not found!.']]]);
+        endif;
         $max_produk = ((int)$produk->stok - (int)$produk->ordered_sum_kuantitas);
         $validator = \Validator::make($request->all(), [
             'produk_id' => ['required', 'integer', 'min:1'],
@@ -61,7 +65,6 @@ class KeranjangController extends Controller
         $validated_input = $validator->validated();
 
         $user = auth()->user();
-
         if($user) {
             // $user_cart = $user->carts;
             $user->carts()->syncWithoutDetaching([$produk->id_produk => ['kuantitas' => $validated_input['kuantitas']]]);
@@ -74,11 +77,15 @@ class KeranjangController extends Controller
             $produk->pivot = $keranjang;
             $old_carts = collect(session('cart'));
             $index_cart = $old_carts->search(function($item) use ($produk){
+                if(empty($item->id_produk)) {
+                    return false;
+                }
                 return $item->id_produk == $produk->id_produk;
             });
             if($index_cart === false) {
-                session()->push('cart', $produk);
+                session()->push('cart.produk', $produk);
             }
+            // return dd($old_carts->get(0)->id_produk);
             return back()->with(['msg_success' => 'Produk Di tambahkan ke Keranjang']);
         }
 
@@ -109,7 +116,7 @@ class KeranjangController extends Controller
                 $index_cart = $old_carts->search(function($item) use ($r_id){
                     return $item->id_produk == $r_id[1];
                 });
-                
+
                 $current_cart = $old_carts->get($index_cart);
 
                 if($current_cart && ($current_cart->stok - $current_cart->ordered_sum_kuantitas) >= $item) {

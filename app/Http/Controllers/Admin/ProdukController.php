@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\Kategori;
-use App\Models\Produk;
 
 class ProdukController extends Controller
 {
@@ -26,6 +25,8 @@ class ProdukController extends Controller
         $data = [
             'produk' => $produk
         ];
+
+
         return view('admin-pages.produk', $data);
     }
 
