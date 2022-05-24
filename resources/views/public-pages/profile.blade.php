@@ -32,7 +32,7 @@
       profile_info_box.style.display = 'none';
       profile_info_edit_box.style.display = 'block';
     });
-    @if(session()->has('address_added')) 
+    @if(session()->has('address_added'))
     console.log('{{ session("address_added") }}');
     btn_ubah_info.click();
     @endif
@@ -90,7 +90,7 @@
       if($(this).hasClass('on')) {
         $("#container_map_"+$(this).data('id')+"").css('display', 'block');
         $('input[name="map_latlng_'+$(this).data('id')+'"]').val('on');
-      } else {        
+      } else {
         $("#container_map_"+$(this).data('id')+"").css('display', 'none');
         $('input[name="map_latlng_'+$(this).data('id')+'"]').val('off');
       }
@@ -112,7 +112,7 @@
         <div class="d-flex justify-content-between w-100 pd-b-20">
           <img src="{{ asset($user->profile->getPhoto()) }}" alt="" class="rounded-10" style="max-width: 101px;max-height: 101px;" id="showed-photo">
           @if(auth()->check() && $is_me)
-          
+
           <form action="{{ url('/profile/'.$user->profile->id_profile.'/update_photo/') }}" class="flex-grow-1" enctype="multipart/form-data" method="post">
             @csrf
             @method('put')
@@ -128,11 +128,11 @@
         <div class="d-flex justify-content-between mg-b-20">
           <div>
             <h5 class="az-profile-name">{{ $user->profile->nama ?? '[ Nama Belum di setel ]' }}</h5>
-            <p class="az-profile-name-text">{{ $user->email }} 
+            <p class="az-profile-name-text">{{ $user->email }}
               @if(auth()->check() && $is_me)
                 @if(auth()->user()->email_verified_at == null)
                   <span class="badge badge-warning">Not Verified</span>
-                @else 
+                @else
                   <span class="badge badge-success">Verified</span>
                 @endif
               @endif
@@ -141,7 +141,7 @@
           <div class="btn-icon-list">
           </div>
         </div>
-        
+
       </div>
       <!-- az-profile-overview -->
     </div>
@@ -149,45 +149,29 @@
     <div class="az-content-body az-content-body-profile">
       <nav class="nav az-nav-line">
         @if(auth()->check() && $is_me)
-        <!-- <a href="#aktifitas-tab" class="nav-link {{ 
-          (request()->input('o') == 'activity') ? 
-          'active': (!request()->input('o') ? 
-          'active': ((request()->input('o') != 'setting' && request()->input('o') != 'history') ? 
-          'active': '')) 
-        }}" data-toggle="tab" id="activity"><i class="typcn typcn-chart-pie"></i> Aktifitas</a> -->
-        <a href="#profile-setting-tab" class="nav-link {{ request()->input('o') == 'setting' ? 'active': '' }}" data-toggle="tab" id="setting"><i class="typcn typcn-user"></i> Biodata</a>
+        <a href="#profile-setting-tab" class="nav-link {{
+            (request()->input('o') == 'setting') ?
+            'active': (!request()->input('o') ?
+            'active': (request()->input('o') != 'history' ?
+            'active': ''))
+          }}" data-toggle="tab" id="setting"><i class="typcn typcn-user"></i> Biodata</a>
         <a href="#profile-history-tab" class="nav-link {{ request()->input('o') == 'history' ? 'active': '' }}" data-toggle="tab" id="history"><i class="typcn typcn-document-text"></i> Riwayat</a>
-        <!-- <a href="#" class="nav-link disabled"><i class="typcn typcn-cog"></i> Pengaturan</a> -->
         @else
         <a href="#profile-setting-tab" class="nav-link {{ request()->input('o') == 'setting' ? 'active': '' }}" data-toggle="tab" id="setting"><i class="typcn typcn-user"></i> Biodata</a>
         @endif
       </nav>
       <div class="tab-content">
         @if(auth()->check() && $is_me)
-        
-        <div class="az-profile-body tab-pane {{
-          (request()->input('o') == 'activity') ? 
-          'active': (!request()->input('o') ? 
-          'active': ((request()->input('o') != 'setting' && request()->input('o') != 'history') ? 
-          'active': 'fade'))
-        }}" id="aktifitas-tab">
-          <div class="bd-b bd-2 bd-gray-200 pd-b-10 mg-b-10">
-            <!-- <div class="tx-medium tx-18">Transaksi</div> -->
-            <div class="d-flex">
-              <div> </div>
-            </div>
-          </div>
-          <!-- <div class="bd-b bd-2 bd-gray-200 pd-b-10 mg-b-10">
-            <div class="tx-medium tx-18"></div>
-            <div class="d-flex">
-              <div>Anda menyukai Produk Meja Besar</div>
-            </div>
-          </div> -->
-        </div>
+
         <!-- az-profile-body -->
         @endif
-        <div class="az-profile-body fade tab-pane {{ request()->input('o') == 'setting' || !request()->has('o') ? 'active': (auth()->check() ? 'fade':'active' ) }}" id="profile-setting-tab">
-          
+        <div class="az-profile-body tab-pane {{
+            (request()->input('o') == 'setting') ?
+            'active': (!request()->input('o') ?
+            'active': (request()->input('o') != 'history' ?
+            'active': 'fade'))
+          }}" id="profile-setting-tab">
+
           <div id="profil-info">
             <div class="d-flex mg-b-10 pd-b-10 bd-b bd-gray-200">
               <div style="width: 100px;">Nama</div>
@@ -205,7 +189,7 @@
               <div style="width: 100px;">Nomor Hp.</div>
               <div class="flex-grow-1">{{ $user->profile->telepon ?? '[Belum disetel]' }}</div>
             </div>
-            
+
             <div class="d-flex mg-b-10 pd-b-10 bd-b bd-gray-200">
               <div style="width: 100px;">Alamat</div>
               <div class="flex-grow-1">
@@ -291,7 +275,7 @@
                   @foreach($user->profile->addresses as $row)
                   <div class="pd-b-10">
                     <a href="{{ route('profile.remove_address', ['slug' => $user->profile->id_profile, 'id' => $row->id_address]) }}" class="btn"><i class="fas fa-trash-alt"></i></a>
-                    <span>Alamat {{ $n++ }}</span> 
+                    <span>Alamat {{ $n++ }}</span>
                   </div>
                   <div class="d-flex" style="align-items: center;padding-left: 57px;padding-right: 57px;">
                     <textarea type="text" name="alamat_{{ $row->id_address }}" required style="height: 100px;" class="form-control" placeholder="Alamat lengkap">{{ $row->alamat }}</textarea>
@@ -327,9 +311,9 @@
             <div class="d-flex align-items-center mg-b-20">
               <span class="tx-medium mg-r-10">Status</span>
               <a href="{{ url('/profile/'.auth()->user()->email) }}?o=history" class="btn {{
-                (request()->input('t') == '0') ? 
-                'btn-indigo': (!request()->input('t') ? 
-                'btn-indigo': ((request()->input('t') != '1' && request()->input('t') != '2') && (request()->input('t') != '3') && (request()->input('t') != '4') ? 
+                (request()->input('t') == '0') ?
+                'btn-indigo': (!request()->input('t') ?
+                'btn-indigo': ((request()->input('t') != '1' && request()->input('t') != '2') && (request()->input('t') != '3') && (request()->input('t') != '4') ?
                 'btn-indigo': 'btn-outline-light'))
               }} mg-r-10 rounded-pill">Semua</a>
               <a href="{{ url('/profile/'.auth()->user()->email) }}?o=history&t=3" class="btn {{ request()->input('t') == '3' ? 'btn-indigo': 'btn-outline-light' }} mg-r-10 rounded-pill">Selesai</a>
@@ -353,12 +337,12 @@
                 </div>
               </div>
             </div><!-- card-header -->
-            
+
             <div class="card-body">
               @if($row->status > 1 && $row->sewa)
               <!-- Wizard -->
               <div class="d-flex w-80 justify-content-center mg-b-10 pd-b-10 bd-b">
-                @if($row->sewa->status == 1) 
+                @if($row->sewa->status == 1)
                 <div class="tx-indigo d-flex flex-column justify-content-center align-items-center flex-grow-1">
                   <div class="text-center mg-b-5">
                     <i class="fas fa-box" style="font-size: 30px;"></i>
@@ -373,7 +357,7 @@
                   <div class="tx-gray-700">Disiapkan</div>
                 </div>
                 @endif
-                @if($row->sewa->status == 2) 
+                @if($row->sewa->status == 2)
                 <div class="tx-indigo d-flex flex-column justify-content-center align-items-center flex-grow-1 mx-2">
                   <div class="text-center mg-b-5">
                     <i class="fas fa-truck-loading" style="font-size: 30px;"></i>
@@ -388,7 +372,7 @@
                   <div class="tx-gray-700">Dikirim</div>
                 </div>
                 @endif
-                @if($row->sewa->status == 3) 
+                @if($row->sewa->status == 3)
                 <div class="tx-indigo d-flex flex-column justify-content-center align-items-center flex-grow-1 mx-2">
                   <div class="text-center mg-b-5">
                     <i class="fas fa-glass-cheers" style="font-size: 30px;"></i>
@@ -403,7 +387,7 @@
                   <div class="tx-gray-700">Sewa</div>
                 </div>
                 @endif
-                @if($row->dpPayment()->total_bayar > 0 && $row->status == 2) 
+                @if($row->dpPayment()->total_bayar > 0 && $row->status == 2)
                 <div class="tx-indigo d-flex flex-column justify-content-center align-items-center flex-grow-1">
                   <div class="text-center mg-b-5">
                     <i class="fas fa-money-bill-wave" style="font-size: 30px;"></i>
@@ -425,7 +409,7 @@
                   </div>
                   <div class="tx-gray-700">Selesai</div>
                 </div>
-                @elseif($row->sewa->status == 4 && $row->status == 3) 
+                @elseif($row->sewa->status == 4 && $row->status == 3)
                 <div class="tx-indigo d-flex flex-column justify-content-center align-items-center flex-grow-1">
                   <div class="text-center mg-b-5">
                     <i class="fas fa-check" style="font-size: 30px;"></i>
@@ -456,7 +440,7 @@
                     <div class="tx-14">Total</div>
                     <div class="tx-18 tx-medium">Rp. {{ number_format($row->total_bayar) }}</div>
                   </div>
-                </div>  
+                </div>
                 <div class="d-flex justify-content-end bd-t pd-t-10">
                   <button class="btn tx-semibold btn-sm rounded-pill tx-gray-700" data-toggle="modal" data-target="#detail-{{ $row->kode_pesanan }}">Lihat detail</button>
                   @if($row->dpPayment()->status == 1)
@@ -468,9 +452,9 @@
                     Bayar
                   </a>
                   @else
-                  
+
                   @endif
-                @else 
+                @else
                   <div>
                     <h6>Opss ada kesalahan data.</h6>
                   </div>
@@ -517,8 +501,8 @@
                       @if($p_row->total_bayar > 0)
                         <div class="d-flex justify-content-between">
                           <div>
-                            {{ $p_row->getTipes() }} 
-                            @if($p_row->total_bayar == 0) 
+                            {{ $p_row->getTipes() }}
+                            @if($p_row->total_bayar == 0)
                               <span class="badge badge-info">Skip</span>
                             @else
                               @if($p_row->status == 1)
@@ -568,7 +552,7 @@
                     </div>
                     @endforeach
                   </div>
-                </div>  
+                </div>
               </div>
             </div><!-- modal-dialog -->
           </div><!-- modal -->

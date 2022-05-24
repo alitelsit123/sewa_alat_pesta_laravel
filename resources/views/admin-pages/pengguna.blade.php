@@ -31,7 +31,7 @@
       $('#confirm-box').modal();
     }
     $(document).ready(function() {
-            
+
     });
 
 </script>
@@ -77,19 +77,22 @@
                     <tr>
                       <td>{{ $row->email }}</td>
                       <td>{{ $row->email_verified_at ? 'Terverifikasi': 'Belum Diverifikasi' }}</td>
-                      <td>{{ $row->online ? 'Ya': 'Tidak' }}</td>
+                      @php
+                        $role = $row->roles->sortByDesc('id_role')->first();
+                      @endphp
+                      <td><span class="badge @if($role && $role->id_role == 2) badge-success @else badge-primary @endif">{{ $role ? $role->nama: 'Pengguna' }}</span></td>
                       <td>
                           <!-- <a href="#" class="btn btn-sm btn-info">Pesan</a> -->
                           <a href="{{ route('admin.user.show', $row->id_user) }}" class="btn btn-sm btn-default">Lihat</a>
                           @if(!$row->isAdmin())
-                          <!-- <a href="{{ route('admin.user.set.role.admin', $row->id_user) }}" class="btn btn-sm btn-info">set as ADMIN</a> -->
+                          {{-- <a href="{{ route('admin.user.set.role.admin', $row->id_user) }}" class="btn btn-sm btn-info">set as ADMIN</a> --}}
                           @endif
                       </td>
                     </tr>
                     @empty
                     <tr>
                         <td colspan="3">Tidak Ada Data</td>
-                    </tr>                    
+                    </tr>
                     @endforelse
                   </tbody>
                 </table>
