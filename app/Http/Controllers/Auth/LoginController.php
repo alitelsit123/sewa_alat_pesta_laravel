@@ -10,22 +10,24 @@ use Pusher\Pusher;
 class LoginController extends Controller
 {
     protected $pusher;
-    public function __construct() {
+    public function __construct()
+    {
         $this->pusher = new Pusher(
-			config('pusher.APP_KEY'),
-			config('pusher.APP_SECRET'),
-			config('pusher.APP_ID'),
-			[
+            config('pusher.APP_KEY'),
+            config('pusher.APP_SECRET'),
+            config('pusher.APP_ID'),
+            [
                 'cluster' => config('pusher.APP_CLUSTER'),
-                'encrypted' => config('pusher.encrypted')
+                'encrypted' => config('pusher.encrypted'),
             ]
-		);
+        );
     }
     public function index()
     {
         return view('auth-pages.login');
     }
-    public function authorizeWebsocket(Request $request) {
+    public function authorizeWebsocket(Request $request)
+    {
         if (!auth()->check()) {
             return response('Forbidden', 403);
         }
@@ -36,14 +38,17 @@ class LoginController extends Controller
         // return true;
     }
 
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'email' => ['required'],
-            'password' => ['required', 'min:8']
+            'password' => ['required', 'min:8'],
         ]);
 
-        if($validator->fails()):
-            return back()->withErrors($validator)->withInput();
+        if ($validator->fails()):
+            return back()
+                ->withErrors($validator)
+                ->withInput();
         endif;
 
         $credentials = $validator->validated();
@@ -54,13 +59,18 @@ class LoginController extends Controller
             $user->online = 1;
             $user->save();
 
-            if(session()->has('cart') && sizeof(session('cart')) > 0) {
-                $carts = session('cart');
-                return dd($carts);
-                foreach($carts as $row):
-                    $user->carts()->syncWithoutDetaching([$row['produk']->id_produk => ['kuantitas' => $row->pivot->kuantitas]]);
-                endforeach;
-            }
+            // if (session()->has('cart') && sizeof(session('cart')) > 0) {
+            //     $carts = session('cart');
+            //     foreach ($carts as $row):
+            //         $user
+            //             ->carts()
+            //             ->syncWithoutDetaching([
+            //                 $row['id_produk'] => [
+            //                     'kuantitas' => $row->pivot->kuantitas,
+            //                 ],
+            //             ]);
+            //     endforeach;
+            // }
 
             session()->forget('cart');
             return redirect()->intended('/');
@@ -70,9 +80,10 @@ class LoginController extends Controller
             'email' => 'Email / Password Salah!!!',
         ]);
     }
-    public function logout() {
+    public function logout()
+    {
         $user = auth()->user();
-        if($user) {
+        if ($user) {
             $user->online = 0;
             $user->save();
             auth()->logout();

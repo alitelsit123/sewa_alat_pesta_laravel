@@ -69,7 +69,7 @@
                         <input type="text" name="s" value="{{ request('s') }}" class="form-control mr-2" placeholder="Cari Kode Pembayaran">
                         <a class="btn btn-warning" href="{{ route('admin.transaksi.index') }}">Reset</a>
                     </div>
-                    <a class="btn btn-primary" href="#" id="print-button">Export</a>
+                    <!-- <a class="btn btn-primary" href="#" id="print-button">Export</a> -->
 
                 </form>    
               </div>
